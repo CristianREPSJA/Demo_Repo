@@ -1,8 +1,305 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="SourceGit.Views.JiraBoardPage">
-  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8" MaxWidth="420">
-    <TextBlock Text="Tablero Jira" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center"/>
-    <TextBlock Text="Conecta Jira para ver tus tarjetas y moverlas sin salir de Rama." TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}"/>
-  </StackPanel>
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:core="using:Rama.Core.Jira"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="SourceGit.Views.JiraBoardPage"
+             x:DataType="vm:JiraBoardViewModel">
+  <UserControl.Resources>
+    <StreamGeometry x:Key="Jira.Icon.Story">M4.5,2.5 H11.5 V13.5 L8,10.8 L4.5,13.5 Z</StreamGeometry>
+    <StreamGeometry x:Key="Jira.Icon.Bug">M8,5 A3,3 0 0 1 11,8 V10 A3,3 0 0 1 5,10 V8 A3,3 0 0 1 8,5 Z M2.5,8 H5 M11,8 H13.5 M3.5,4.5 L5.5,6.5 M12.5,4.5 L10.5,6.5</StreamGeometry>
+    <StreamGeometry x:Key="Jira.Icon.Task">M4.5,2.5 H11.5 A2,2 0 0 1 13.5,4.5 V11.5 A2,2 0 0 1 11.5,13.5 H4.5 A2,2 0 0 1 2.5,11.5 V4.5 A2,2 0 0 1 4.5,2.5 Z M5.5,8.2 L7.3,10 L10.5,6.5</StreamGeometry>
+    <StreamGeometry x:Key="Jira.Icon.Branch">M5.6,3.5 A1.6,1.6 0 1 0 2.4,3.5 A1.6,1.6 0 1 0 5.6,3.5 Z M5.6,12.5 A1.6,1.6 0 1 0 2.4,12.5 A1.6,1.6 0 1 0 5.6,12.5 Z M13.6,5.5 A1.6,1.6 0 1 0 10.4,5.5 A1.6,1.6 0 1 0 13.6,5.5 Z M4,5.1 V10.9 M12,7.1 C12,9.5 10,10.4 5.6,11.5</StreamGeometry>
+    <StreamGeometry x:Key="Jira.Icon.Refresh">M13.5,8 A5.5,5.5 0 1 1 11.7,3.9 M13.5,2.5 V5.5 H10.5</StreamGeometry>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="Path.glyph">
+      <Setter Property="Stroke" Value="{DynamicResource Brush.FG2}"/>
+      <Setter Property="StrokeThickness" Value="1.5"/>
+      <Setter Property="StrokeLineCap" Value="Round"/>
+      <Setter Property="StrokeJoin" Value="Round"/>
+      <Setter Property="Width" Value="16"/>
+      <Setter Property="Height" Value="16"/>
+      <Setter Property="Stretch" Value="None"/>
+    </Style>
+    <Style Selector="TextBlock.faint">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    </Style>
+    <Style Selector="TextBlock.mono">
+      <Setter Property="FontFamily" Value="{DynamicResource Fonts.Monospace}"/>
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Border.count">
+      <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="5,0"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource Brush.Contents}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border2}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="12,10"/>
+      <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style Selector="Border.card.src">
+      <Setter Property="Opacity" Value="0.4"/>
+    </Style>
+    <Style Selector="Border.card:pointerover">
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
+    </Style>
+    <Style Selector="Border.banner">
+      <Setter Property="Padding" Value="16,8"/>
+    </Style>
+    <Style Selector="Button.person">
+      <Setter Property="Height" Value="36"/>
+      <Setter Property="Padding" Value="8,0,12,0"/>
+      <Setter Property="CornerRadius" Value="6"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+    </Style>
+    <Style Selector="Button.person.on, Button.person.on:pointerover">
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
+    </Style>
+    <Style Selector="Button.person.on /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="Button.mini">
+      <Setter Property="Height" Value="24"/>
+      <Setter Property="Padding" Value="8,0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontWeight" Value="Medium"/>
+      <Setter Property="Margin" Value="-8,0,0,0"/>
+    </Style>
+    <Style Selector="Button.mini TextBlock">
+      <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid>
+    <!-- Tablero -->
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" IsVisible="{Binding IsReady}">
+      <!-- Cabecera -->
+      <Border Grid.Row="0" Background="{DynamicResource Brush.ToolBar}" BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="0,0,0,1" MinHeight="48" Padding="18,6,12,6">
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+          <TextBlock Grid.Column="0" Text="{Binding Title}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource Brush.FG1}"/>
+          <TextBlock Grid.Column="1" Classes="faint" Text="{Binding SyncText}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+          <Button Grid.Column="2" Classes="icon_button" Width="32" Height="32" Command="{Binding RefreshCommand}" ToolTip.Tip="{DynamicResource Text.Rama.Jira.Refresh}">
+            <Path Classes="glyph" Data="{StaticResource Jira.Icon.Refresh}"/>
+          </Button>
+          <Border Grid.Column="3" Width="1" Height="24" Margin="8,0" Background="{DynamicResource Brush.Border2}"/>
+          <TextBox Grid.Column="4" Width="220" Height="32" Text="{Binding Query, Mode=TwoWay}" Watermark="{DynamicResource Text.Rama.Jira.Filter}" VerticalContentAlignment="Center"/>
+        </Grid>
+      </Border>
+
+      <!-- Aviso de token por vencer -->
+      <Border Grid.Row="1" Classes="banner" Background="#3a2f1a" IsVisible="{Binding HasTokenBanner}">
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Text="{Binding TokenBanner}" Foreground="#f0c27a" VerticalAlignment="Center" TextWrapping="Wrap"/>
+          <Button Grid.Column="1" Classes="mini" Content="{DynamicResource Text.Rama.Jira.Dismiss}" Command="{Binding DismissTokenBannerCommand}"/>
+        </Grid>
+      </Border>
+
+      <!-- Error de movimiento / refresco, dentro del bloque -->
+      <Border Grid.Row="2" Classes="banner" Background="#36202a" IsVisible="{Binding HasMoveError}">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBlock Text="{Binding MoveError}" Foreground="#ee9ab1" VerticalAlignment="Center" TextWrapping="Wrap"/>
+          <Button Grid.Column="1" Classes="mini" Content="{DynamicResource Text.Rama.Jira.Retry}" Command="{Binding RefreshCommand}"/>
+          <Button Grid.Column="2" Classes="mini" Content="{DynamicResource Text.Rama.Jira.Dismiss}" Command="{Binding DismissMoveErrorCommand}"/>
+        </Grid>
+      </Border>
+
+      <!-- Personas -->
+      <ItemsControl Grid.Row="3" ItemsSource="{Binding People}" Margin="16,12,16,4">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:JiraPersonViewModel">
+            <Button Classes="person" Classes.on="{Binding IsSelected}" Command="{Binding SelectCommand}" Margin="0,0,4,4" AutomationProperties.Name="{Binding Name}">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Border Width="20" Height="20" CornerRadius="10" Background="{Binding AvatarBackground}">
+                  <TextBlock Text="{Binding Initials}" FontSize="10" FontWeight="SemiBold" Foreground="{Binding AvatarForeground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                <TextBlock Classes="faint" Text="{DynamicResource Text.Rama.Jira.You}" IsVisible="{Binding IsMe}" VerticalAlignment="Center"/>
+                <Border Classes="count">
+                  <TextBlock Text="{Binding Count}" FontSize="11" Foreground="{DynamicResource Brush.FG1}"/>
+                </Border>
+              </StackPanel>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <!-- Columnas -->
+      <ScrollViewer Grid.Row="4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="16,8,16,0">
+        <ItemsControl ItemsSource="{Binding Columns}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal" Spacing="12"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:JiraColumnViewModel">
+              <Grid Width="260" VerticalAlignment="Top" Classes.dim="{Binding IsDimmed}">
+                <Grid.Styles>
+                  <Style Selector="Grid.dim">
+                    <Setter Property="Opacity" Value="0.45"/>
+                  </Style>
+                </Grid.Styles>
+                <Border Background="{DynamicResource Brush.Window}" BorderBrush="{DynamicResource Brush.Border0}" BorderThickness="1" CornerRadius="8"
+                        DragDrop.AllowDrop="True" MinHeight="120" DragDrop.DragOver="OnColumnDragOver" DragDrop.Drop="OnColumnDrop">
+                  <StackPanel Spacing="8" Margin="10">
+                    <StackPanel Orientation="Horizontal" Spacing="8" Height="24">
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{DynamicResource Brush.FG1}"/>
+                      <Border Classes="count"><TextBlock Text="{Binding Count}" FontSize="11" Foreground="{DynamicResource Brush.FG1}"/></Border>
+                    </StackPanel>
+                    <Border IsVisible="{Binding IsDropTarget}" BorderBrush="{DynamicResource Brush.Accent}" BorderThickness="1" CornerRadius="8" Padding="10,8">
+                      <TextBlock Text="{Binding DropHint}" Foreground="#f0c27a" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
+                    </Border>
+                    <TextBlock Classes="faint" Text="{Binding Note}" IsVisible="{Binding HasNote}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.FG2}"/>
+                    <TextBlock Classes="faint" Text="{DynamicResource Text.Rama.Jira.EmptyColumn}" IsVisible="{Binding IsEmpty}" Margin="2,8"/>
+                    <ItemsControl ItemsSource="{Binding Cards}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <StackPanel Spacing="8"/>
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:JiraCardViewModel">
+                          <Border Classes="card" Classes.src="{Binding IsDragSource}"
+                                  PointerPressed="OnCardPressed" PointerMoved="OnCardMoved" PointerReleased="OnCardReleased">
+                            <StackPanel Spacing="8">
+                              <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Classes="mono" Text="{Binding Key}" FontWeight="Medium" Foreground="{DynamicResource Brush.FG1}"/>
+                                <TextBlock Grid.Column="1" Classes="mono" Text="{Binding PointsLabel}" Foreground="{DynamicResource Brush.FG2}"/>
+                              </Grid>
+                              <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource Brush.FG1}"/>
+                              <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                  <Path Classes="glyph" Data="{StaticResource Jira.Icon.Story}" IsVisible="{Binding IsStory}"/>
+                                  <Path Classes="glyph" Data="{StaticResource Jira.Icon.Bug}" IsVisible="{Binding IsBug}"/>
+                                  <Path Classes="glyph" Data="{StaticResource Jira.Icon.Task}" IsVisible="{Binding IsTask}"/>
+                                  <TextBlock Text="{Binding TypeLabel}" FontSize="12" Foreground="{DynamicResource Brush.FG2}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{Binding Priority}" FontSize="12" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Brush.FG2}" Classes.high="{Binding IsHighPriority}">
+                                  <TextBlock.Styles>
+                                    <Style Selector="TextBlock.high">
+                                      <Setter Property="Foreground" Value="#ee9ab1"/>
+                                    </Style>
+                                  </TextBlock.Styles>
+                                </TextBlock>
+                              </Grid>
+                              <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding HasBranch}">
+                                <Path Classes="glyph" Data="{StaticResource Jira.Icon.Branch}" Stroke="{DynamicResource Brush.FG3}"/>
+                                <TextBlock Classes="mono faint" FontSize="11" Text="{Binding Branch}" TextTrimming="CharacterEllipsis" MaxWidth="190" ToolTip.Tip="{Binding Branch}"/>
+                              </StackPanel>
+                              <Button Classes="mini" IsVisible="{Binding ShowCreateButton}" IsEnabled="{Binding CanCreateBranch}" Command="{Binding AskCreateBranchCommand}"
+                                      ToolTip.Tip="{Binding CreateTooltip}" ToolTip.ShowOnDisabled="True" HorizontalAlignment="Left">
+                                <TextBlock Text="{DynamicResource Text.Rama.Jira.CreateBranch}"/>
+                              </Button>
+                              <StackPanel Spacing="6" IsVisible="{Binding ShowConfirm}">
+                                <TextBlock Classes="mono faint" FontSize="11" Text="{Binding NewBranchName}" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                  <Button Classes="flat" Height="26" Padding="10,0" Content="{DynamicResource Text.Rama.Jira.Create}" Command="{Binding ConfirmCreateBranchCommand}"/>
+                                  <Button Height="26" Padding="10,0" Content="{DynamicResource Text.Rama.Jira.Cancel}" Command="{Binding CancelCreateBranchCommand}"/>
+                                </StackPanel>
+                              </StackPanel>
+                              <TextBlock Text="{Binding Error}" IsVisible="{Binding HasError}" Foreground="#ee9ab1" FontSize="12" TextWrapping="Wrap"/>
+                            </StackPanel>
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </StackPanel>
+                </Border>
+                <Rectangle IsVisible="{Binding IsDropTarget}" IsHitTestVisible="False" RadiusX="8" RadiusY="8"
+                           Stroke="{DynamicResource Brush.Accent}" StrokeThickness="1" StrokeDashArray="4,3"/>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+      <TextBlock Grid.Row="5" Classes="faint" Margin="16,12,16,16" TextWrapping="Wrap" Text="{DynamicResource Text.Rama.Jira.Footer}"/>
+    </Grid>
+
+    <!-- Cargando: esqueleto -->
+    <StackPanel IsVisible="{Binding IsLoading}" Spacing="16" Margin="32,28">
+      <TextBlock Text="{DynamicResource Text.Rama.Jira.Loading}" Classes="faint"/>
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <Border Width="260" Height="320" CornerRadius="8" Background="{DynamicResource Brush.Contents}" Opacity="0.7"/>
+        <Border Width="260" Height="260" CornerRadius="8" Background="{DynamicResource Brush.Contents}" Opacity="0.7"/>
+        <Border Width="260" Height="200" CornerRadius="8" Background="{DynamicResource Brush.Contents}" Opacity="0.7"/>
+        <Border Width="260" Height="140" CornerRadius="8" Background="{DynamicResource Brush.Contents}" Opacity="0.7"/>
+      </StackPanel>
+    </StackPanel>
+
+    <!-- Sin cuenta -->
+    <StackPanel IsVisible="{Binding IsNoAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" MaxWidth="420">
+      <TextBlock Text="{DynamicResource Text.Rama.Jira.TitleEmpty}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center"/>
+      <TextBlock Text="{DynamicResource Text.Rama.Jira.NoAccountBody}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}"/>
+      <Button Classes="flat" HorizontalAlignment="Center" Content="{DynamicResource Text.Rama.Jira.GoToAccounts}" Command="{Binding OpenAccountsCommand}"/>
+    </StackPanel>
+
+    <!-- Error de carga -->
+    <StackPanel IsVisible="{Binding IsError}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" MaxWidth="480">
+      <TextBlock Text="{DynamicResource Text.Rama.Jira.ErrorTitle}" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center"/>
+      <TextBlock Text="{Binding ErrorText}" TextWrapping="Wrap" TextAlignment="Center" Foreground="#ee9ab1"/>
+      <Button Classes="flat" HorizontalAlignment="Center" Content="{DynamicResource Text.Rama.Jira.Retry}" Command="{Binding RefreshCommand}"/>
+    </StackPanel>
+
+    <!-- Campos requeridos de la transicion -->
+    <Border IsVisible="{Binding HasFieldsDialog}" Background="#99000000">
+      <Border Width="420" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="18,16" CornerRadius="8"
+              Background="{DynamicResource Brush.Popup}" BorderBrush="{DynamicResource Brush.PopupBorder}" BorderThickness="1"
+              DataContext="{Binding FieldsDialog}" x:DataType="vm:JiraFieldsDialogViewModel">
+        <StackPanel Spacing="12">
+          <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{DynamicResource Brush.FG1}"/>
+          <ItemsControl ItemsSource="{Binding Fields}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:JiraFieldInputViewModel">
+                <StackPanel Spacing="4" Margin="0,0,0,8">
+                  <TextBlock Text="{Binding Name}" FontSize="12" Foreground="{DynamicResource Brush.FG2}"/>
+                  <ComboBox IsVisible="{Binding IsSelect}" ItemsSource="{Binding Options}" SelectedItem="{Binding Selected, Mode=TwoWay}"
+                            HorizontalAlignment="Stretch" PlaceholderText="{DynamicResource Text.Rama.Jira.Select}">
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate x:DataType="core:FieldOption">
+                        <TextBlock Text="{Binding Label}"/>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                  <TextBox IsVisible="{Binding IsText}" Text="{Binding Text, Mode=TwoWay}"/>
+                  <TextBlock IsVisible="{Binding IsUnsupported}" Text="{DynamicResource Text.Rama.Jira.FieldsInJira}" Foreground="#f0c27a" FontSize="12"/>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Text="{Binding Error}" Foreground="#ee9ab1" FontSize="12" IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+          <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+            <Button Content="{DynamicResource Text.Rama.Jira.OpenInJira}" IsVisible="{Binding HasUnsupported}"
+                    Command="{Binding $parent[UserControl].((vm:JiraBoardViewModel)DataContext).OpenInJiraCommand}"/>
+            <Button Content="{DynamicResource Text.Rama.Jira.Cancel}"
+                    Command="{Binding $parent[UserControl].((vm:JiraBoardViewModel)DataContext).CancelFieldsCommand}"/>
+            <Button Classes="flat" Content="{DynamicResource Text.Rama.Jira.FieldsConfirm}" IsEnabled="{Binding CanConfirm}"
+                    Command="{Binding $parent[UserControl].((vm:JiraBoardViewModel)DataContext).ConfirmFieldsCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+  </Grid>
 </UserControl>

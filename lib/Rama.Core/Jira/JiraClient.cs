@@ -13,7 +13,7 @@ public interface IJiraTransitionApi
 }
 
 // Cliente Jira Cloud: Basic email:API token.
-public sealed partial class JiraClient : ApiClientBase, IJiraTransitionApi
+public sealed partial class JiraClient : ApiClientBase, IJiraBoardApi
 {
     public const int PageSize = 100;
     public const int MaxPages = 20;
@@ -161,7 +161,7 @@ public sealed partial class JiraClient : ApiClientBase, IJiraTransitionApi
         var hasDefault = f.HasDefaultValue
             || f.DefaultValue is { ValueKind: not (JsonValueKind.Null or JsonValueKind.Undefined) };
         var options = (f.AllowedValues ?? []).Select(MapOption).OfType<FieldOption>().ToList();
-        return new TransitionField(key, f.Name ?? key, f.Required, hasDefault, options);
+        return new TransitionField(key, f.Name ?? key, f.Required, hasDefault, options, f.Schema?.Type);
     }
 
     private static FieldOption? MapOption(JsonElement e)
