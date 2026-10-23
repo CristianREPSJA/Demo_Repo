@@ -1,0 +1,8 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SourceGit.Views.JiraBoardPage">
+  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8" MaxWidth="420">
+    <TextBlock Text="Tablero Jira" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center"/>
+    <TextBlock Text="Conecta Jira para ver tus tarjetas y moverlas sin salir de Rama." TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}"/>
+  </StackPanel>
+</UserControl>

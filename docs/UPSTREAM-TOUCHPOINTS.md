@@ -19,3 +19,8 @@ F2: rebrand
 - `src/App.axaml.cs` — carriles del grafo de Rama (`Branding.GraphPalette`).
 - `src/Models/Locales.cs`, `src/ViewModels/Preferences.cs` — locale es_CL y tema Dark por defecto.
 - `src/App.ico` — icono nuevo (generado con `tools/make-icon.ps1`).
+
+F3: shell con riel
+- `src/Views/Launcher.axaml` — columna izquierda con IconRail y contenedor de paginas de destino.
+- `src/ViewModels/Launcher.cs` — propiedad `Rail` (RailNavigator).
+- `src/SourceGit.csproj` — recurso `Rama/Resources/Images/*.png` (marca).
