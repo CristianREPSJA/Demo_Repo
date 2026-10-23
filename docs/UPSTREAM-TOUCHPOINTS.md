@@ -11,3 +11,11 @@ F1: removed AI
 - `src/Models/RepositorySettings.cs`, `src/ViewModels/{Preferences,Repository,RepositoryConfigure}.cs`, `src/App.axaml.cs` — F1: removed AI.
 - `src/Views/{CommitMessageToolBox,Preferences,RepositoryConfigure}.axaml(.cs)`, `src/Views/WorkingCopy.axaml.cs` — F1: removed AI.
 - `src/Resources/Icons.axaml`, `src/Resources/Locales/*.axaml` (16 archivos) — F1: removed AI.
+
+F2: rebrand
+- `src/SourceGit.csproj` — Product/Description/Company "Rama".
+- `src/Native/{Windows,MacOS,Linux}.cs` — directorio de datos `Rama`.
+- `src/App.axaml`, `src/Views/About.axaml` — nombre, merge del tema grafito y es_CL, titulo About.
+- `src/App.axaml.cs` — carriles del grafo de Rama (`Branding.GraphPalette`).
+- `src/Models/Locales.cs`, `src/ViewModels/Preferences.cs` — locale es_CL y tema Dark por defecto.
+- `src/App.ico` — icono nuevo (generado con `tools/make-icon.ps1`).

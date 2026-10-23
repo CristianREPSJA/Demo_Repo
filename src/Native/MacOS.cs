@@ -60,7 +60,7 @@ namespace SourceGit.Native
             var dirs = new OS.Directories();
             var appDataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "SourceGit");
+                "Rama"); // RAMA: no compartir datos con SourceGit
 
             if (!Directory.Exists(appDataDir))
                 Directory.CreateDirectory(appDataDir);

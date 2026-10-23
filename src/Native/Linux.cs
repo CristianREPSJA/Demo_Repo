@@ -58,8 +58,8 @@ namespace SourceGit.Native
             }
 
             // XDG Base Directory Specification: https://specifications.freedesktop.org/basedir/latest/
-            dirs.ConfigDir = GetXdgDirectory("XDG_CONFIG_HOME", Path.Combine(home, ".config"), "SourceGit");
-            dirs.CacheDir = GetXdgDirectory("XDG_CACHE_HOME", Path.Combine(home, ".cache"), "SourceGit");
+            dirs.ConfigDir = GetXdgDirectory("XDG_CONFIG_HOME", Path.Combine(home, ".config"), "Rama"); // RAMA: no compartir datos con SourceGit
+            dirs.CacheDir = GetXdgDirectory("XDG_CACHE_HOME", Path.Combine(home, ".cache"), "Rama"); // RAMA
 
             // If the app basic dirs already exist, we can skip the migration step
             if (Directory.Exists(dirs.ConfigDir) && Directory.Exists(dirs.CacheDir))

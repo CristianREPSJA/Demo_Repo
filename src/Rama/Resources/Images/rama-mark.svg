@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 22 22" role="img" aria-label="Rama">
+  <rect width="22" height="22" rx="5" fill="#17181a"/>
+  <g transform="translate(3.3 3.3) scale(0.7)">
+    <path d="M7 20V9.5c0-2.5 1.6-4 4-4h1.5" stroke="#e6a23c" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M7 13c0-2 1.4-3.2 3.4-3.2H15" stroke="#e6a23c" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/>
+    <circle cx="16" cy="5.5" r="2.6" fill="#e6a23c"/>
+    <circle cx="17.6" cy="9.8" r="1.9" fill="#e6a23c" opacity=".55"/>
+  </g>
+</svg>
