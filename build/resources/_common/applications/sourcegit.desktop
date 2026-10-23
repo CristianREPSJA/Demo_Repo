@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=SourceGit
-Comment=Open-source & Free Git GUI Client
+Name=Rama
+Comment=Cliente git del equipo
 Exec=/opt/sourcegit/sourcegit %u
 Icon=/usr/share/icons/sourcegit.png
 Terminal=false

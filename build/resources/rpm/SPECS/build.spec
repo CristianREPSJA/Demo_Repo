@@ -1,10 +1,9 @@
-Name: sourcegit
+Name: rama
 Version: %_version
 Release: 1
-Summary: Open-source & Free Git Gui Client
+Summary: Cliente git del equipo (fork interno de SourceGit)
 License: MIT
-URL: https://sourcegit-scm.github.io/
-Source: https://github.com/sourcegit-scm/sourcegit/archive/refs/tags/v%_version.tar.gz
+URL: https://github.com/sourcegit-scm/sourcegit
 Requires: libX11.so.6()(%{__isa_bits}bit)
 Requires: libSM.so.6()(%{__isa_bits}bit)
 Requires: libicu
@@ -13,7 +12,7 @@ Requires: xdg-utils
 %define _build_id_links none
 
 %description
-Open-source & Free Git Gui Client
+Cliente git del equipo (fork interno de SourceGit)
 
 %install
 mkdir -p %{buildroot}/opt/sourcegit
