@@ -26,6 +26,9 @@ namespace SourceGit.ViewModels
             }
         }
 
+        // RAMA: "Pedir mensaje a Claude": abre la terminal inferior e inserta el pedido (sin Enter)
+        public async void AskClaudeForCommitMessage() => await Rama.Terminal.TerminalRegistry.Instance.AskCommitMessageAsync(_repo);
+
         public bool HasRemotes
         {
             get => _hasRemotes;

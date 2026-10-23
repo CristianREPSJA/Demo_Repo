@@ -41,3 +41,9 @@ F4a: restyle pantallas git
 
 F7/F8: pagina Clonar
 - `src/Views/Launcher.axaml` — pagina `ClonePage` en el contenedor de destinos (destino Clonar del riel).
+F5b: cableado de la terminal
+- `src/ViewModels/Repository.cs` — `IsTerminalVisible`/`ToggleTerminal` y liberación de la terminal al cerrar la pestaña.
+- `src/ViewModels/WorkingCopy.cs` — `AskClaudeForCommitMessage` (inserta pedido de commit en la terminal).
+- `src/Views/Repository.axaml` — fila inferior con `TerminalHost` (panel de terminal del repositorio).
+- `src/Views/RepositoryToolbar.axaml(.cs)` — botón "Terminal" que alterna el panel inferior.
+- `src/Views/WorkingCopy.axaml(.cs)` — botón "Pedir mensaje a Claude" y nota bajo el formulario de commit.

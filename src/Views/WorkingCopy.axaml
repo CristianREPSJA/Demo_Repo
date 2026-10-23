@@ -222,6 +222,7 @@
         <RowDefinition Height="*" MinHeight="100"/>
         <RowDefinition Height="4"/>
         <RowDefinition Height="128" MinHeight="100"/>
+        <RowDefinition Height="Auto"/>
         <RowDefinition Height="40"/>
       </Grid.RowDefinitions>
 
@@ -261,7 +262,19 @@
                               CommitMessage="{Binding CommitMessage, Mode=TwoWay}"/>
 
       <!-- Commit Options -->
-      <Grid Grid.Row="3" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,Auto">
+      <!-- RAMA: pedir mensaje de commit a Claude (solo inserta texto en la terminal) -->
+      <StackPanel Grid.Row="3" Margin="0,4,0,0" Spacing="2">
+        <Button Classes="flat" Padding="8,2" HorizontalAlignment="Left" Click="OnAskClaudeForCommitMessage">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Path Width="13" Height="13" Fill="{DynamicResource Brush.FG1}" Data="{DynamicResource Rama.Icon.Terminal}"/>
+            <TextBlock Text="{DynamicResource Text.Rama.Terminal.AskCommitMessage}"/>
+          </StackPanel>
+        </Button>
+        <TextBlock Classes="small" FontSize="11" Foreground="{DynamicResource Brush.FG2}" TextWrapping="Wrap"
+                   Text="{DynamicResource Text.Rama.Terminal.AskCommitMessageNote}"/>
+      </StackPanel>
+
+      <Grid Grid.Row="4" VerticalAlignment="Center" ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,Auto">
         <CheckBox Grid.Column="0"
                   Height="24"
                   Margin="1,0,0,0"
