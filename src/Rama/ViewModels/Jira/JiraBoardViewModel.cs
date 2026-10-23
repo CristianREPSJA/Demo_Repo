@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Rama.Core.Accounts;
+using Rama.Core.Http;
 using Rama.Core.Integrations;
 using Rama.Core.Jira;
 using Rama.Core.Polling;
@@ -95,10 +96,20 @@ namespace SourceGit.ViewModels
                 return;
 
             _visible = visible;
-            if (visible)
-                _ = ActivateAsync();
-            else
-                _ = DeactivateAsync();
+            // Serializado: activar/desactivar nunca se solapan y solo importa el último estado pedido.
+            _ = _activation.RunAsync(visible ? ActivateAsync : DeactivateSafeAsync);
+        }
+
+        private async Task DeactivateSafeAsync()
+        {
+            try
+            {
+                await DeactivateAsync();
+            }
+            catch (Exception ex)
+            {
+                Native.OS.LogException(ex);
+            }
         }
 
         [RelayCommand]
@@ -210,6 +221,7 @@ namespace SourceGit.ViewModels
         }
 
         // Ciclo del Poller (y del boton Actualizar): lanza ante fallos para que el Poller aplique backoff.
+        // El error se informa solo aqui (UI); el Poller unicamente lo usa para el backoff y no lo muestra.
         private async Task TickAsync(CancellationToken ct, bool force = false)
         {
             var controller = _controller;
@@ -307,9 +319,13 @@ namespace SourceGit.ViewModels
                     if (col.Index < drops.Count)
                         col.ApplyDrop(drops[col.Index]);
             }
-            catch (Exception)
+            catch (ApiException)
             {
                 // Sin transiciones conocidas no se resalta nada; Jira decide al soltar.
+            }
+            catch (Exception ex)
+            {
+                Native.OS.LogException(ex);
             }
         }
 
@@ -424,6 +440,7 @@ namespace SourceGit.ViewModels
         private string _dragKey;
         private JiraAccount _account;
         private BoardController _controller;
+        private readonly LatestWinsGate _activation = new();
         private Poller _poller;
         private DispatcherTimer _ageTimer;
         private readonly HashSet<string> _confirming = [];

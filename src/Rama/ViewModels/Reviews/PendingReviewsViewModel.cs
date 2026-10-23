@@ -12,6 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Rama.Core.Accounts;
 using Rama.Core.Azure;
 using Rama.Core.Http;
+using Rama.Core.Polling;
 using Rama.Core.Reviews;
 
 using SourceGit.Rama;
@@ -20,7 +21,7 @@ namespace SourceGit.ViewModels
 {
     // Pantalla "Revisiones pendientes". Singleton (RamaServices.Reviews): el sondeo corre mientras la app está abierta.
     // SUPUESTO: se usa la primera cuenta de Azure guardada.
-    public partial class PendingReviewsViewModel : ObservableObject
+    public partial class PendingReviewsViewModel : ObservableObject, IDisposable
     {
         public AvaloniaList<ReviewItemViewModel> PullRequests { get; } = new();
         public AvaloniaList<ReviewItemViewModel> Deployments { get; } = new();
@@ -69,8 +70,21 @@ namespace SourceGit.ViewModels
             _started = true;
             _stampTimer.Tick += (_, _) => UpdateStamp();
             _stampTimer.Start();
-            RamaServices.Accounts.Changed += e => Dispatcher.UIThread.Post(() => _ = ReconnectAsync());
+            RamaServices.Accounts.Changed += OnAccountsChanged;
             _ = ReconnectAsync();
+        }
+
+        private void OnAccountsChanged(AccountsChangedEventArgs e) => Dispatcher.UIThread.Post(() => _ = ReconnectAsync());
+
+        public void Dispose()
+        {
+            if (!_started)
+                return;
+
+            _started = false;
+            RamaServices.Accounts.Changed -= OnAccountsChanged;
+            _stampTimer.Stop();
+            _ = _reconnect.RunAsync(TearDownMonitorAsync);
         }
 
         partial void OnHasAccountChanged(bool value)
@@ -135,16 +149,31 @@ namespace SourceGit.ViewModels
             }
         }
 
-        private async Task ReconnectAsync()
+        // Serializada: reconexiones simultáneas (inicio + cambio de cuentas) no se pisan; gana la última.
+        private Task ReconnectAsync() => _reconnect.RunAsync(ReconnectCoreAsync);
+
+        private async Task TearDownMonitorAsync()
         {
             var old = _monitor;
             _monitor = null;
-            if (old != null)
+            if (old == null)
+                return;
+
+            try
             {
                 old.Updated -= OnMonitorUpdated;
                 await old.StopAsync();
                 await old.DisposeAsync();
             }
+            catch (Exception ex)
+            {
+                Native.OS.LogException(ex);
+            }
+        }
+
+        private async Task ReconnectCoreAsync()
+        {
+            await TearDownMonitorAsync();
 
             try
             {
@@ -284,6 +313,7 @@ namespace SourceGit.ViewModels
                 i.Refresh(now);
         }
 
+        private readonly LatestWinsGate _reconnect = new();
         private readonly DispatcherTimer _stampTimer = new() { Interval = TimeSpan.FromSeconds(1) };
         private ReviewsMonitor _monitor;
         private ReviewsService _service;
