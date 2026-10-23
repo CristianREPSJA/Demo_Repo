@@ -62,10 +62,12 @@
 
 	<Folder Name="/lib/">
 		<Project Path="lib/Rama.Core/Rama.Core.csproj" />
+		<Project Path="lib/Rama.Terminal/Rama.Terminal.csproj" />
 	</Folder>
 
 	<Folder Name="/tests/">
 		<Project Path="tests/Rama.Core.Tests/Rama.Core.Tests.csproj" />
+		<Project Path="tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj" />
 	</Folder>
 
 	<Folder Name="/files/">

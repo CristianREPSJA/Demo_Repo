@@ -35,3 +35,6 @@ F4a: restyle pantallas git
 - `src/Views/Histories.axaml` — RowHeight 30, subject 30, clase `sha_faint` en SHA.
 - `src/Views/{Repository,Compare,RevisionCompare,About,SelfUpdate}.axaml` — texto sobre ambar usa `Brush.OnAccent` (#1c1406).
 - `src/ViewModels/Preferences.cs` — defaults: diff lado a lado ON, avatar de iniciales (no estilo GitHub).
+- `src/SourceGit.csproj` — referencia a lib/Rama.Terminal (terminal integrada, F5).
+- `SourceGit.slnx` — proyectos lib/Rama.Terminal y tests/Rama.Terminal.Tests.
+- `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal).

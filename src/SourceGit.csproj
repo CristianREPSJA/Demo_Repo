@@ -71,6 +71,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\lib\Rama.Core\Rama.Core.csproj" />
+    <!-- RAMA: terminal integrada (F5) -->
+    <ProjectReference Include="..\lib\Rama.Terminal\Rama.Terminal.csproj" />
   </ItemGroup>
 
   <Target BeforeTargets="GetAssemblyAttributes" Name="GenVersionInfo">
