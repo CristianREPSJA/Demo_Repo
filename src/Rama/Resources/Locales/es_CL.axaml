@@ -16,5 +16,11 @@
 
   <!-- Textos nuevos de Rama -->
   <x:String x:Key="Text.Rama.AppName" xml:space="preserve">Rama</x:String>
+  <x:String x:Key="Text.Rama.Rail.Repository" xml:space="preserve">Repositorio</x:String>
+  <x:String x:Key="Text.Rama.Rail.PendingReviews" xml:space="preserve">Revisiones pendientes</x:String>
+  <x:String x:Key="Text.Rama.Rail.JiraBoard" xml:space="preserve">Tablero Jira</x:String>
+  <x:String x:Key="Text.Rama.Rail.Clone" xml:space="preserve">Clonar repositorio</x:String>
+  <x:String x:Key="Text.Rama.Rail.Terminal" xml:space="preserve">Terminal</x:String>
+  <x:String x:Key="Text.Rama.Rail.Settings" xml:space="preserve">Ajustes</x:String>
   <x:String x:Key="Text.Rama.Tagline" xml:space="preserve">Cliente git del equipo</x:String>
 </ResourceDictionary>
