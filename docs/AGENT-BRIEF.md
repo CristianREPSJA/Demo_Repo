@@ -8,7 +8,8 @@ Rama = fork interno de SourceGit (MIT). Lee `docs/PLAN.md` (fases) y, si tocas U
 - Build + tests: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1` (Debug, `-p:DisableAOT=true`, corre `tests/Rama.Core.Tests`).
 - PROHIBIDO cambiar el sistema: nada de instalaciones globales (winget, `dotnet tool install -g`, npm -g), ni tocar `~/.claude`, PATH, registro o config git global. Paquetes NuGet vía PackageReference están permitidos (restauran a la caché normal). Herramientas dotnet solo como tool local (`.config/dotnet-tools.json`).
 - TODO LOCAL Y OFFLINE (regla del usuario): nada de operaciones git de red (clone/fetch/pull/push/submodule remoto), nada de descargas de internet (GitHub, curl, WebFetch de código). NuGet: solo paquetes ya presentes en `~/.nuget/packages`. Si algo requiere red, no lo hagas y repórtalo.
-- No cambies los remotes. Commits locales en tu rama, formato `<tipo>: <descripción>` (feat, fix, refactor, chore, test, docs, style) en español, terminando con la línea:
+- No cambies los remotes.
+- ANTIVIRUS (regla del usuario): prohibido capturar pantalla, inyectar teclado/mouse, usar PowerShell con `-ExecutionPolicy Bypass` o scripts codificados, escribir en el Credential Manager/llavero real (usa `InMemorySecretStore`; las pruebas reales solo con `RAMA_TEST_REAL_KEYCHAIN=1`), lanzar la app GUI o procesos PTY/claude. Compila con `bash scripts/build.sh` (o `dotnet` local directo). Lo que requiera verificación visual queda como "pendiente de prueba manual". Commits locales en tu rama, formato `<tipo>: <descripción>` (feat, fix, refactor, chore, test, docs, style) en español, terminando con la línea:
   `Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>`
 
 ## Convenciones de código
