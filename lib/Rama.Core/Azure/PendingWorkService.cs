@@ -10,16 +10,23 @@ public sealed class PendingWorkService(AzureDevOpsClient client)
     public async Task<IReadOnlyList<PendingItem>> GetPendingAsync(IReadOnlySet<string>? memberOfIds = null,
         CancellationToken ct = default)
     {
-        var me = _me ??= await client.GetCurrentUserAsync(ct).ConfigureAwait(false);
+        var me = await GetMeAsync(ct).ConfigureAwait(false);
         var prsTask = client.ListPullRequestsAsync(reviewerId: me.Id, ct: ct);
         var approvalsTask = client.ListApprovalsForUserAsync(me.Id, memberOfIds, ct);
         await Task.WhenAll(prsTask, approvalsTask).ConfigureAwait(false);
 
         var items = new List<PendingItem>();
-        items.AddRange(prsTask.Result.Where(p => NeedsMyVote(p, me.Id)).Select(ToItem));
-        items.AddRange(approvalsTask.Result.Select(ToItem));
+        items.AddRange(NeedingMyVote(await prsTask.ConfigureAwait(false), me.Id).Select(ToItem));
+        items.AddRange((await approvalsTask.ConfigureAwait(false)).Select(ToItem));
         return items;
     }
+
+    // Usuario autenticado, resuelto una sola vez (compartido con ReviewsService).
+    public async Task<AzureUser> GetMeAsync(CancellationToken ct = default) =>
+        _me ??= await client.GetCurrentUserAsync(ct).ConfigureAwait(false);
+
+    public static IEnumerable<PullRequestInfo> NeedingMyVote(IEnumerable<PullRequestInfo> prs, string myId) =>
+        prs.Where(p => NeedsMyVote(p, myId));
 
     // Pendiente: no soy el autor, no es borrador y mi voto directo es "sin votar".
     // Limitación: revisores que son grupos solo cuentan si el usuario figura con su propio id.
