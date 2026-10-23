@@ -1,8 +1,126 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="SourceGit.Views.PendingReviewsPage">
-  <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8" MaxWidth="420">
-    <TextBlock Text="Revisiones pendientes" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center"/>
-    <TextBlock Text="Conecta tu organización de Azure DevOps para ver lo que espera tu aprobación." TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource Brush.FG2}"/>
-  </StackPanel>
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             xmlns:v="using:SourceGit.Views"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="SourceGit.Views.PendingReviewsPage"
+             x:DataType="vm:PendingReviewsViewModel">
+  <UserControl.Resources>
+    <!-- Fila de la lista: PR / despliegue / mis PRs -->
+    <DataTemplate x:Key="Rama.Reviews.Row" x:DataType="vm:ReviewItemViewModel">
+      <Button Classes="rv-item" Classes.sel="{Binding IsSelected}" Command="{Binding SelectCommand}">
+        <StackPanel Spacing="2">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Classes="rv-mono rv-faint" Text="{Binding Number}" IsVisible="{Binding HasNumber}" VerticalAlignment="Top"/>
+            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" MaxWidth="220" Foreground="{DynamicResource Brush.FG1}"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding HasAuthor}">
+            <Border Grid.Column="0" Classes="rv-avatar" Background="{Binding AvatarBackground}" Margin="0,0,6,0">
+              <TextBlock Text="{Binding Initials}" Foreground="{Binding AvatarInk}"/>
+            </Border>
+            <TextBlock Grid.Column="1" Classes="rv-muted" FontSize="12" Text="{Binding Author}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Classes="rv-faint" Text="{Binding When}" VerticalAlignment="Center"/>
+          </Grid>
+          <TextBlock Classes="rv-faint" Text="{Binding Meta}" TextWrapping="Wrap"/>
+          <Border Classes="rv-pill" IsVisible="{Binding HasPill}" Background="{Binding PillBackground}" HorizontalAlignment="Left">
+            <TextBlock Text="{Binding Pill}" Foreground="{Binding PillInk}"/>
+          </Border>
+        </StackPanel>
+      </Button>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid>
+    <!-- Sin cuenta de Azure -->
+    <StackPanel IsVisible="{Binding NoAccount}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" MaxWidth="420">
+      <TextBlock Text="{DynamicResource Text.Rama.Reviews.Empty.Title}" FontSize="20" FontWeight="SemiBold"
+                 Foreground="{DynamicResource Brush.FG1}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+      <TextBlock Classes="rv-muted" Text="{DynamicResource Text.Rama.Reviews.Empty.Body}" TextAlignment="Center"/>
+      <Button Classes="flat primary" HorizontalAlignment="Center" Command="{Binding OpenAccountsCommand}"
+              Content="{DynamicResource Text.Rama.Reviews.Empty.Action}"/>
+    </StackPanel>
+
+    <Grid IsVisible="{Binding HasAccount}" ColumnDefinitions="300,*">
+      <!-- Lista izquierda -->
+      <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource Brush.Border2}">
+        <Grid RowDefinitions="Auto,Auto,*">
+          <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="12,14,8,4">
+            <TextBlock Grid.Column="0" Classes="rv-h3" FontSize="14" Text="{DynamicResource Text.Rama.Reviews.Title}"
+                       TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsRefreshing}"
+                    ToolTip.Tip="{DynamicResource Text.Rama.Reviews.Refresh}" Padding="6" Background="Transparent" BorderThickness="0"
+                    AutomationProperties.Name="{DynamicResource Text.Rama.Reviews.Refresh}">
+              <Path Width="14" Height="14" Stretch="Uniform" Stroke="{DynamicResource Brush.FG2}" StrokeThickness="1.5"
+                    StrokeLineCap="Round" StrokeJoin="Round"
+                    Data="M13,8 A5,5 0 1 1 11.5,4.5 M13,2.5 V5 H10.5"/>
+            </Button>
+          </Grid>
+          <TextBlock Grid.Row="1" Classes="rv-faint" Margin="12,0,12,8" Text="{Binding UpdatedText}"/>
+
+          <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+              <!-- Error -->
+              <Border IsVisible="{Binding HasError}" Classes="rv-card" Margin="12,0,12,8" Padding="12">
+                <StackPanel Spacing="6">
+                  <TextBlock Classes="rv-h3" Text="{DynamicResource Text.Rama.Reviews.LoadError}"/>
+                  <TextBlock Classes="rv-error" Text="{Binding ErrorMessage}"/>
+                  <TextBlock Classes="rv-muted" Text="{Binding ScopeHint}" IsVisible="{Binding HasScopeHint}"/>
+                  <Button Command="{Binding RefreshCommand}" Content="{DynamicResource Text.Rama.Reviews.Retry}" HorizontalAlignment="Left"/>
+                </StackPanel>
+              </Border>
+
+              <!-- Esqueleto de carga -->
+              <StackPanel IsVisible="{Binding IsLoading}" Spacing="10" Margin="12,8">
+                <Border Classes="rv-skel" Width="120"/>
+                <Border Classes="rv-skel"/>
+                <Border Classes="rv-skel" Width="200"/>
+                <Border Classes="rv-skel" Margin="0,12,0,0"/>
+                <Border Classes="rv-skel" Width="160"/>
+              </StackPanel>
+
+              <TextBlock IsVisible="{Binding IsNothingPending}" Classes="rv-muted" Margin="12,4"
+                         Text="{DynamicResource Text.Rama.Reviews.NothingPending}"/>
+
+              <StackPanel IsVisible="{Binding HasSnapshot}">
+                <StackPanel IsVisible="{Binding HasPullRequests}">
+                  <TextBlock Classes="rv-muted" FontWeight="Medium" Margin="12,6,12,2"
+                             Text="{DynamicResource Text.Rama.Reviews.Group.PullRequests}"/>
+                  <ItemsControl ItemsSource="{Binding PullRequests}" ItemTemplate="{StaticResource Rama.Reviews.Row}"/>
+                </StackPanel>
+                <StackPanel IsVisible="{Binding HasDeployments}" Margin="0,10,0,0">
+                  <TextBlock Classes="rv-muted" FontWeight="Medium" Margin="12,6,12,2"
+                             Text="{DynamicResource Text.Rama.Reviews.Group.Deployments}"/>
+                  <ItemsControl ItemsSource="{Binding Deployments}" ItemTemplate="{StaticResource Rama.Reviews.Row}"/>
+                </StackPanel>
+                <StackPanel IsVisible="{Binding HasMine}" Margin="0,14,0,0">
+                  <Border BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border1}" Margin="12,0,12,8"/>
+                  <TextBlock Classes="rv-faint" FontSize="12" Margin="12,0,12,2"
+                             Text="{DynamicResource Text.Rama.Reviews.Group.Mine}"/>
+                  <ItemsControl ItemsSource="{Binding MyPullRequests}" ItemTemplate="{StaticResource Rama.Reviews.Row}"/>
+                </StackPanel>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+
+      <!-- Detalle -->
+      <Grid Grid.Column="1">
+        <TextBlock IsVisible="{Binding NoDetail}" Classes="rv-muted" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Text="{DynamicResource Text.Rama.Reviews.SelectOne}"/>
+        <ContentControl IsVisible="{Binding HasDetail}" Content="{Binding Detail}">
+          <ContentControl.DataTemplates>
+            <DataTemplate DataType="vm:PullRequestDetailViewModel">
+              <v:PullRequestDetailView/>
+            </DataTemplate>
+            <DataTemplate DataType="vm:DeploymentDetailViewModel">
+              <v:DeploymentDetailView/>
+            </DataTemplate>
+          </ContentControl.DataTemplates>
+        </ContentControl>
+      </Grid>
+    </Grid>
+  </Grid>
 </UserControl>

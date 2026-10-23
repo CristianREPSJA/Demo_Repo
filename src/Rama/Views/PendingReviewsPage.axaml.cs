@@ -7,6 +7,9 @@ namespace SourceGit.Views
         public PendingReviewsPage()
         {
             InitializeComponent();
+            var reviews = SourceGit.Rama.RamaServices.Reviews;
+            reviews.EnsureStarted();
+            DataContext = reviews;
         }
     }
 }

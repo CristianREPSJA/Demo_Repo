@@ -71,6 +71,14 @@ public sealed class AccountsService
             }, ct);
     }
 
+    // Cliente listo para usar con el PAT del llavero; null si la cuenta no tiene PAT guardado.
+    public async Task<AzureDevOpsClient?> CreateAzureClientAsync(AzureAccount account, CancellationToken ct = default)
+    {
+        var connection = account.ToConnection();
+        var pat = await connection.LoadPatAsync(_secrets, ct).ConfigureAwait(false);
+        return string.IsNullOrEmpty(pat) ? null : new AzureDevOpsClient(_http, connection, pat);
+    }
+
     public Task<ConnectionTestResult> TestAzureAsync(AzureAccount account, string? pat, CancellationToken ct = default) =>
         TestAsync(AccountPlatform.Azure, () => account.Organization, pat, async secret =>
         {

@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="SourceGit.Views.DeploymentDetailView"
+             x:DataType="vm:DeploymentDetailViewModel">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="20,16" Spacing="12" MaxWidth="640" HorizontalAlignment="Left">
+      <Border Classes="rv-card" Padding="16,12">
+        <StackPanel Spacing="4">
+          <TextBlock Classes="rv-h3" Text="{DynamicResource Text.Rama.Reviews.Deploy.Title}"/>
+          <TextBlock Foreground="{DynamicResource Brush.FG1}" FontSize="16" FontWeight="SemiBold" Text="{Binding Title}" TextWrapping="Wrap"/>
+          <TextBlock Classes="rv-muted" Text="{Binding ApproversText}"/>
+          <TextBlock Classes="rv-muted" Text="{Binding Instructions}" IsVisible="{Binding HasInstructions}"/>
+        </StackPanel>
+      </Border>
+
+      <Border Classes="rv-card" Padding="16,12">
+        <StackPanel Spacing="10">
+          <TextBox Text="{Binding Comment, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="72"
+                   Watermark="{DynamicResource Text.Rama.Reviews.Deploy.Comment}" IsEnabled="{Binding IsIdle}"/>
+
+          <!-- Confirmación inline -->
+          <StackPanel IsVisible="{Binding HasConfirm}" Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="{Binding ConfirmPrompt}" VerticalAlignment="Center" Foreground="{DynamicResource Brush.FG1}"/>
+            <Button Classes="flat primary" Content="{DynamicResource Text.Rama.Reviews.Confirm.Yes}" Command="{Binding ConfirmCommand}"/>
+            <Button Content="{DynamicResource Text.Rama.Reviews.Confirm.No}" Command="{Binding CancelConfirmCommand}"/>
+          </StackPanel>
+
+          <StackPanel IsVisible="{Binding !HasConfirm}" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+            <Button Height="32" Content="{DynamicResource Text.Rama.Reviews.Deploy.Reject}" Command="{Binding RejectCommand}" IsEnabled="{Binding IsIdle}"/>
+            <Button Classes="rv-ghost-amber" Content="{DynamicResource Text.Rama.Reviews.Deploy.Approve}" Command="{Binding ApproveCommand}" IsEnabled="{Binding IsIdle}"/>
+          </StackPanel>
+
+          <TextBlock Classes="rv-error" Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}"/>
+          <TextBlock Classes="rv-muted" Text="{Binding ScopeHint}" IsVisible="{Binding HasScopeHint}"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>
