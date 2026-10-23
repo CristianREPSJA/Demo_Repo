@@ -62,6 +62,33 @@ public class AzureTests
         await Assert.ThrowsAsync<ApiException>(() => c.GetCurrentUserAsync());
     }
 
+    // Forma real (Azure DevOps 2026-10-23): connectionData no trae displayName, sí providerDisplayName.
+    [Fact]
+    public async Task GetCurrentUser_UsesProviderDisplayName_WhenDisplayNameMissing()
+    {
+        var (c, _) = Make(_ => Ok("""
+        {"authenticatedUser":{"id":"me-id","descriptor":"Microsoft.IdentityModel.Claims.ClaimsIdentity;x",
+         "providerDisplayName":"Cristian San Juan","isActive":true,"properties":{}}}
+        """));
+        var u = await c.GetCurrentUserAsync();
+        Assert.Equal(new AzureUser("me-id", "Cristian San Juan"), u);
+    }
+
+    // Forma real: el servidor envía isRequired/isContainer en null para revisores individuales.
+    [Fact]
+    public async Task GetPullRequest_ToleratesNullReviewerFlags()
+    {
+        var (c, _) = Make(_ => Ok("""
+        {"pullRequestId":1,"status":"active","isDraft":false,"title":"t",
+         "repository":{"id":"r1","name":"repo","project":{"id":"p1"}},
+         "reviewers":[{"id":"me-id","displayName":"Yo","vote":0,"isRequired":null,"isContainer":null}]}
+        """));
+        var pr = await c.GetPullRequestAsync("r1", 1);
+        var rv = Assert.Single(pr.Reviewers);
+        Assert.False(rv.IsRequired);
+        Assert.False(rv.IsGroup);
+    }
+
     [Fact]
     public async Task ListRepos_MapsFieldsAndCloneUrl()
     {

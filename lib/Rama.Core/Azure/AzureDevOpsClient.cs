@@ -37,7 +37,8 @@ public sealed class AzureDevOpsClient : ApiClientBase
                 .ConfigureAwait(false);
             var u = dto?.AuthenticatedUser;
             if (u?.Id is null) throw new ApiException(0, "connectionData no devolvió el usuario autenticado.");
-            return new AzureUser(u.Id, u.DisplayName ?? u.Id);
+            // connectionData real trae providerDisplayName, no displayName.
+            return new AzureUser(u.Id, u.DisplayName ?? u.ProviderDisplayName ?? u.Id);
         });
 
     public Task<IReadOnlyList<AzureRepo>> ListReposAsync(CancellationToken ct = default) =>
@@ -45,7 +46,7 @@ public sealed class AzureDevOpsClient : ApiClientBase
         {
             var dto = await GetJsonAsync($"{Proj}/_apis/git/repositories?{V}", AzureJsonContext.Default.ListDtoRepoDto, ct)
                 .ConfigureAwait(false);
-            // SUPUESTO: la lista no trae "lastUpdate" (queda null salvo que el servidor lo incluya).
+            // Verificado 2026-10-23: la lista no trae "lastUpdate" (queda null).
             return (IReadOnlyList<AzureRepo>)(dto?.Value ?? []).Select(r => new AzureRepo(r.Id ?? "", r.Name ?? "",
                 r.DefaultBranch, r.RemoteUrl ?? "", r.Size, r.LastUpdate, r.Project?.Id)).ToList();
         });
@@ -110,7 +111,7 @@ public sealed class AzureDevOpsClient : ApiClientBase
             return 0;
         });
 
-    // SUPUESTO: endpoint de políticas en preview (7.1-preview.1); status viene como texto en camelCase.
+    // Verificado 2026-10-23: endpoint en preview (7.1-preview.1); status en minúsculas ("approved").
     public Task<PolicySummary> GetPolicySummaryAsync(string projectId, int prId, CancellationToken ct = default) =>
         WithHint(CodeScopeHint, async () =>
         {
@@ -122,7 +123,7 @@ public sealed class AzureDevOpsClient : ApiClientBase
                 e.Configuration?.IsBlocking ?? false)));
         });
 
-    // SUPUESTO: pipelines/approvals admite state=pending y $expand=steps.
+    // Verificado 2026-10-23: pipelines/approvals admite state=pending y $expand=steps.
     public Task<IReadOnlyList<PipelineApproval>> ListPendingApprovalsAsync(CancellationToken ct = default) =>
         WithHint(BuildScopeHint, async () =>
         {
@@ -162,7 +163,7 @@ public sealed class AzureDevOpsClient : ApiClientBase
     {
         var repo = p.Repository;
         var reviewers = (p.Reviewers ?? []).Select(r => new PullRequestReviewer(r.Id ?? "", r.DisplayName ?? "",
-            VoteExtensions.FromInt(r.Vote), r.IsRequired, r.IsContainer)).ToList();
+            VoteExtensions.FromInt(r.Vote), r.IsRequired ?? false, r.IsContainer ?? false)).ToList();
         var web = $"{Proj}/_git/{Uri.EscapeDataString(repo?.Name ?? "")}/pullrequest/{p.PullRequestId}";
         return new PullRequestInfo(p.PullRequestId, p.Title ?? "", p.Status ?? "", p.IsDraft,
             p.CreatedBy?.Id ?? "", p.CreatedBy?.DisplayName ?? "", p.CreationDate,

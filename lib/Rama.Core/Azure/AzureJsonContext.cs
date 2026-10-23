@@ -2,9 +2,16 @@ using System.Text.Json.Serialization;
 
 namespace Rama.Core.Azure;
 
-// DTOs crudos de la API REST (forma según documentación oficial; ver SUPUESTO en el cliente).
+// DTOs crudos de la API REST. Forma verificada contra Azure DevOps el 2026-10-23:
+// los flags booleanos pueden venir en null, por eso son bool?.
 internal sealed class ListDto<T> { public int Count { get; set; } public List<T>? Value { get; set; } }
-internal sealed class IdentityDto { public string? Id { get; set; } public string? DisplayName { get; set; } public bool IsContainer { get; set; } }
+internal sealed class IdentityDto
+{
+    public string? Id { get; set; }
+    public string? DisplayName { get; set; }
+    public string? ProviderDisplayName { get; set; }
+    public bool? IsContainer { get; set; }
+}
 internal sealed class ConnectionDataDto { public IdentityDto? AuthenticatedUser { get; set; } }
 internal sealed class ProjectRefDto { public string? Id { get; set; } public string? Name { get; set; } }
 internal sealed class RepoDto
@@ -22,8 +29,8 @@ internal sealed class ReviewerDto
     public string? Id { get; set; }
     public string? DisplayName { get; set; }
     public int Vote { get; set; }
-    public bool IsRequired { get; set; }
-    public bool IsContainer { get; set; }
+    public bool? IsRequired { get; set; }
+    public bool? IsContainer { get; set; }
 }
 internal sealed class CommitRefDto { public string? CommitId { get; set; } }
 internal sealed class PrRepoDto { public string? Id { get; set; } public string? Name { get; set; } public ProjectRefDto? Project { get; set; } }
