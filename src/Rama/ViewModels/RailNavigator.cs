@@ -11,6 +11,7 @@ namespace SourceGit.ViewModels
         PendingReviews,
         JiraBoard,
         Terminal,
+        Accounts,
     }
 
     // Navegacion del riel: destinos con pagina propia y acciones (Clonar, Ajustes) que abren dialogos.
@@ -27,6 +28,7 @@ namespace SourceGit.ViewModels
                     OnPropertyChanged(nameof(IsPendingReviews));
                     OnPropertyChanged(nameof(IsJiraBoard));
                     OnPropertyChanged(nameof(IsTerminal));
+                    OnPropertyChanged(nameof(IsAccounts));
                 }
             }
         }
@@ -35,6 +37,7 @@ namespace SourceGit.ViewModels
         public bool IsPendingReviews => _current == RailDestination.PendingReviews;
         public bool IsJiraBoard => _current == RailDestination.JiraBoard;
         public bool IsTerminal => _current == RailDestination.Terminal;
+        public bool IsAccounts => _current == RailDestination.Accounts;
 
         public int PendingReviewsCount
         {

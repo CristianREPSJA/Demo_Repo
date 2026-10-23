@@ -13,3 +13,5 @@ public sealed record BitbucketRepo(
     long Size,
     bool IsPrivate,
     string? HttpsCloneUrl);
+
+public sealed record BitbucketUser(string DisplayName, string? AccountId);

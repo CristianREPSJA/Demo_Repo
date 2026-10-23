@@ -23,6 +23,21 @@ public sealed partial record AzureConnection
         Project = project;
     }
 
+    // Acepta el nombre de la organización o su URL (https://dev.azure.com/{org}[/...]).
+    public static string ParseOrganization(string orgUrlOrName)
+    {
+        var raw = (orgUrlOrName ?? "").Trim();
+        if (raw.Contains("://", StringComparison.Ordinal))
+        {
+            if (!Uri.TryCreate(raw, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps
+                || !uri.Host.Equals("dev.azure.com", StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("La URL debe ser https://dev.azure.com/{organización}.", nameof(orgUrlOrName));
+            raw = uri.AbsolutePath.Trim('/').Split('/')[0];
+        }
+        if (!OrgPattern().IsMatch(raw)) throw new ArgumentException("Nombre de organización inválido.", nameof(orgUrlOrName));
+        return raw;
+    }
+
     [GeneratedRegex(@"^[A-Za-z0-9][A-Za-z0-9._-]*$")]
     private static partial Regex OrgPattern();
 

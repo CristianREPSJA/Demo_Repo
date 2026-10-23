@@ -161,6 +161,7 @@
         <v:PendingReviewsPage IsVisible="{Binding Rail.IsPendingReviews}"/>
         <v:JiraBoardPage IsVisible="{Binding Rail.IsJiraBoard}"/>
         <v:TerminalPage IsVisible="{Binding Rail.IsTerminal}"/>
+        <v:AccountsPage IsVisible="{Binding Rail.IsAccounts}"/>
       </Grid>
     </Grid>
 

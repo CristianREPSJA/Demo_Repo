@@ -1,0 +1,150 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="800"
+             x:Class="SourceGit.Views.AccountsPage"
+             x:DataType="vm:AccountsViewModel">
+  <UserControl.Resources>
+    <!-- Botones y estado compartidos por los tres formularios -->
+    <DataTemplate x:Key="Rama.Accounts.Actions" x:DataType="vm:AccountSectionViewModel">
+      <StackPanel Spacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Content="{DynamicResource Text.Rama.Accounts.Test}" Command="{Binding TestCommand}" IsEnabled="{Binding !IsBusy}"/>
+          <Button Content="{DynamicResource Text.Rama.Accounts.Save}" Classes="flat" Command="{Binding SaveCommand}" IsEnabled="{Binding !IsBusy}"/>
+          <Button Content="{DynamicResource Text.Rama.Accounts.Remove}" Command="{Binding RemoveCommand}" IsEnabled="{Binding !IsBusy}"/>
+        </StackPanel>
+        <TextBlock Classes="note" IsVisible="{Binding HasStatus}" Text="{Binding Status}"
+                   Classes.error="{Binding StatusIsError}"/>
+      </StackPanel>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.error">
+      <Setter Property="Foreground" Value="#e5837f"/>
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource Brush.Contents}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border1}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Padding" Value="18,16"/>
+    </Style>
+    <Style Selector="TextBlock.heading">
+      <Setter Property="FontSize" Value="15"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="TextBlock.label">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+      <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+    <Style Selector="TextBlock.note">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+    </Style>
+    <Style Selector="TextBlock.warn">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="#f0c27a"/>
+    </Style>
+    <Style Selector="TextBlock.saved">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="#7fc99a"/>
+    </Style>
+  </UserControl.Styles>
+
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <StackPanel Spacing="16" Margin="32,28" MaxWidth="640" HorizontalAlignment="Center">
+      <StackPanel Spacing="4">
+        <TextBlock Classes="heading" FontSize="20" Text="{DynamicResource Text.Rama.Accounts.Title}"/>
+        <TextBlock Classes="note" Text="{DynamicResource Text.Rama.Accounts.Subtitle}"/>
+      </StackPanel>
+
+      <!-- Azure DevOps -->
+      <Border Classes="card" DataContext="{Binding Azure}" x:DataType="vm:AzureAccountSection">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="heading" Text="Azure DevOps"/>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.OrgUrl}"/>
+            <TextBox Text="{Binding OrgUrl, Mode=TwoWay}" Watermark="https://dev.azure.com/mi-organizacion"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.Project}"/>
+            <TextBox Text="{Binding Project, Mode=TwoWay}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.Pat}"/>
+            <TextBox Text="{Binding Secret, Mode=TwoWay}" PasswordChar="●" RevealPassword="False"/>
+            <TextBlock Classes="saved" Margin="0,6,0,0" IsVisible="{Binding HasSavedSecret}"
+                       Text="{DynamicResource Text.Rama.Accounts.SecretSaved}"/>
+            <TextBlock Classes="note" Margin="0,6,0,0" Text="{DynamicResource Text.Rama.Accounts.Azure.PatScopes}"/>
+          </StackPanel>
+          <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Bitbucket Cloud -->
+      <Border Classes="card" DataContext="{Binding Bitbucket}" x:DataType="vm:BitbucketAccountSection">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="heading" Text="Bitbucket Cloud"/>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Email}"/>
+            <TextBox Text="{Binding Email, Mode=TwoWay}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Bitbucket.Workspace}"/>
+            <TextBox Text="{Binding Workspace, Mode=TwoWay}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.ApiToken}"/>
+            <TextBox Text="{Binding Secret, Mode=TwoWay}" PasswordChar="●" RevealPassword="False"/>
+            <TextBlock Classes="saved" Margin="0,6,0,0" IsVisible="{Binding HasSavedSecret}"
+                       Text="{DynamicResource Text.Rama.Accounts.SecretSaved}"/>
+            <TextBlock Classes="note" Margin="0,6,0,0" Text="{DynamicResource Text.Rama.Accounts.Bitbucket.Scopes}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Expiry}"/>
+            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}"/>
+            <TextBlock Classes="warn" Margin="0,6,0,0" IsVisible="{Binding HasExpiryWarning}" Text="{Binding ExpiryWarning}"/>
+          </StackPanel>
+          <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Jira Cloud -->
+      <Border Classes="card" DataContext="{Binding Jira}" x:DataType="vm:JiraAccountSection">
+        <StackPanel Spacing="12">
+          <TextBlock Classes="heading" Text="Jira Cloud"/>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Jira.Site}"/>
+            <TextBox Text="{Binding Site, Mode=TwoWay}" Watermark="mi-empresa.atlassian.net"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Email}"/>
+            <TextBox Text="{Binding Email, Mode=TwoWay}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Jira.Project}"/>
+            <TextBox Text="{Binding ProjectKey, Mode=TwoWay}" Watermark="VEN"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.ApiToken}"/>
+            <TextBox Text="{Binding Secret, Mode=TwoWay}" PasswordChar="●" RevealPassword="False"/>
+            <TextBlock Classes="saved" Margin="0,6,0,0" IsVisible="{Binding HasSavedSecret}"
+                       Text="{DynamicResource Text.Rama.Accounts.SecretSaved}"/>
+          </StackPanel>
+          <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Expiry}"/>
+            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}"/>
+            <TextBlock Classes="warn" Margin="0,6,0,0" IsVisible="{Binding HasExpiryWarning}" Text="{Binding ExpiryWarning}"/>
+          </StackPanel>
+          <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

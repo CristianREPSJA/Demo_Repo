@@ -24,3 +24,6 @@ F3: shell con riel
 - `src/Views/Launcher.axaml` — columna izquierda con IconRail y contenedor de paginas de destino.
 - `src/ViewModels/Launcher.cs` — propiedad `Rail` (RailNavigator).
 - `src/SourceGit.csproj` — recurso `Rama/Resources/Images/*.png` (marca).
+
+F6b: cuentas
+- `src/Views/Launcher.axaml` — pagina `AccountsPage` en el contenedor de destinos (destino Cuentas del riel).
