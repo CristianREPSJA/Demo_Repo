@@ -1,0 +1,219 @@
+<v:ChromelessWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:vm="using:SourceGit.ViewModels"
+                    xmlns:v="using:SourceGit.Views"
+                    mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="860"
+                    x:Class="SourceGit.Views.ConflictResolver"
+                    x:DataType="vm:ConflictResolver"
+                    x:Name="ThisControl"
+                    Icon="/App.ico"
+                    Title="{DynamicResource Text.Rama.Conflict.Title}"
+                    Width="1280" Height="860"
+                    MinWidth="960" MinHeight="600">
+  <!-- RAMA: resolvedor de conflictos a 3 paneles (F4b), según docs/mockups/Conflict.html -->
+  <v:ChromelessWindow.Styles>
+    <Style Selector="TextBlock.code">
+      <Setter Property="FontFamily" Value="{DynamicResource Fonts.Monospace}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="LineHeight" Value="20"/>
+    </Style>
+    <Style Selector="TextBlock.ln">
+      <Setter Property="Foreground" Value="{DynamicResource Brush.Rama.Faint}"/>
+      <Setter Property="TextAlignment" Value="Right"/>
+      <Setter Property="Margin" Value="0,0,10,0"/>
+    </Style>
+    <Style Selector="Border.block">
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style Selector="ItemsControl.ours Border.block.conflict">
+      <Setter Property="Background" Value="{DynamicResource Brush.Rama.Conflict.OursBG}"/>
+    </Style>
+    <Style Selector="ItemsControl.theirs Border.block.conflict">
+      <Setter Property="Background" Value="{DynamicResource Brush.Rama.Conflict.TheirsBG}"/>
+    </Style>
+    <Style Selector="Border.block.current">
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Rama.Amber}"/>
+    </Style>
+    <Style Selector="CheckBox.gutter">
+      <Setter Property="MinWidth" Value="0"/>
+      <Setter Property="MinHeight" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Height" Value="20"/>
+      <Setter Property="VerticalAlignment" Value="Top"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="CheckBox.mint">
+      <Style.Resources>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="#FF5CC58A"/>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="#FF6FD39B"/>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="#FF4AAE77"/>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="#FF5CC58A"/>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#FF6FD39B"/>
+        <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="#FF4AAE77"/>
+      </Style.Resources>
+    </Style>
+    <Style Selector="Border.paneh">
+      <Setter Property="Height" Value="36"/>
+      <Setter Property="Padding" Value="12,0"/>
+      <Setter Property="Background" Value="{DynamicResource Brush.ToolBar}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border2}"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    </Style>
+  </v:ChromelessWindow.Styles>
+
+  <Grid RowDefinitions="Auto,Auto,*,4,Auto,*">
+    <!-- Barra de título -->
+    <Grid Grid.Row="0" Height="28" IsVisible="{Binding !#ThisControl.UseSystemWindowFrame}">
+      <Border Background="{DynamicResource Brush.TitleBar}"
+              BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border0}"
+              DoubleTapped="MaximizeOrRestoreWindow"
+              PointerPressed="BeginMoveWindow"/>
+      <Path Width="12" Height="12" Margin="10,0,0,0" HorizontalAlignment="Left"
+            Data="{StaticResource Icons.Conflict}"
+            IsVisible="{OnPlatform True, macOS=False}"/>
+      <TextBlock Classes="bold" Text="{DynamicResource Text.Rama.Conflict.Title}"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+      <v:CaptionButtons HorizontalAlignment="Right" IsVisible="{OnPlatform True, macOS=False}"/>
+    </Grid>
+
+    <!-- Banda de estado de la operación -->
+    <Border Grid.Row="1" Padding="16,8"
+            Background="{DynamicResource Brush.Conflict}"
+            BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="0,0,0,1"
+            IsVisible="{Binding HasBanner}">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <Path Width="14" Height="14" Data="{StaticResource Icons.Error}" Fill="{DynamicResource Brush.Conflict.Foreground}"/>
+        <TextBlock Text="{Binding Banner}" Foreground="{DynamicResource Brush.Conflict.Foreground}" VerticalAlignment="Center"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Actual / Entrante -->
+    <Grid Grid.Row="2" ColumnDefinitions="*,1,*">
+      <Grid Grid.Column="0" RowDefinitions="36,*">
+        <Border Grid.Row="0" Classes="paneh">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{DynamicResource Brush.Rama.Amber}" Margin="0,0,8,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding OursTitle}" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="2" Classes="code" Text="{Binding OursSha}" FontSize="11" Foreground="{DynamicResource Brush.Rama.Faint}" VerticalAlignment="Center"/>
+          </Grid>
+        </Border>
+        <ScrollViewer Grid.Row="1" x:Name="OursScroll" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource Brush.Window}">
+          <ItemsControl x:Name="OursItems" Classes="ours" ItemsSource="{Binding Blocks}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="vm:ConflictBlock">
+                <Border Classes="block" Classes.conflict="{Binding IsConflict}" Classes.current="{Binding IsCurrent}" Height="{Binding Height}">
+                  <Grid ColumnDefinitions="44,28,*">
+                    <TextBlock Grid.Column="0" Classes="code ln" Text="{Binding OursLineNumbers}"/>
+                    <CheckBox Grid.Column="1" Classes="gutter"
+                              IsVisible="{Binding IsConflict}"
+                              IsChecked="{Binding IsOursChecked, Mode=TwoWay}"
+                              ToolTip.Tip="{DynamicResource Text.Rama.Conflict.UseLines}"/>
+                    <TextBlock Grid.Column="2" Classes="code" Text="{Binding OursText}" Margin="0,0,12,0"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+
+      <Rectangle Grid.Column="1" Fill="{DynamicResource Brush.Border2}"/>
+
+      <Grid Grid.Column="2" RowDefinitions="36,*">
+        <Border Grid.Row="0" Classes="paneh">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Ellipse Grid.Column="0" Width="8" Height="8" Fill="{DynamicResource Brush.Rama.Mint}" Margin="0,0,8,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding TheirsTitle}" FontWeight="Medium" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="2" Classes="code" Text="{Binding TheirsSha}" FontSize="11" Foreground="{DynamicResource Brush.Rama.Faint}" VerticalAlignment="Center"/>
+          </Grid>
+        </Border>
+        <ScrollViewer Grid.Row="1" x:Name="TheirsScroll" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource Brush.Window}">
+          <ItemsControl x:Name="TheirsItems" Classes="theirs" ItemsSource="{Binding Blocks}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="vm:ConflictBlock">
+                <Border Classes="block" Classes.conflict="{Binding IsConflict}" Classes.current="{Binding IsCurrent}" Height="{Binding Height}">
+                  <Grid ColumnDefinitions="44,28,*">
+                    <TextBlock Grid.Column="0" Classes="code ln" Text="{Binding TheirsLineNumbers}"/>
+                    <CheckBox Grid.Column="1" Classes="gutter mint"
+                              IsVisible="{Binding IsConflict}"
+                              IsChecked="{Binding IsTheirsChecked, Mode=TwoWay}"
+                              ToolTip.Tip="{DynamicResource Text.Rama.Conflict.UseLines}"/>
+                    <TextBlock Grid.Column="2" Classes="code" Text="{Binding TheirsText}" Margin="0,0,12,0"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+    </Grid>
+
+    <GridSplitter Grid.Row="3" Background="{DynamicResource Brush.Border2}" ResizeDirection="Rows"/>
+
+    <!-- Cabecera del resultado -->
+    <Border Grid.Row="4" Padding="12,6" Background="{DynamicResource Brush.ToolBar}"
+            BorderBrush="{DynamicResource Brush.Border2}" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto">
+        <TextBlock Grid.Column="0" Text="{DynamicResource Text.Rama.Conflict.Result}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Classes="code" Text="{Binding FilePath}" FontSize="11" Margin="10,0,0,0"
+                   Foreground="{DynamicResource Brush.Rama.Faint}" VerticalAlignment="Center"/>
+        <Border Grid.Column="2" Margin="10,0,0,0" Padding="6,0" CornerRadius="4" Height="18"
+                Background="{DynamicResource Brush.Rama.Conflict.MarkerBG}">
+          <TextBlock Text="{Binding ProgressText}" FontSize="11" VerticalAlignment="Center"
+                     Foreground="{DynamicResource Brush.Rama.Conflict.MarkerFG}"/>
+        </Border>
+
+        <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="2" Margin="0,0,8,0">
+          <Button Classes="icon_button" Width="28" Click="OnGotoPrev"
+                  ToolTip.Tip="{DynamicResource Text.Rama.Conflict.Prev}"
+                  HotKey="{OnPlatform Ctrl+Up, macOS=⌘+Up}">
+            <Path Width="12" Height="12" Data="{StaticResource Icons.Up}"/>
+          </Button>
+          <TextBlock Text="{Binding NavigationText}" VerticalAlignment="Center" Margin="4,0"
+                     Foreground="{DynamicResource Brush.FG2}"/>
+          <Button Classes="icon_button" Width="28" Click="OnGotoNext"
+                  ToolTip.Tip="{DynamicResource Text.Rama.Conflict.Next}"
+                  HotKey="{OnPlatform Ctrl+Down, macOS=⌘+Down}">
+            <Path Width="12" Height="12" Data="{StaticResource Icons.Down}"/>
+          </Button>
+        </StackPanel>
+        <Button Grid.Column="5" Classes="flat" Height="28" Margin="0,0,8,0"
+                Content="{DynamicResource Text.Rama.Conflict.UseBoth}"
+                Click="OnUseBoth"/>
+        <Button Grid.Column="6" Classes="flat primary" Height="28"
+                Content="{DynamicResource Text.Rama.Conflict.MarkResolved}"
+                HotKey="{OnPlatform Ctrl+S, macOS=⌘+S}"
+                Click="OnMarkResolved"/>
+      </Grid>
+    </Border>
+
+    <!-- Resultado editable -->
+    <v:ConflictResultEditor Grid.Row="5" x:Name="ResultEditor"
+                            FontFamily="{DynamicResource Fonts.Monospace}"
+                            FontSize="12"
+                            Background="{DynamicResource Brush.Window}"
+                            Foreground="{DynamicResource Brush.FG1}"
+                            LineNumbersForeground="{DynamicResource Brush.Rama.Faint}"/>
+
+    <!-- Error -->
+    <Border Grid.Row="2" Grid.RowSpan="4"
+            Background="{DynamicResource Brush.Popup}"
+            BorderThickness="1" BorderBrush="{DynamicResource Brush.PopupBorder}"
+            Padding="16" CornerRadius="6"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Effect="drop-shadow(0 0 12 #60000000)"
+            IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+      <StackPanel Orientation="Vertical">
+        <Path Width="32" Height="32" Fill="{DynamicResource Brush.Rama.Amber}" Data="{StaticResource Icons.Error}"/>
+        <TextBlock Text="{Binding Error, Mode=OneWay}" MaxWidth="500" Margin="0,16" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+        <Button Classes="flat primary" MinWidth="80" HorizontalAlignment="Center"
+                Content="{DynamicResource Text.Sure}"
+                Command="{Binding ClearErrorMessage}"
+                HotKey="Escape"/>
+      </StackPanel>
+    </Border>
+  </Grid>
+</v:ChromelessWindow>

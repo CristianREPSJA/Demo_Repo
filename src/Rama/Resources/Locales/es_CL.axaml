@@ -17,4 +17,30 @@
   <!-- Textos nuevos de Rama -->
   <x:String x:Key="Text.Rama.AppName" xml:space="preserve">Rama</x:String>
   <x:String x:Key="Text.Rama.Tagline" xml:space="preserve">Cliente git del equipo</x:String>
+
+  <!-- F4b: resolución de conflictos -->
+  <x:String x:Key="Text.Rama.Conflict.Title" xml:space="preserve">Resolver conflictos</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.Merge" xml:space="preserve">Merge de {0} en {1} en curso.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.Rebase" xml:space="preserve">Rebase de {0} sobre {1} en curso.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.CherryPick" xml:space="preserve">Cherry-pick de {0} en {1} en curso.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.Revert" xml:space="preserve">Revert de {0} en {1} en curso.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.Other" xml:space="preserve">Resolución de conflictos en curso.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.FilesOne" xml:space="preserve">1 archivo con conflicto.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Banner.FilesMany" xml:space="preserve">{0} archivos con conflicto.</x:String>
+  <x:String x:Key="Text.Rama.Conflict.StashOrPatch" xml:space="preserve">stash o parche</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Ours" xml:space="preserve">Actual: {0}</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Theirs" xml:space="preserve">Entrante: {0}</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Result" xml:space="preserve">Resultado</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Nav" xml:space="preserve">Conflicto {0} de {1}</x:String>
+  <x:String x:Key="Text.Rama.Conflict.NavNone" xml:space="preserve">Sin conflictos</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Prev" xml:space="preserve">Conflicto anterior</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Next" xml:space="preserve">Conflicto siguiente</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Progress" xml:space="preserve">{0} de {1} resueltos</x:String>
+  <x:String x:Key="Text.Rama.Conflict.UseLines" xml:space="preserve">Usar estas líneas</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Manual" xml:space="preserve">Editado a mano</x:String>
+  <x:String x:Key="Text.Rama.Conflict.UseBoth" xml:space="preserve">Usar ambas (actual primero)</x:String>
+  <x:String x:Key="Text.Rama.Conflict.MarkResolved" xml:space="preserve">Marcar archivo como resuelto</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Remaining" xml:space="preserve">Quedan {0} conflictos sin resolver</x:String>
+  <x:String x:Key="Text.Rama.Conflict.SaveFailed" xml:space="preserve">No se pudo guardar y hacer stage: {0}</x:String>
+  <x:String x:Key="Text.Rama.Conflict.Binary" xml:space="preserve">Los archivos binarios no se pueden resolver aquí.</x:String>
 </ResourceDictionary>
