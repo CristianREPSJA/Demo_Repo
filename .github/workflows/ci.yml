@@ -1,11 +1,7 @@
 name: Continuous Integration
+# RAMA: solo manual; el CI propio es rama-ci.yml (evita correr con marca SourceGit)
 on:
-  push:
-    branches: [develop]
-  pull_request:
-    branches: [develop]
   workflow_dispatch:
-  workflow_call:
 jobs:
   build:
     name: Build

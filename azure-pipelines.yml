@@ -1,0 +1,115 @@
+# RAMA: pipeline propio. Build + pruebas + gate de cobertura en 3 SO; empaquetado en tags rama-v*.
+trigger:
+  branches:
+    include: [main]
+  tags:
+    include: ['rama-v*']
+
+pr:
+  branches:
+    include: [main]
+
+variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+
+stages:
+  - stage: Test
+    displayName: Build y pruebas
+    jobs:
+      - job: test
+        strategy:
+          matrix:
+            windows: { vmImage: windows-latest }
+            macos: { vmImage: macos-latest }
+            linux: { vmImage: ubuntu-latest }
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
+            submodules: true
+          - task: UseDotNet@2
+            inputs:
+              packageType: sdk
+              version: 10.0.x
+          - script: dotnet build SourceGit.slnx -c Release -p:DisableAOT=true
+            displayName: Build
+          - script: dotnet test tests/Rama.Core.Tests/Rama.Core.Tests.csproj -c Release --no-build --collect:"XPlat Code Coverage" --logger "trx;LogFileName=core.trx"
+            displayName: Pruebas Rama.Core
+          - script: dotnet test tests/Rama.App.Tests/Rama.App.Tests.csproj -c Release --no-build --collect:"XPlat Code Coverage" --logger "trx;LogFileName=app.trx"
+            displayName: Pruebas Rama.App
+          - script: dotnet test tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj -c Release --no-build --collect:"XPlat Code Coverage" --logger "trx;LogFileName=terminal.trx"
+            displayName: Pruebas Rama.Terminal
+          - bash: bash scripts/coverage-gate.sh 80 Rama.Core tests
+            displayName: Gate de cobertura (>= 80% Rama.Core)
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: 'tests/**/TestResults/**/*.trx'
+              testRunTitle: Rama $(Agent.OS)
+          - task: PublishCodeCoverageResults@2
+            condition: succeededOrFailed()
+            inputs:
+              summaryFileLocation: 'tests/**/TestResults/**/coverage.cobertura.xml'
+
+  - stage: Package
+    displayName: Empaquetado
+    dependsOn: Test
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/rama-v'))
+    jobs:
+      - job: package
+        strategy:
+          matrix:
+            win-x64: { vmImage: windows-latest, rid: win-x64 }
+            osx-arm64: { vmImage: macos-latest, rid: osx-arm64 }
+            osx-x64: { vmImage: macos-latest, rid: osx-x64 }
+            linux-x64: { vmImage: ubuntu-latest, rid: linux-x64 }
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
+            submodules: true
+          - task: UseDotNet@2
+            inputs:
+              packageType: sdk
+              version: 10.0.x
+          - bash: |
+              tag="$(Build.SourceBranchName)"
+              v="${tag#rama-v}"
+              echo "##vso[task.setvariable variable=VERSION]${v:-$(cat VERSION)}"
+            displayName: Version desde el tag
+          - bash: dotnet publish src/SourceGit.csproj -c Release -r $(rid) -o build/SourceGit -p:DisableAOT=true -p:DisableUpdateDetection=true
+            displayName: Publish
+          - powershell: ./build/scripts/package.win.ps1
+            condition: startsWith(variables['rid'], 'win-')
+            displayName: Paquete Windows (zip)
+            env:
+              RUNTIME: $(rid)
+          - bash: ./build/scripts/package.osx-app.sh
+            condition: startsWith(variables['rid'], 'osx-')
+            displayName: Paquete macOS (.app zip)
+            env:
+              RUNTIME: $(rid)
+          - bash: |
+              sudo apt-get update
+              sudo apt-get install -y rpm dpkg-dev fakeroot
+              mv build/SourceGit/SourceGit build/SourceGit/sourcegit
+              ./build/scripts/package.linux.sh
+            condition: startsWith(variables['rid'], 'linux-')
+            displayName: Paquete Linux (deb/rpm)
+            env:
+              RUNTIME: $(rid)
+              RAMA_SKIP_APPIMAGE: 1
+          - task: CopyFiles@2
+            inputs:
+              sourceFolder: build
+              contents: |
+                rama_*.zip
+                rama_*.deb
+                rama-*.rpm
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: $(Build.ArtifactStagingDirectory)
+              artifactName: rama-$(rid)

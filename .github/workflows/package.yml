@@ -1,11 +1,7 @@
 name: Package
+# RAMA: solo manual; el CI propio es rama-ci.yml (evita correr con marca SourceGit)
 on:
-  workflow_call:
-    inputs:
-      version:
-        description: SourceGit package version
-        required: true
-        type: string
+  workflow_dispatch:
 jobs:
   windows:
     name: Package Windows

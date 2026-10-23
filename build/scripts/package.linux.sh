@@ -26,11 +26,13 @@ case "$RUNTIME" in
         exit 1;;
 esac
 
+# RAMA: RAMA_SKIP_APPIMAGE=1 omite el AppImage (su feed zsync apuntaba a sourcegit upstream)
+SKIP_APPIMAGE="${RAMA_SKIP_APPIMAGE:-0}"
 APPIMAGETOOL_URL=https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
 
 cd build
 
-if [[ ! -f "appimagetool" ]]; then
+if [[ "$SKIP_APPIMAGE" != "1" && ! -f "appimagetool" ]]; then
     curl -o appimagetool -L "$APPIMAGETOOL_URL"
     chmod +x appimagetool
 fi
@@ -38,6 +40,7 @@ fi
 rm -f SourceGit/*.dbg
 rm -f SourceGit/*.pdb
 
+if [[ "$SKIP_APPIMAGE" != "1" ]]; then
 mkdir -p SourceGit.AppDir/opt
 mkdir -p SourceGit.AppDir/usr/share/metainfo
 mkdir -p SourceGit.AppDir/usr/share/applications
@@ -54,6 +57,7 @@ cp resources/appimage/sourcegit.appdata.xml SourceGit.AppDir/usr/share/metainfo/
 ARCH="$appimage_arch" ./appimagetool -v \
     -u "gh-releases-zsync|sourcegit-scm|sourcegit|latest|sourcegit-*.linux.$arch.AppImage.zsync" \
     SourceGit.AppDir "sourcegit-$VERSION.linux.$arch.AppImage"
+fi
 
 mkdir -p resources/deb/opt/sourcegit/
 mkdir -p resources/deb/usr/bin
@@ -82,7 +86,7 @@ sed -i -e "s/^Version:.*/Version: $VERSION/" \
     resources/deb/DEBIAN/control
 
 # Build deb package with gzip compression
-dpkg-deb -Zgzip --root-owner-group --build resources/deb "sourcegit_$VERSION-1_$arch.deb"
+dpkg-deb -Zgzip --root-owner-group --build resources/deb "rama_$VERSION-1_$arch.deb"
 
 rpmbuild -bb --target="$target" resources/rpm/SPECS/build.spec --define "_topdir $(pwd)/resources/rpm" --define "_version $VERSION"
-mv "resources/rpm/RPMS/$target/sourcegit-$VERSION-1.$target.rpm" ./
+mv "resources/rpm/RPMS/$target/rama-$VERSION-1.$target.rpm" ./

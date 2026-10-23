@@ -1,9 +1,8 @@
 name: Notify Homebrew Tap
 
+# RAMA: solo manual; el CI propio es rama-ci.yml (evita correr con marca SourceGit)
 on:
-  release:
-    types: [published]
-
+  workflow_dispatch:
 jobs:
   notify-homebrew:
     runs-on: ubuntu-latest

@@ -1,6 +1,7 @@
 name: Build
+# RAMA: solo manual; el CI propio es rama-ci.yml (evita correr con marca SourceGit)
 on:
-  workflow_call:
+  workflow_dispatch:
 jobs:
   build:
     strategy:
