@@ -123,6 +123,7 @@ internal sealed class TransitionIdDto
 [JsonSerializable(typeof(BoardConfigDto))]
 [JsonSerializable(typeof(SearchRequestDto))]
 [JsonSerializable(typeof(SearchResponseDto))]
+[JsonSerializable(typeof(UserDto))]
 [JsonSerializable(typeof(List<UserDto>))]
 [JsonSerializable(typeof(TransitionsResponseDto))]
 [JsonSerializable(typeof(TransitionRequestDto))]

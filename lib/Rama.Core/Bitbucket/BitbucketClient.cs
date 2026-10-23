@@ -26,6 +26,16 @@ public sealed class BitbucketClient : ApiClientBase
     private static ApiClientOptions WithHint(ApiClientOptions? o) =>
         (o ?? new ApiClientOptions()) with { MissingScopeHint = o?.MissingScopeHint ?? ScopeHint };
 
+    // Prueba de conexión: GET /2.0/user (scope read:user:bitbucket).
+    public async Task<BitbucketUser> GetCurrentUserAsync(CancellationToken ct = default)
+    {
+        var dto = await GetJsonAsync($"https://{ApiHost}/2.0/user", BitbucketJsonContext.Default.BbUserDto, ct)
+            .ConfigureAwait(false);
+        var name = dto?.DisplayName ?? dto?.Nickname;
+        if (string.IsNullOrEmpty(name)) throw new ApiException(0, "/2.0/user no devolvió el usuario autenticado.");
+        return new BitbucketUser(name, dto!.AccountId);
+    }
+
     public async Task<IReadOnlyList<BitbucketWorkspace>> ListWorkspacesAsync(CancellationToken ct = default)
     {
         var result = new List<BitbucketWorkspace>();

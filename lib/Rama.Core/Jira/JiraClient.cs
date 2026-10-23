@@ -59,6 +59,16 @@ public sealed partial class JiraClient : ApiClientBase, IJiraTransitionApi
         return $"https://api.atlassian.com/ex/jira/{cloudId}";
     }
 
+    // Prueba de conexión: GET /rest/api/3/myself.
+    public async Task<JiraUser> GetMyselfAsync(CancellationToken ct = default)
+    {
+        var dto = await GetJsonAsync($"{_baseUrl}/rest/api/3/myself", JiraJsonContext.Default.UserDto, ct)
+            .ConfigureAwait(false);
+        if (string.IsNullOrEmpty(dto?.AccountId))
+            throw new ApiException(0, "/rest/api/3/myself no devolvió el usuario autenticado.");
+        return new JiraUser(dto.AccountId, dto.DisplayName ?? dto.AccountId, dto.Active);
+    }
+
     public async Task<IReadOnlyList<JiraBoardInfo>> GetBoardsAsync(string projectKeyOrId, CancellationToken ct = default)
     {
         var url = $"{_baseUrl}/rest/agile/1.0/board?projectKeyOrId={Uri.EscapeDataString(projectKeyOrId)}";

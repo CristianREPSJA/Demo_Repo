@@ -7,6 +7,8 @@ internal sealed record BbPage<T>(List<T>? Values, string? Next);
 
 internal sealed record BbWorkspaceDto(string? Slug, string? Name);
 
+internal sealed record BbUserDto(string? DisplayName, string? Nickname, string? AccountId);
+
 internal sealed record BbNamed(string? Name);
 
 internal sealed record BbLink(string? Name, string? Href);
@@ -19,6 +21,7 @@ internal sealed record BbRepoDto(
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
     PropertyNameCaseInsensitive = true)]
+[JsonSerializable(typeof(BbUserDto))]
 [JsonSerializable(typeof(BbPage<BbWorkspaceDto>))]
 [JsonSerializable(typeof(BbPage<BbRepoDto>))]
 [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Código source-gen")]
