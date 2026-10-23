@@ -285,13 +285,7 @@ namespace SourceGit.Views
             return name.Substring(0, 1);
         }
 
-        private static readonly GradientStops[] FALLBACK_GRADIENTS = [
-            new() { new GradientStop(Colors.Orange, 0), new GradientStop(Color.FromRgb(255, 213, 134), 1) },
-            new() { new GradientStop(Colors.DodgerBlue, 0), new GradientStop(Colors.LightSkyBlue, 1) },
-            new() { new GradientStop(Colors.LimeGreen, 0), new GradientStop(Color.FromRgb(124, 241, 124), 1) },
-            new() { new GradientStop(Colors.Orchid, 0), new GradientStop(Color.FromRgb(248, 161, 245), 1) },
-            new() { new GradientStop(Colors.Tomato, 0), new GradientStop(Color.FromRgb(252, 165, 150), 1) },
-        ];
+        // RAMA: se quitaron los degradados de respaldo; los avatares usan pares de tono pálido.
 
         private Models.User _user = null;
         private bool _useGitHubStyleAvatar = false;
