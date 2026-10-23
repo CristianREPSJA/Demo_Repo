@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Путь к рабочему каталогу (поддерживается относительный путь)</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Имя ветки:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Имя целевого каталога по умолчанию (необязательно)</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Помощник OpenAI</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Модель</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">ПЕРЕСОЗДАТЬ</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Использовать OpenAI для создания сообщения о ревизии</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Использовать</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Скрыть SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Скрыть остальные</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Показать все</x:String>
@@ -101,7 +96,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">ОТМЕНА</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Сбросить родительскую ревизию</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Сбросить эту ревизию</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Произвести сообщение о ревизии</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Слить (встроенный)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Слить (внешний)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">Сбросить файл(ы) в ${0}$</x:String>
@@ -277,9 +271,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">Опубликовать это правило в файле .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">Адрес результата:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Пожалуйста, используйте $1, $2 для доступа к значениям групп регулярных выражений.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">ОТКРЫТЬ ИИ</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Предпочтительный сервис:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Если «Предпочтительный сервис» установлен, SourceGit будет использовать только этот репозиторий. В противном случае, если доступно более одной услуги, будет отображено контекстное меню для выбора одной из них.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP-прокси</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">HTTP-прокси для репозитория</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Имя пользователя</x:String>
@@ -667,16 +658,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} лет назад</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Вчера</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Параметры</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">ИИ</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Дополнительная подсказка (Для перечисления ваших требований используйте `-`)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">Ключ API</x:String>
-  <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">Дополнительные заголовки (по одному «Имя: Значение» на строку)</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Модель</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Автоматическое получение доступных идентификаторов моделей</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Имя:</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">Введённое значение — это имя для загрузки API-ключа из ENV</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReasoningEffortLevel" xml:space="preserve">Уровень обоснованности усилий</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Сервер</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">ВИД</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Шрифт по умолчанию</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">Редактировать ширину вкладки</x:String>

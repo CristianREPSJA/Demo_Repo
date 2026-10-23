@@ -129,18 +129,6 @@ namespace SourceGit.ViewModels
             set => SetProperty(ref _selectedIssueTracker, value);
         }
 
-        public List<string> AvailableOpenAIServices
-        {
-            get;
-            private set;
-        }
-
-        public string PreferredOpenAIService
-        {
-            get => _repo.Settings.PreferredOpenAIService;
-            set => _repo.Settings.PreferredOpenAIService = value;
-        }
-
         public AvaloniaList<Models.CustomAction> CustomActions
         {
             get => _repo.Settings.CustomActions;
@@ -159,13 +147,6 @@ namespace SourceGit.ViewModels
             Remotes = new List<string>();
             foreach (var remote in _repo.Remotes)
                 Remotes.Add(remote.Name);
-
-            AvailableOpenAIServices = new List<string>() { "---" };
-            foreach (var service in Preferences.Instance.OpenAIServices)
-                AvailableOpenAIServices.Add(service.Name);
-
-            if (!AvailableOpenAIServices.Contains(PreferredOpenAIService))
-                PreferredOpenAIService = "---";
 
             _cached = new Commands.Config(repo.FullPath).ReadAll();
             if (_cached.TryGetValue("user.name", out var name))

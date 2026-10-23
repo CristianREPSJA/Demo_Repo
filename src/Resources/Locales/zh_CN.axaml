@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">填写该工作树的路径。支持相对路径。</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">分支名 ：</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">选填。默认使用目标文件夹名称。</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI助手</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">模型</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">重新生成</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">使用AI助手生成提交信息</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">应用</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">隐藏 SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">隐藏其他</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">显示全部</x:String>
@@ -101,7 +96,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">取    消</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">重置文件到上一版本</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">重置文件到该版本</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">生成提交信息</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">解决冲突（内部工具）</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">解决冲突（外部工具）</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">重置文件到 ${0}$</x:String>
@@ -277,9 +271,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">写入 .issuetracker 文件共享此规则</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">为ISSUE生成的URL链接 ：</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">可在URL中使用$1，$2等变量填入正则表达式匹配的内容</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">启用特定服务 ：</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">当【启用特定服务】被设置时，SourceGit将在本仓库中仅使用该服务。否则将弹出可用的AI服务列表供用户选择。</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP代理</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">HTTP网络代理</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">用户名</x:String>
@@ -667,16 +658,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0}年前</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">昨天</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">偏好设置</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">附加提示词 (请使用 `-` 列出您的要求)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API密钥</x:String>
-  <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">附加 HTTP 请求头部 (格式：每行一条 Name: Value)</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">模型</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">自动拉取可用模型列表</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">配置名称</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">从环境变量（填写环境变量名）中读取API密钥</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReasoningEffortLevel" xml:space="preserve">推理努力等级</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">服务地址</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">外观配置</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">缺省字体</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">编辑器制表符宽度</x:String>

@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">נתיב ל־worktree זה. נתיב יחסי נתמך.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">שם Branch:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">לא חובה. ברירת המחדל היא שם תיקיית היעד.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">עוזר AI</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">מודל</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">צור מחדש</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">שימוש ב־AI ליצירת הודעת commit</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">שימוש</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">הסתר SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">הסתר אחרים</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">הצג הכול</x:String>
@@ -93,7 +88,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">ביטול</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Checkout ל־revision של ההורה</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Checkout ל־revision זה</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">צור הודעת commit</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Merge (מובנה)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Merge (כלי חיצוני)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">Reset של הקבצים אל ${0}$</x:String>
@@ -254,9 +248,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">שיתוף כלל זה בקובץ .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL התוצאה:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">השתמש ב־$1, $2 לגישה לערכי קבוצות ה־regex.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">שירות מועדף:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">אם מוגדר 'שירות מועדף', SourceGit ישתמש רק בו במאגר זה. אחרת, אם זמינים מספר שירותים, יוצג תפריט הקשר לבחירת אחד מהם.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP Proxy</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">HTTP proxy לשימוש המאגר הזה</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">שם משתמש</x:String>
@@ -611,14 +602,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">לפני {0} שנים</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">אתמול</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">העדפות</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Prompt נוסף (השתמש ב־`-` לרשימת דרישות)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API Key</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">מודל</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Fetch אוטומטי של model-ids זמינים</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">שם</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">הערך שהוזן הוא שם משתנה סביבה לטעינת ה־API key</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">שרת</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">מראה</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">גופן ברירת מחדל</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">רוחב Tab בעורך</x:String>

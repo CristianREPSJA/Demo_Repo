@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">이 워크트리의 경로입니다. 상대 경로를 지원합니다.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">브랜치 이름:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">선택 사항. 기본값은 대상 폴더 이름입니다.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI 어시스턴트</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">모델</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">재생성</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">AI를 사용하여 커밋 메시지 생성</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">사용</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">SourceGit 숨기기</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">다른 항목 숨기기</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">모두 보기</x:String>
@@ -96,7 +91,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">취소</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">부모 리비전으로 리셋</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">이 리비전으로 리셋</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">커밋 메시지 생성</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">병합(내장)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">병합(외부 도구)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">파일을 ${0}$(으)로 되돌리기</x:String>
@@ -252,9 +246,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">.issuetracker 파일에 이 규칙 공유</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">결과 URL:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">정규식 그룹 값에 접근하려면 $1, $2를 사용하세요.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">선호하는 서비스:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">'선호하는 서비스'가 설정되면, SourceGit은 이 저장소에서 해당 서비스만 사용합니다. 그렇지 않고 사용 가능한 서비스가 두 개 이상인 경우, 하나를 선택할 수 있는 컨텍스트 메뉴가 표시됩니다.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP 프록시</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">이 저장소에서 사용하는 HTTP 프록시</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">사용자 이름</x:String>
@@ -614,14 +605,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0}년 전</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">어제</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">환경설정</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">추가 프롬프트(`-`로 요구 사항 나열)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API 키</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">모델</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">사용 가능한 모델 ID 자동 가져오기</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">이름</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">입력된 값은 환경변수(ENV)에서 API 키를 불러올 이름입니다</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">서버</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">모양</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">기본 글꼴</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">에디터 탭 너비</x:String>

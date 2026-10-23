@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">この作業ツリーへのパス (相対パスも使用できます)</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">ブランチの名前:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">省略可能 - 既定では宛先のフォルダーと同じ名前が使用されます</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">AI アシスタント</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">モデル</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">再生成</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">AI を使用してコミットメッセージを生成</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">使用</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">SourceGit を隠す</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">他を隠す</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">すべて表示</x:String>
@@ -100,7 +95,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">キャンセル</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">親リビジョンにリセット</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">このリビジョンにリセット</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">コミットメッセージを生成</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">マージ (組み込みツール)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">マージ (外部ツール)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">ファイルを ${0}$ にリセット</x:String>
@@ -267,9 +261,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">このルールを .issuetracker ファイルで共有</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">最終的な URL:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">正規表現のグループ値は $1, $2 で取得してください。</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">優先するサービス:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">'優先するサービス' を設定すると、このリポジトリではそのサービスのみを使用するようになります。そうでなければ、複数のサービスが存在する場合に限り、その中からひとつを選択できるコンテキストメニューが表示されます。</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP プロキシ</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">このリポジトリで使用する HTTP プロキシ</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">ユーザー名</x:String>
@@ -657,16 +648,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} 年前</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">昨日</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">設定</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">追加のプロンプト (`-` で必要事項を羅列してください)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API キー</x:String>
-  <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">追加のヘッダー (`名前: 値` を一行ごとに指定してください)</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">モデル</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">利用できるモデル ID を自動的に取得</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">名前</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">この値を環境変数の名前とし、そこから API キーを読み込む</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReasoningEffortLevel" xml:space="preserve">思考努力レベル</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">サーバー</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">外観</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">既定のフォント</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">エディターのタブ幅</x:String>

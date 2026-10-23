@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Jalur untuk worktree ini. Jalur relatif didukung.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Nama Branch:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Opsional. Standar adalah nama folder tujuan.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Asisten AI</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Model</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">BUAT ULANG</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Gunakan AI untuk membuat pesan commit</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Gunakan</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Sembunyikan SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Sembunyikan Lainnya</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Tampilkan Semua</x:String>
@@ -98,7 +93,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">BATAL</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Reset ke Revisi Parent</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Reset ke Revisi Ini</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Buat pesan commit</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Merge (Bawaan)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Merge (Eksternal)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">Reset Berkas ke ${0}$</x:String>
@@ -265,9 +259,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">Bagikan aturan ini di berkas .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL Hasil:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Gunakan $1, $2 untuk mengakses nilai grup regex.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Layanan Pilihan:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Jika 'Layanan Pilihan' diatur, SourceGit hanya akan menggunakannya di repositori ini. Jika tidak, jika ada lebih dari satu layanan yang tersedia, menu konteks untuk memilih salah satunya akan ditampilkan.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">Proksi HTTP</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">Proksi HTTP yang digunakan oleh repositori ini</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Nama Pengguna</x:String>
@@ -643,15 +634,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} tahun lalu</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Kemarin</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Preferensi</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Prompt Tambahan (Gunakan `-` untuk mencantumkan kebutuhan Anda)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">API Key</x:String>
-  <x:String x:Key="Text.Preferences.AI.ExtraHeaders" xml:space="preserve">Header Tambahan (satu `Nama: Nilai` per baris)</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Model</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Ambil model-id yang tersedia secara otomatis</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Nama</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">Nilai yang dimasukkan adalah nama untuk memuat API key dari ENV</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Server</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">TAMPILAN</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Font Default</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">Lebar Tab Editor</x:String>

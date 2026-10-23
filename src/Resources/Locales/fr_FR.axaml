@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Chemin vers ce worktree. Relatif supporté.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Nom de branche:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Optionnel. Nom du dossier de destination par défaut.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Assistant IA</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Modèle</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RE-GÉNÉRER</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Utiliser l'IA pour générer un message de commit</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Utiliser</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Masquer SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Masquer les autres</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Tout Afficher</x:String>
@@ -93,7 +88,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">ANNULER</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Réinitialiser à la révision parente</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Réinitialiser à cette révision</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Générer un message de commit</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Fusion (intégré)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Fusion (externe)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">Réinitialiser le(s) fichier(s) à ${0}$</x:String>
@@ -254,9 +248,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">Partager cette règle dans le fichier .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL résultant:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Veuillez utiliser $1, $2 pour accéder aux valeurs des groupes regex.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">IA</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Service préféré:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Si le 'Service préféré' est défini, SourceGit l'utilisera seulement dans ce repository. Sinon, si plus d'un service est disponible, un menu contextuel permettant de choisir l'un d'eux sera affiché.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">Proxy HTTP</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">Proxy HTTP utilisé par ce dépôt</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Nom d'utilisateur</x:String>
@@ -611,14 +602,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">il y a {0} ans</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Hier</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Préférences</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">IA</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Prompt supplémentaire (utilisez `-` pour lister vos exigences)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">Clé d'API</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Modèle</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Récupérer automatiquement les modèles disponibles</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Nom</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">La valeur saisie est le nom pour charger la clé API depuis l'ENV</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Serveur</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">APPARENCE</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Police par défaut</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">Largeur de tab dans l'éditeur</x:String>

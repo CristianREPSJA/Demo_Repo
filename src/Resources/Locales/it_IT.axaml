@@ -16,10 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Percorso per questo worktree. Supportato il percorso relativo.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Nome Branch:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Facoltativo. Predefinito è il nome della cartella di destinazione.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Assistente AI</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Modello</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">RIGENERA</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Usa AI per generare il messaggio di commit</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Nascondi SourceGit</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Mostra Tutto</x:String>
   <x:String x:Key="Text.Apply.File.Placeholder" xml:space="preserve">Seleziona file patch da applicare</x:String>
@@ -89,7 +85,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">ANNULLA</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Ripristina la Revisione Padre</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Ripristina Questa Revisione</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Genera messaggio di commit</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Merge (Integrato)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Merge (Esterno)</x:String>
   <x:String x:Key="Text.ChangeDisplayMode" xml:space="preserve">CAMBIA MODALITÀ DI VISUALIZZAZIONE</x:String>
@@ -234,9 +229,6 @@ ${pure_files:N} Come ${files:N}, ma senza cartelle</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">Condividi questa regola nel file .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL Risultato:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Utilizza $1, $2 per accedere ai valori dei gruppi regex.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Servizio preferito:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Se il 'Servizio Preferito' é impostato, SourceGit utilizzerà solo quello per questo repository. Altrimenti, se ci sono più servizi disponibili, verrà mostrato un menu contestuale per sceglierne uno.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">Proxy HTTP</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">Proxy HTTP usato da questo repository</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Nome Utente</x:String>
@@ -564,11 +556,6 @@ ${pure_files:N} Come ${files:N}, ma senza cartelle</x:String>
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} anni fa</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Ieri</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Preferenze</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">Chiave API</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Nome</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">Il valore inserito è il nome per caricare la chiave API da ENV</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Server</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">ASPETTO</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Font Predefinito</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">Larghezza della Tab Editor</x:String>

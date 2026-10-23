@@ -16,10 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Caminho para este worktree. Caminho relativo é suportado.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Nome do Branch:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Opcional. O padrão é o nome da pasta de destino.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Assietente IA</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">Modelo</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">Gerar novamente</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Utilizar IA para gerar mensagem de commit</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Esconder SourceGit</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Mostrar Todos</x:String>
   <x:String x:Key="Text.Apply.File.Placeholder" xml:space="preserve">Selecione o arquivo patch para aplicar</x:String>
@@ -82,7 +78,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">CANCELAR</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Resetar para Revisão Pai</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Resetar para Esta Revisão</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Gerar mensagem de commit</x:String>
   <x:String x:Key="Text.ChangeDisplayMode" xml:space="preserve">ALTERAR MODO DE EXIBIÇÃO</x:String>
   <x:String x:Key="Text.ChangeDisplayMode.Grid" xml:space="preserve">Exibir como Lista de Arquivos e Diretórios</x:String>
   <x:String x:Key="Text.ChangeDisplayMode.List" xml:space="preserve">Exibir como Lista de Caminhos</x:String>
@@ -161,9 +156,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.RuleName" xml:space="preserve">Nome da Regra:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL de Resultado:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Por favor, use $1, $2 para acessar os valores de grupos do regex.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">IA</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Serviço desejado:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Se o 'Serviço desejado' for definido, SourceGit usará ele neste Repositório. Senão, caso haja mais de um serviço disponível, será exibido um menu para seleção.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">Proxy HTTP</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">Proxy HTTP usado por este repositório</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Nome de Usuário</x:String>
@@ -394,10 +386,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} anos atrás</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Ontem</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Preferências</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">INTELIGÊNCIA ARTIFICIAL</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">Chave da API</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Nome</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Servidor</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">APARÊNCIA</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Fonte Padrão</x:String>
   <x:String x:Key="Text.Preferences.Appearance.FontSize" xml:space="preserve">Tamanho da Fonte</x:String>

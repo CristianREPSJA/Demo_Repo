@@ -33,20 +33,6 @@ The project uses the following third-party libraries or assets
 - **License**: MIT License
 - **License Link**: https://github.com/danipen/TextMateSharp/blob/master/LICENSE.md
 
-### OpenAI .NET SDK
-
-- **Source**: https://github.com/openai/openai-dotnet
-- **Version**: 2.10.0
-- **License**: MIT License
-- **License Link**: https://github.com/openai/openai-dotnet/blob/main/LICENSE
-
-### Azure.AI.OpenAI
-
-- **Source**: https://github.com/Azure/azure-sdk-for-net
-- **Version**: 2.9.0-beta.1
-- **License**: MIT License
-- **License Link**: https://github.com/Azure/azure-sdk-for-net/blob/main/LICENSE.txt
-
 ### BitMiracle.LibTiff.NET
 
 - **Source**: https://github.com/BitMiracle/libtiff.net
