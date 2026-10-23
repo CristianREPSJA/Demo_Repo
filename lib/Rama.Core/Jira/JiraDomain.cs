@@ -25,7 +25,8 @@ public sealed record TransitionField(
     string Name,
     bool Required,
     bool HasDefault,
-    IReadOnlyList<FieldOption> AllowedValues);
+    IReadOnlyList<FieldOption> AllowedValues,
+    string? SchemaType = null);
 
 public sealed record JiraTransition(
     string Id,

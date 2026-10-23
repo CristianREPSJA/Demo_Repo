@@ -46,4 +46,37 @@
   <x:String x:Key="Text.Rama.Accounts.RemovedOk" xml:space="preserve">Cuenta quitada.</x:String>
   <x:String x:Key="Text.Rama.Accounts.Expired" xml:space="preserve">El token está vencido.</x:String>
   <x:String x:Key="Text.Rama.Accounts.ExpiresIn" xml:space="preserve">El token vence en {0} días.</x:String>
+  <!-- Tablero Jira (F9) -->
+  <x:String x:Key="Text.Rama.Jira.TitleEmpty" xml:space="preserve">Tablero Jira</x:String>
+  <x:String x:Key="Text.Rama.Jira.Title" xml:space="preserve">Tablero {0}</x:String>
+  <x:String x:Key="Text.Rama.Jira.Synced" xml:space="preserve">Sincronizado con Jira hace {0}</x:String>
+  <x:String x:Key="Text.Rama.Jira.Refresh" xml:space="preserve">Actualizar ahora</x:String>
+  <x:String x:Key="Text.Rama.Jira.Filter" xml:space="preserve">Filtrar tickets</x:String>
+  <x:String x:Key="Text.Rama.Jira.You" xml:space="preserve">Tú</x:String>
+  <x:String x:Key="Text.Rama.Jira.CreateBranch" xml:space="preserve">Crear rama</x:String>
+  <x:String x:Key="Text.Rama.Jira.CreateBranchConfirm" xml:space="preserve">¿Crear {0}?</x:String>
+  <x:String x:Key="Text.Rama.Jira.Create" xml:space="preserve">Crear</x:String>
+  <x:String x:Key="Text.Rama.Jira.Cancel" xml:space="preserve">Cancelar</x:String>
+  <x:String x:Key="Text.Rama.Jira.NoRepo" xml:space="preserve">Abre un repositorio para crear la rama</x:String>
+  <x:String x:Key="Text.Rama.Jira.EmptyColumn" xml:space="preserve">Sin tickets en esta columna</x:String>
+  <x:String x:Key="Text.Rama.Jira.DropHint" xml:space="preserve">Soltar para mover a {0}</x:String>
+  <x:String x:Key="Text.Rama.Jira.Footer" xml:space="preserve">Al mover una tarjeta se aplica la transición en Jira. Si Jira la rechaza, vuelve a su columna y verás el motivo.</x:String>
+  <x:String x:Key="Text.Rama.Jira.NoAccountTitle" xml:space="preserve">Conecta Jira para ver tus tarjetas</x:String>
+  <x:String x:Key="Text.Rama.Jira.NoAccountBody" xml:space="preserve">Conecta Jira para ver tus tarjetas y moverlas sin salir de Rama.</x:String>
+  <x:String x:Key="Text.Rama.Jira.GoToAccounts" xml:space="preserve">Ir a Cuentas</x:String>
+  <x:String x:Key="Text.Rama.Jira.Retry" xml:space="preserve">Reintentar</x:String>
+  <x:String x:Key="Text.Rama.Jira.Loading" xml:space="preserve">Cargando tablero...</x:String>
+  <x:String x:Key="Text.Rama.Jira.ErrorTitle" xml:space="preserve">No se pudo cargar el tablero</x:String>
+  <x:String x:Key="Text.Rama.Jira.TokenExpiring" xml:space="preserve">Tu API token de Jira vence en {0} días. Renuévalo en Cuentas.</x:String>
+  <x:String x:Key="Text.Rama.Jira.TokenExpired" xml:space="preserve">Tu API token de Jira venció. Renuévalo en Cuentas.</x:String>
+  <x:String x:Key="Text.Rama.Jira.FieldsTitle" xml:space="preserve">Para mover {0} a {1} Jira pide estos datos</x:String>
+  <x:String x:Key="Text.Rama.Jira.FieldsConfirm" xml:space="preserve">Mover</x:String>
+  <x:String x:Key="Text.Rama.Jira.FieldsMissing" xml:space="preserve">Completa todos los campos.</x:String>
+  <x:String x:Key="Text.Rama.Jira.FieldsInJira" xml:space="preserve">Completa este cambio en Jira</x:String>
+  <x:String x:Key="Text.Rama.Jira.OpenInJira" xml:space="preserve">Abrir en Jira</x:String>
+  <x:String x:Key="Text.Rama.Jira.MoveError" xml:space="preserve">No se pudo mover {0}: {1}</x:String>
+  <x:String x:Key="Text.Rama.Jira.BranchError" xml:space="preserve">No se pudo crear la rama {0}.</x:String>
+  <x:String x:Key="Text.Rama.Jira.Dismiss" xml:space="preserve">Cerrar</x:String>
+  <x:String x:Key="Text.Rama.Jira.Select" xml:space="preserve">Elige una opción</x:String>
+  <x:String x:Key="Text.Rama.Jira.People" xml:space="preserve">Tickets por persona</x:String>
 </ResourceDictionary>

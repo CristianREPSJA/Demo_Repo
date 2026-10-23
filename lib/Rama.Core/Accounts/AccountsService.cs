@@ -142,6 +142,10 @@ public sealed class AccountsService
             return (await client.GetMyselfAsync(ct).ConfigureAwait(false)).DisplayName;
         }, ct);
 
+    // Cliente Jira con el token guardado en el llavero (falla si no hay token).
+    public Task<JiraClient> CreateJiraClientAsync(JiraAccount account, CancellationToken ct = default) =>
+        JiraClientFactory.CreateAsync(_secrets, _http, account.Site, account.Email, ct: ct);
+
     // ---- Vencimiento (Bitbucket y Jira; la cuenta es el email) ----
     public Task<TokenExpiryStatus> GetExpiryStatusAsync(AccountPlatform platform, string email, CancellationToken ct = default) =>
         Expiry.GetStatusAsync(SecretServiceOf(platform), email, ct);

@@ -103,6 +103,12 @@ internal sealed class TransitionFieldDto
     public bool HasDefaultValue { get; set; }
     public JsonElement? DefaultValue { get; set; }
     public List<JsonElement>? AllowedValues { get; set; }
+    public FieldSchemaDto? Schema { get; set; }
+}
+
+internal sealed class FieldSchemaDto
+{
+    public string? Type { get; set; }
 }
 
 internal sealed class TransitionRequestDto
