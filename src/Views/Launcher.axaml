@@ -142,14 +142,28 @@
       </Border>
     </Grid>
 
-    <!-- Page -->
-    <ContentControl Grid.Row="1" Content="{Binding ActivePage}" Background="{DynamicResource Brush.Window}">
-      <ContentControl.DataTemplates>
-        <DataTemplate DataType="vm:LauncherPage">
-          <v:LauncherPage/>
-        </DataTemplate>
-      </ContentControl.DataTemplates>
-    </ContentControl>
+    <!-- RAMA: riel de iconos + paginas de destino -->
+    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+      <v:IconRail Grid.Column="0" DataContext="{Binding Rail}"/>
+
+      <!-- Page -->
+      <ContentControl Grid.Column="1" Content="{Binding ActivePage}" Background="{DynamicResource Brush.Window}"
+                      IsVisible="{Binding Rail.IsRepository}">
+        <ContentControl.DataTemplates>
+          <DataTemplate DataType="vm:LauncherPage">
+            <v:LauncherPage/>
+          </DataTemplate>
+        </ContentControl.DataTemplates>
+      </ContentControl>
+
+      <Grid Grid.Column="1" Background="{DynamicResource Brush.Window}"
+            IsVisible="{Binding !Rail.IsRepository}">
+        <v:PendingReviewsPage IsVisible="{Binding Rail.IsPendingReviews}"/>
+        <v:JiraBoardPage IsVisible="{Binding Rail.IsJiraBoard}"/>
+        <v:TerminalPage IsVisible="{Binding Rail.IsTerminal}"/>
+        <v:AccountsPage IsVisible="{Binding Rail.IsAccounts}"/>
+      </Grid>
+    </Grid>
 
     <!-- Command Palette -->
     <Border Grid.Row="0" Grid.RowSpan="2"

@@ -39,7 +39,8 @@ public class SecretStoreTests
     [Fact]
     public async Task Windows_RealCredentialManagerRoundTrip()
     {
-        if (!OperatingSystem.IsWindows()) return;
+        // Toca el llavero real: solo con RAMA_TEST_REAL_KEYCHAIN=1 (evita alertas del antivirus en cada build).
+        if (!OperatingSystem.IsWindows() || !RealKeychainEnabled) return;
         ISecretStore store = new WindowsCredentialStore();
         var svc = "rama-test-" + Guid.NewGuid().ToString("N");
         const string acc = "user@example.com";
@@ -64,8 +65,11 @@ public class SecretStoreTests
     [Fact]
     public async Task Windows_RejectsOversizedSecret()
     {
-        if (!OperatingSystem.IsWindows()) return;
+        if (!OperatingSystem.IsWindows() || !RealKeychainEnabled) return;
         ISecretStore store = new WindowsCredentialStore();
         await Assert.ThrowsAsync<SecretStoreException>(() => store.SetAsync("x", "y", new string('a', 4000)));
     }
+
+    private static bool RealKeychainEnabled =>
+        Environment.GetEnvironmentVariable("RAMA_TEST_REAL_KEYCHAIN") == "1";
 }

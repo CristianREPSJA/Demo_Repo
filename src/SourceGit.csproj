@@ -43,6 +43,7 @@
     <AvaloniaResource Include="Resources/Fonts/*" />
     <AvaloniaResource Include="Resources/Grammars/*" />
     <AvaloniaResource Include="Resources/Images/*" />
+    <AvaloniaResource Include="Rama/Resources/Images/*.png" />
     <AvaloniaResource Include="Resources/Images/ExternalToolIcons/*" />
     <AvaloniaResource Include="Resources/Images/ExternalToolIcons/JetBrains/*" />
     <AvaloniaResource Include="Resources/Images/ShellIcons/*" />
@@ -70,6 +71,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\lib\Rama.Core\Rama.Core.csproj" />
+    <!-- RAMA: terminal integrada (F5) -->
+    <ProjectReference Include="..\lib\Rama.Terminal\Rama.Terminal.csproj" />
   </ItemGroup>
 
   <Target BeforeTargets="GetAssemblyAttributes" Name="GenVersionInfo">

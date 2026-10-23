@@ -798,7 +798,7 @@ namespace SourceGit.ViewModels
         private int _subjectGuideLength = 50;
         private bool _useFixedTabWidth = true;
         private bool _useAutoHideScrollBars = true;
-        private bool _useGitHubStyleAvatar = true;
+        private bool _useGitHubStyleAvatar = false; // RAMA: iniciales por defecto
         private bool _useCompactBranchNamesInGraph = true;
 
         private bool _check4UpdatesOnStartup = true;
@@ -808,7 +808,7 @@ namespace SourceGit.ViewModels
         private bool _showTagsInGraph = true;
         private bool _useTwoColumnsLayoutInHistories = false;
         private bool _displayTimeAsPeriodInHistories = false;
-        private bool _useSideBySideDiff = false;
+        private bool _useSideBySideDiff = true; // RAMA: lado a lado por defecto
         private bool _ignoreWhitespaceChangesInDiff = false;
         private bool _ignoreCRAtEOLInDiff = true;
         private bool _useSyntaxHighlighting = false;

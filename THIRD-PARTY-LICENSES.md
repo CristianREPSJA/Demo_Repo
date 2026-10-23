@@ -53,6 +53,48 @@ The project uses the following third-party libraries or assets
 - **Version**: 2.30.15
 - **License**: Public Domain
 
+### Iciclecreek.Avalonia.Terminal (Rama: terminal integrada)
+
+- **Source**: https://github.com/tomlm/Iciclecreek.Avalonia.Terminal
+- **Version**: 1.0.12 (NuGet, commit 3da5aad)
+- **License**: MIT License
+- **License Link**: https://github.com/tomlm/Iciclecreek.Avalonia.Terminal/blob/main/LICENSE
+
+### XTerm.NET (Rama: terminal integrada)
+
+- **Source**: https://github.com/tomlm/XTerm.NET
+- **Version**: 1.0.12 (NuGet, commit 18eeafc)
+- **License**: MIT License
+- **License Link**: https://github.com/tomlm/XTerm.NET/blob/main/LICENSE
+
+### Porta.Pty (Rama: terminal integrada)
+
+- **Source**: https://github.com/tomlm/Porta.Pty
+- **Version**: 1.0.7 (NuGet, commit 54684ba; incluye binarios nativos libporta_pty, ver depends/terminal/NATIVE-BINARIES.md)
+- **License**: MIT License
+- **License Link**: https://github.com/tomlm/Porta.Pty/blob/main/LICENSE
+
+### Unicode.net (dependencia de la terminal)
+
+- **Source**: https://github.com/neosmart/unicode.net
+- **Version**: 2.0.0
+- **License**: MIT License
+- **License Link**: https://github.com/neosmart/unicode.net/blob/master/LICENSE
+
+### Wcwidth (dependencia de la terminal)
+
+- **Source**: https://github.com/spectreconsole/wcwidth
+- **Version**: 4.0.1
+- **License**: MIT License
+- **License Link**: https://github.com/spectreconsole/wcwidth/blob/main/LICENSE.md
+
+### Vanara.PInvoke.Kernel32 (dependencia de Porta.Pty)
+
+- **Source**: https://github.com/dahall/vanara
+- **Version**: 4.2.1
+- **License**: MIT License
+- **License Link**: https://github.com/dahall/vanara/blob/master/LICENSE
+
 ## Fonts
 
 ### JetBrainsMono

@@ -76,7 +76,7 @@
                     Background="{DynamicResource Brush.Accent}"
                     IsVisible="{Binding LocalChangesCount, Mode=OneWay, Converter={x:Static c:IntConverters.IsGreaterThanZero}}">
               <TextBlock Text="{Binding LocalChangesCount, Mode=OneWay, Converter={x:Static c:IntConverters.ToBadgeWithLimit}}"
-                         Foreground="White"
+                         Foreground="{DynamicResource Brush.OnAccent}"
                          FontFamily="{DynamicResource Fonts.Monospace}"
                          FontSize="10"/>
             </Border>
@@ -106,7 +106,7 @@
                     Background="{DynamicResource Brush.Accent}"
                     IsVisible="{Binding StashesCount, Mode=OneWay, Converter={x:Static c:IntConverters.IsGreaterThanZero}}">
               <TextBlock Text="{Binding StashesCount, Mode=OneWay, Converter={x:Static c:IntConverters.ToBadgeWithLimit}}"
-                         Foreground="White"
+                         Foreground="{DynamicResource Brush.OnAccent}"
                          FontFamily="{DynamicResource Fonts.Monospace}"
                          FontSize="10"/>
             </Border>

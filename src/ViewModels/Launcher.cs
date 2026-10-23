@@ -39,6 +39,9 @@ namespace SourceGit.ViewModels
             }
         }
 
+        // RAMA: navegacion del riel de iconos
+        public RailNavigator Rail { get; } = new RailNavigator();
+
         public ICommandPalette CommandPalette
         {
             get => _commandPalette;

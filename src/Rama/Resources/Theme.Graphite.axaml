@@ -56,6 +56,26 @@
       <Color x:Key="Color.Link">#FF5AA9E6</Color>
       <Color x:Key="Color.InlineCode">#FF2C2E33</Color>
       <Color x:Key="Color.InlineCodeFG">#FFECECEC</Color>
+
+      <!-- Texto sobre acento ambar: tinta oscura (contraste) -->
+      <Color x:Key="Color.OnAccent">#FF1C1406</Color>
+      <SolidColorBrush x:Key="AccentButtonForeground" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#FF1C1406"/>
+
+      <!-- Seleccion neutra en listas y grillas (el ambar queda para HEAD/primario/foco) -->
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelected" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedPointerOver" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedPressed" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedDisabled" Color="#FF25272B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundPointerOver" Color="#FF25272B"/>
+      <SolidColorBrush x:Key="ListBoxItemForegroundSelected" Color="#FFECECEC"/>
+      <SolidColorBrush x:Key="ListBoxItemForegroundSelectedPointerOver" Color="#FFECECEC"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackgroundBrush" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackgroundBrush" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundBrush" Color="#FF33363B"/>
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
 
@@ -68,4 +88,6 @@
   <SolidColorBrush x:Key="Brush.Rama.Conflict.TheirsBG" Color="#FF17301F"/>
   <SolidColorBrush x:Key="Brush.Rama.Conflict.MarkerBG" Color="#FF3A2F1A"/>
   <SolidColorBrush x:Key="Brush.Rama.Conflict.MarkerFG" Color="#FFF0C27A"/>
+  <SolidColorBrush x:Key="Brush.OnAccent" Color="#FF1C1406"/>
+  <SolidColorBrush x:Key="Brush.FG3" Color="#FF8C8F96"/>
 </ResourceDictionary>

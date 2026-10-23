@@ -40,6 +40,8 @@
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
     <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <StyleInclude Source="/Resources/Styles.axaml"/>
+    <!-- RAMA: overrides de estilo (despues de Styles.axaml) -->
+    <StyleInclude Source="/Rama/Resources/Styles.Rama.axaml"/>
   </Application.Styles>
 
   <NativeMenu.Menu>

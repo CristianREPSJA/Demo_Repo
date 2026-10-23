@@ -68,30 +68,24 @@ namespace SourceGit.Views
             }
             else if (!_useGitHubStyleAvatar)
             {
+                // RAMA: iniciales en circulo con par palido estable por nombre
                 var fallback = GetFallbackString(_user.Name);
                 var typeface = new Typeface("fonts:SourceGit#JetBrains Mono NL");
+                var sum = 0;
+                foreach (var c in fallback)
+                    sum += Math.Abs(c);
+
+                var pair = Branding.PillPalette.ForIdentity(sum);
                 var label = new FormattedText(
                     fallback,
                     CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
                     typeface,
-                    Math.Max(Bounds.Width * 0.65, 10),
-                    Brushes.White);
-
-                var chars = fallback.ToCharArray();
-                var sum = 0;
-                foreach (var c in chars)
-                    sum += Math.Abs(c);
-
-                var bg = new LinearGradientBrush()
-                {
-                    GradientStops = FALLBACK_GRADIENTS[sum % FALLBACK_GRADIENTS.Length],
-                    StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                    EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-                };
+                    Math.Max(Bounds.Width * 0.5, 9),
+                    new SolidColorBrush(pair.Ink));
 
                 Point textOrigin = new Point((Bounds.Width - label.Width) * 0.5, (Bounds.Height - label.Height) * 0.5);
-                context.DrawRectangle(bg, null, new Rect(0, 0, Bounds.Width, Bounds.Height), corner, corner);
+                context.DrawEllipse(new SolidColorBrush(pair.Background), null, rect.Center, Bounds.Width * 0.5, Bounds.Height * 0.5);
                 context.DrawText(label, textOrigin);
             }
             else
@@ -291,13 +285,7 @@ namespace SourceGit.Views
             return name.Substring(0, 1);
         }
 
-        private static readonly GradientStops[] FALLBACK_GRADIENTS = [
-            new() { new GradientStop(Colors.Orange, 0), new GradientStop(Color.FromRgb(255, 213, 134), 1) },
-            new() { new GradientStop(Colors.DodgerBlue, 0), new GradientStop(Colors.LightSkyBlue, 1) },
-            new() { new GradientStop(Colors.LimeGreen, 0), new GradientStop(Color.FromRgb(124, 241, 124), 1) },
-            new() { new GradientStop(Colors.Orchid, 0), new GradientStop(Color.FromRgb(248, 161, 245), 1) },
-            new() { new GradientStop(Colors.Tomato, 0), new GradientStop(Color.FromRgb(252, 165, 150), 1) },
-        ];
+        // RAMA: se quitaron los degradados de respaldo; los avatares usan pares de tono pálido.
 
         private Models.User _user = null;
         private bool _useGitHubStyleAvatar = false;

@@ -2,6 +2,7 @@
   <!-- Español (Chile): hereda es_ES (que a su vez hereda en_US) y solo sobrescribe lo propio de Rama. -->
   <ResourceDictionary.MergedDictionaries>
     <ResourceInclude Source="avares://SourceGit/Resources/Locales/es_ES.axaml"/>
+    <ResourceInclude Source="avares://SourceGit/Rama/Resources/Locales/es_CL.Casing.axaml"/>
   </ResourceDictionary.MergedDictionaries>
 
   <!-- Marca -->
@@ -16,6 +17,12 @@
 
   <!-- Textos nuevos de Rama -->
   <x:String x:Key="Text.Rama.AppName" xml:space="preserve">Rama</x:String>
+  <x:String x:Key="Text.Rama.Rail.Repository" xml:space="preserve">Repositorio</x:String>
+  <x:String x:Key="Text.Rama.Rail.PendingReviews" xml:space="preserve">Revisiones pendientes</x:String>
+  <x:String x:Key="Text.Rama.Rail.JiraBoard" xml:space="preserve">Tablero Jira</x:String>
+  <x:String x:Key="Text.Rama.Rail.Clone" xml:space="preserve">Clonar repositorio</x:String>
+  <x:String x:Key="Text.Rama.Rail.Terminal" xml:space="preserve">Terminal</x:String>
+  <x:String x:Key="Text.Rama.Rail.Settings" xml:space="preserve">Ajustes</x:String>
   <x:String x:Key="Text.Rama.Tagline" xml:space="preserve">Cliente git del equipo</x:String>
 
   <!-- F4b: resolución de conflictos -->
@@ -43,4 +50,26 @@
   <x:String x:Key="Text.Rama.Conflict.Remaining" xml:space="preserve">Quedan {0} conflictos sin resolver</x:String>
   <x:String x:Key="Text.Rama.Conflict.SaveFailed" xml:space="preserve">No se pudo guardar y hacer stage: {0}</x:String>
   <x:String x:Key="Text.Rama.Conflict.Binary" xml:space="preserve">Los archivos binarios no se pueden resolver aquí.</x:String>
+  <x:String x:Key="Text.Rama.Rail.Accounts" xml:space="preserve">Cuentas</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Title" xml:space="preserve">Cuentas conectadas</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Subtitle" xml:space="preserve">Los tokens se guardan en el llavero del sistema; en disco solo queda la configuración sin secretos.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.OrgUrl" xml:space="preserve">URL de la organización</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.Project" xml:space="preserve">Proyecto</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.Pat" xml:space="preserve">Token de acceso personal (PAT)</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.PatScopes" xml:space="preserve">Permisos del PAT: Code: Read &amp; Write, Build: Read &amp; execute, Pipeline Resources: Use.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Bitbucket.Workspace" xml:space="preserve">Workspace (opcional)</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Bitbucket.Scopes" xml:space="preserve">Scopes del token: read:user:bitbucket, read:workspace:bitbucket, read:repository:bitbucket.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Jira.Site" xml:space="preserve">Sitio</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Jira.Project" xml:space="preserve">Proyecto (clave)</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Email" xml:space="preserve">Correo</x:String>
+  <x:String x:Key="Text.Rama.Accounts.ApiToken" xml:space="preserve">API token</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Expiry" xml:space="preserve">Fecha de vencimiento del token</x:String>
+  <x:String x:Key="Text.Rama.Accounts.SecretSaved" xml:space="preserve">Guardado en el llavero del sistema</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Test" xml:space="preserve">Probar conexión</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Save" xml:space="preserve">Guardar</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Remove" xml:space="preserve">Quitar</x:String>
+  <x:String x:Key="Text.Rama.Accounts.SavedOk" xml:space="preserve">Cuenta guardada.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.RemovedOk" xml:space="preserve">Cuenta quitada.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Expired" xml:space="preserve">El token está vencido.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.ExpiresIn" xml:space="preserve">El token vence en {0} días.</x:String>
 </ResourceDictionary>
