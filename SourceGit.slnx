@@ -60,6 +60,14 @@
 		<Project Path="src/SourceGit.csproj" />
 	</Folder>
 
+	<Folder Name="/lib/">
+		<Project Path="lib/Rama.Core/Rama.Core.csproj" />
+	</Folder>
+
+	<Folder Name="/tests/">
+		<Project Path="tests/Rama.Core.Tests/Rama.Core.Tests.csproj" />
+	</Folder>
+
 	<Folder Name="/files/">
 		<File Path=".editorconfig"/>
 		<File Path=".gitattributes"/>

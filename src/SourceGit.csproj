@@ -69,6 +69,10 @@
     <TrimmerRootAssembly Include="Avalonia.Themes.Fluent" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\lib\Rama.Core\Rama.Core.csproj" />
+  </ItemGroup>
+
   <Target BeforeTargets="GetAssemblyAttributes" Name="GenVersionInfo">
     <Exec Command="git describe --abbrev=8 --dirty" ConsoleToMsBuild="True" IgnoreExitCode="true">
       <Output PropertyName="FriendlyVersion" TaskParameter="ConsoleOutput" />
