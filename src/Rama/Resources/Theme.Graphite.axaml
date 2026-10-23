@@ -56,6 +56,15 @@
       <Color x:Key="Color.Link">#FF5AA9E6</Color>
       <Color x:Key="Color.InlineCode">#FF2C2E33</Color>
       <Color x:Key="Color.InlineCodeFG">#FFECECEC</Color>
+
+      <!-- Texto sobre acento ambar: tinta oscura (contraste) -->
+      <Color x:Key="Color.OnAccent">#FF1C1406</Color>
+      <SolidColorBrush x:Key="AccentButtonForeground" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FF1C1406"/>
+      <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#FF1C1406"/>
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
+  <SolidColorBrush x:Key="Brush.OnAccent" Color="#FF1C1406"/>
+  <SolidColorBrush x:Key="Brush.FG3" Color="#FF8C8F96"/>
 </ResourceDictionary>

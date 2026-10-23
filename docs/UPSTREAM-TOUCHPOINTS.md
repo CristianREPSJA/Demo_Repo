@@ -19,3 +19,12 @@ F2: rebrand
 - `src/App.axaml.cs` — carriles del grafo de Rama (`Branding.GraphPalette`).
 - `src/Models/Locales.cs`, `src/ViewModels/Preferences.cs` — locale es_CL y tema Dark por defecto.
 - `src/App.ico` — icono nuevo (generado con `tools/make-icon.ps1`).
+
+F4a: restyle pantallas git
+- `src/App.axaml` — merge de `Rama/Resources/Styles.Rama.axaml` tras Styles.axaml.
+- `src/Views/CommitRefsPresenter.cs` — pastillas palidas por carril (Render/Measure).
+- `src/Views/ChangeStatusIcon.cs` — letra de estado coloreada plana (M ambar, A menta, D rosa).
+- `src/Views/Avatar.cs` — fallback de iniciales en circulo con par palido.
+- `src/Views/Histories.axaml` — RowHeight 30, subject 30, clase `sha_faint` en SHA.
+- `src/Views/{Repository,Compare,RevisionCompare,About,SelfUpdate}.axaml` — texto sobre ambar usa `Brush.OnAccent` (#1c1406).
+- `src/ViewModels/Preferences.cs` — defaults: diff lado a lado ON, avatar de iniciales (no estilo GitHub).

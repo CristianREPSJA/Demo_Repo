@@ -1,0 +1,59 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Rama: overrides de estilo sobre Styles.axaml (se mezcla despues). Ver docs/THEME-MAPPING.md. -->
+
+  <!-- Encabezados: sentence case 12px apagados, sin negrita -->
+  <Style Selector="TextBlock.table_header">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="TextBlock.tab_header">
+    <Setter Property="FontWeight" Value="Medium"/>
+  </Style>
+  <Style Selector="TextBlock.info_label">
+    <Setter Property="FontWeight" Value="Normal"/>
+  </Style>
+
+  <!-- SHA: mono tenue -->
+  <Style Selector="TextBlock.sha_faint">
+    <Setter Property="FontFamily" Value="{DynamicResource Fonts.Monospace}"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+  </Style>
+
+  <!-- Seleccion neutra (#2c2e33) en listas y filas del historial; el ambar queda para HEAD/primario/foco -->
+  <Style Selector="ListBox ListBoxItem:selected /template/ Border#PART_Background">
+    <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="ListBox:focus-within ListBoxItem:selected /template/ Border#PART_Background">
+    <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="ListBox:focus-within ListBoxItem:selected:pointerover /template/ Border#PART_Background">
+    <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="DataGridRow:selected:pointerover /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="DataGridRow:selected:focus /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource Brush.Badge}"/>
+    <Setter Property="Opacity" Value="1"/>
+  </Style>
+  <Style Selector="DataGridRow:selected /template/ DataGridCell">
+    <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+  </Style>
+
+  <!-- Boton primario unico: ambar con texto oscuro -->
+  <Style Selector="Button.flat.primary">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+</Styles>
