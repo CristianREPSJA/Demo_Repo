@@ -38,3 +38,10 @@ F4a: restyle pantallas git
 - `src/SourceGit.csproj` — referencia a lib/Rama.Terminal (terminal integrada, F5).
 - `SourceGit.slnx` — proyectos lib/Rama.Terminal y tests/Rama.Terminal.Tests.
 - `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal).
+
+F5b: cableado de la terminal
+- `src/ViewModels/Repository.cs` — `IsTerminalVisible`/`ToggleTerminal` y liberación de la terminal al cerrar la pestaña.
+- `src/ViewModels/WorkingCopy.cs` — `AskClaudeForCommitMessage` (inserta pedido de commit en la terminal).
+- `src/Views/Repository.axaml` — fila inferior con `TerminalHost` (panel de terminal del repositorio).
+- `src/Views/RepositoryToolbar.axaml(.cs)` — botón "Terminal" que alterna el panel inferior.
+- `src/Views/WorkingCopy.axaml(.cs)` — botón "Pedir mensaje a Claude" y nota bajo el formulario de commit.

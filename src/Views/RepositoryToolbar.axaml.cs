@@ -513,6 +513,14 @@ namespace SourceGit.Views
             }
         }
 
+        // RAMA: alterna el panel de terminal inferior
+        private void ToggleTerminal(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.Repository repo)
+                repo.ToggleTerminal();
+            e.Handled = true;
+        }
+
         private async void Cleanup(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.Repository repo)

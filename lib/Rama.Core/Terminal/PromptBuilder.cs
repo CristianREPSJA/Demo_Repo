@@ -15,17 +15,26 @@ public static class PromptBuilder
         if (clean.Count == 0)
             throw new ArgumentException("Se requiere al menos un archivo.", nameof(files));
 
-        var shown = string.Join(", ", clean.Take(MaxFiles));
-        var extra = clean.Count - MaxFiles;
-        var list = extra > 0 ? $"{shown} y {extra} más" : shown;
-        return Sanitize($"Explica los cambios seleccionados en: {list}");
+        return Sanitize($"Explica los cambios seleccionados en: {FileList(clean)}");
     }
 
-    public static string CommitMessage(string? ticketKey)
+    public static string CommitMessage(string? ticketKey) => CommitMessage(ticketKey, null);
+
+    // Con archivos preparados los nombra en el pedido; sin ellos queda la forma genérica.
+    public static string CommitMessage(string? ticketKey, IEnumerable<string>? stagedFiles)
     {
         var ticket = Sanitize(ticketKey);
         var format = ticket.Length > 0 ? $"{ticket} <resumen>" : "<resumen>";
-        return Sanitize($"Redacta un mensaje de commit en español para los cambios preparados (git diff --staged), formato: {format}");
+        var clean = (stagedFiles ?? []).Select(Sanitize).Where(f => f.Length > 0).ToList();
+        var staged = clean.Count > 0 ? $"git diff --staged: {FileList(clean)}" : "git diff --staged";
+        return Sanitize($"Redacta un mensaje de commit en español para los cambios preparados ({staged}), formato: {format}");
+    }
+
+    private static string FileList(List<string> clean)
+    {
+        var shown = string.Join(", ", clean.Take(MaxFiles));
+        var extra = clean.Count - MaxFiles;
+        return extra > 0 ? $"{shown} y {extra} más" : shown;
     }
 
     public static string ReviewBranch(string baseBranch) =>

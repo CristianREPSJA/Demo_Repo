@@ -108,7 +108,7 @@
         <Button Classes="ghost" Content="Explicar cambios seleccionados" IsEnabled="{Binding CanExplain}" Click="OnExplainClick"/>
         <Button Classes="ghost" Content="Redactar mensaje de commit" IsEnabled="{Binding CanCommit}" Click="OnCommitClick"/>
         <Button Classes="ghost" Content="{Binding ReviewLabel}" IsEnabled="{Binding CanReview}" Click="OnReviewClick"/>
-        <Button Classes="ghost" Content="{Binding SummarizeLabel}" IsEnabled="{Binding CanSummarize}" Click="OnSummarizeClick"/>
+        <Button Classes="ghost" Content="{Binding SummarizeLabel}" IsEnabled="{Binding CanSummarize}" IsVisible="{Binding HasTicket}" Click="OnSummarizeClick"/>
         <TextBlock Text="{x:Static rt:TerminalPanel.Note}" FontSize="11" Foreground="{StaticResource Rama.Term.Faint}"
                    VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="420"/>
       </WrapPanel>

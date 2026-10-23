@@ -144,6 +144,14 @@ namespace SourceGit.Views
             }
         }
 
+        // RAMA: abre la terminal inferior e inserta el pedido de commit
+        private void OnAskClaudeForCommitMessage(object _, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.WorkingCopy vm)
+                vm.AskClaudeForCommitMessage();
+            e.Handled = true;
+        }
+
         private async void OnStagedKeyDown(object _, KeyEventArgs e)
         {
             var cmdKey = OperatingSystem.IsMacOS() ? KeyModifiers.Meta : KeyModifiers.Control;

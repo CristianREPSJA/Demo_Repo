@@ -98,6 +98,15 @@ namespace SourceGit.ViewModels
             get => _stashesPage;
         }
 
+        // RAMA: panel de terminal inferior del repositorio
+        public bool IsTerminalVisible
+        {
+            get => _isTerminalVisible;
+            set => SetProperty(ref _isTerminalVisible, value);
+        }
+
+        public void ToggleTerminal() => IsTerminalVisible = !IsTerminalVisible;
+
         public bool IsDashboardVisible
         {
             get => SelectedViewIndex == 0;
@@ -481,6 +490,9 @@ namespace SourceGit.ViewModels
 
             _watcher?.Dispose();
             _autoFetchTimer.Dispose();
+
+            // RAMA: libera la terminal de este repositorio al cerrar su pestaña
+            Rama.Terminal.TerminalRegistry.Instance.Release(FullPath);
         }
 
         public void SendNotification(string message, bool isError = false)
@@ -1949,6 +1961,7 @@ namespace SourceGit.ViewModels
 
         private bool _isAutoFetching = false;
         private Timer _autoFetchTimer = null;
+        private bool _isTerminalVisible = false; // RAMA
         private DateTime _lastFetchTime = DateTime.MinValue;
 
         private Models.BisectState _bisectState = Models.BisectState.None;

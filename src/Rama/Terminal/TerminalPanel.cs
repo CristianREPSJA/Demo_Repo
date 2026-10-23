@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,6 +15,20 @@ namespace SourceGit.Rama.Terminal
     {
         public const string Note = "Cada botón escribe el pedido en la terminal. Tú lo revisas y lo envías con Enter.";
         public const string Disclaimer = "Abre la CLI oficial sin modificarla. La sesión usa tu propia cuenta de Claude Code.";
+
+        private const int StartTimeoutMs = 15000;
+        private const int PollMs = 100;
+        private const int ClaudeBootDelayMs = 1500;
+        private static readonly string[] ContextDependent =
+        [
+            nameof(HasTicket), nameof(CanExplain), nameof(CanReview), nameof(CanSummarize), nameof(ReviewLabel), nameof(SummarizeLabel),
+        ];
+
+        // Lo asigna el alojador para recalcular el contexto bajo demanda.
+        public Action<TerminalPanel> ContextRefresher { get; set; }
+
+        // Vista única: solo un alojador a la vez muestra este panel.
+        public ViewLease Lease { get; } = new();
 
         public string RepositoryPath { get; }
         public string DirectoryLabel => $"Directorio: {RepositoryPath}";
@@ -34,49 +49,28 @@ namespace SourceGit.Rama.Terminal
             }
         }
 
-        public IReadOnlyList<string> SelectedFiles
+        // Contexto del repositorio (archivos, rama, ticket); lo actualiza quien aloja el panel.
+        public TerminalContext Context
         {
-            get => _selectedFiles;
+            get => _context;
             set
             {
-                if (SetProperty(ref _selectedFiles, value ?? []))
-                    OnPropertyChanged(nameof(CanExplain));
-            }
-        }
-
-        public string TicketKey
-        {
-            get => _ticketKey;
-            set
-            {
-                if (SetProperty(ref _ticketKey, value))
-                {
-                    OnPropertyChanged(nameof(CanSummarize));
-                    OnPropertyChanged(nameof(SummarizeLabel));
-                }
-            }
-        }
-
-        public string BaseBranch
-        {
-            get => _baseBranch;
-            set
-            {
-                if (SetProperty(ref _baseBranch, value))
-                {
-                    OnPropertyChanged(nameof(CanReview));
-                    OnPropertyChanged(nameof(ReviewLabel));
-                }
+                value ??= TerminalContext.Empty;
+                if (!SetProperty(ref _context, value))
+                    return;
+                foreach (var name in ContextDependent)
+                    OnPropertyChanged(name);
             }
         }
 
         public bool ClaudeAvailable => ClaudeTab.CanStart;
-        public bool CanExplain => ClaudeAvailable && _selectedFiles.Count > 0;
+        public bool HasTicket => !string.IsNullOrWhiteSpace(_context.TicketKey);
+        public bool CanExplain => ClaudeAvailable && ContextPrompts.IsAvailable(ContextAction.ExplainChanges, _context);
         public bool CanCommit => ClaudeAvailable;
-        public bool CanReview => ClaudeAvailable && !string.IsNullOrWhiteSpace(_baseBranch);
-        public bool CanSummarize => ClaudeAvailable && !string.IsNullOrWhiteSpace(_ticketKey);
-        public string ReviewLabel => string.IsNullOrWhiteSpace(_baseBranch) ? "Revisar rama" : $"Revisar rama contra {_baseBranch}";
-        public string SummarizeLabel => string.IsNullOrWhiteSpace(_ticketKey) ? "Resumir ticket" : $"Resumir {_ticketKey}";
+        public bool CanReview => ClaudeAvailable && ContextPrompts.IsAvailable(ContextAction.ReviewBranch, _context);
+        public bool CanSummarize => ClaudeAvailable && HasTicket;
+        public string ReviewLabel => string.IsNullOrWhiteSpace(_context.BaseBranch) ? "Revisar rama" : $"Revisar rama contra {_context.BaseBranch}";
+        public string SummarizeLabel => HasTicket ? $"Resumir {_context.TicketKey}" : "Resumir ticket";
 
         public string StatusText
         {
@@ -132,17 +126,36 @@ namespace SourceGit.Rama.Terminal
 
         public void RefreshStatus() => OnPropertyChanged(nameof(StatusText));
 
-        public Task ExplainChangesAsync() => InsertPromptAsync(PromptBuilder.ExplainChanges(_selectedFiles));
-        public Task CommitMessageAsync() => InsertPromptAsync(PromptBuilder.CommitMessage(_ticketKey));
-        public Task ReviewBranchAsync() => InsertPromptAsync(PromptBuilder.ReviewBranch(_baseBranch));
-        public Task SummarizeTicketAsync() => InsertPromptAsync(PromptBuilder.SummarizeTicket(_ticketKey));
+        public Task ExplainChangesAsync() => RunAsync(ContextAction.ExplainChanges);
+        public Task CommitMessageAsync() => RunAsync(ContextAction.CommitMessage);
+        public Task ReviewBranchAsync() => RunAsync(ContextAction.ReviewBranch);
+        public Task SummarizeTicketAsync() => RunAsync(ContextAction.SummarizeTicket);
 
-        // Escribe en la pestaña claude sin Enter.
-        public Task InsertPromptAsync(string prompt)
+        // Refresca el contexto justo antes de armar el pedido (la selección pudo cambiar).
+        private Task RunAsync(ContextAction action)
         {
+            ContextRefresher?.Invoke(this);
+            var prompt = ContextPrompts.Build(action, _context);
+            return prompt == null ? Task.CompletedTask : InsertPromptAsync(prompt);
+        }
+
+        // Escribe en la pestaña claude sin Enter; la inicia si aún no corre. Nunca envía.
+        public async Task InsertPromptAsync(string prompt)
+        {
+            if (_disposed || !ClaudeTab.CanStart)
+                return;
             SelectedTab = ClaudeTab;
-            var session = ClaudeTab.Session;
-            return session == null ? Task.CompletedTask : session.WriteInputAsync(prompt, submit: false);
+
+            var wasRunning = ClaudeTab.Session is { IsRunning: true };
+            var sw = Stopwatch.StartNew();
+            while (ClaudeTab.Session is not { IsRunning: true } && !_disposed && sw.ElapsedMilliseconds < StartTimeoutMs)
+                await Task.Delay(PollMs);
+            if (_disposed || ClaudeTab.Session is not { IsRunning: true } session)
+                return;
+
+            if (!wasRunning)
+                await Task.Delay(ClaudeBootDelayMs); // la CLI necesita pintar su caja de entrada
+            await session.WriteInputAsync(prompt, submit: false);
         }
 
         public void Dispose()
@@ -160,9 +173,7 @@ namespace SourceGit.Rama.Terminal
 
         private readonly IReadOnlyDictionary<string, string> _environment;
         private TerminalTab _selectedTab;
-        private IReadOnlyList<string> _selectedFiles = [];
-        private string _ticketKey;
-        private string _baseBranch;
+        private TerminalContext _context = TerminalContext.Empty;
         private bool _disposed;
     }
 }

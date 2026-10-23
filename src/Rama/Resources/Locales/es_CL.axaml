@@ -22,6 +22,10 @@
   <x:String x:Key="Text.Rama.Rail.JiraBoard" xml:space="preserve">Tablero Jira</x:String>
   <x:String x:Key="Text.Rama.Rail.Clone" xml:space="preserve">Clonar repositorio</x:String>
   <x:String x:Key="Text.Rama.Rail.Terminal" xml:space="preserve">Terminal</x:String>
+  <x:String x:Key="Text.Rama.Terminal.Toggle" xml:space="preserve">Mostrar u ocultar la terminal</x:String>
+  <x:String x:Key="Text.Rama.Terminal.NoRepository" xml:space="preserve">Abre un repositorio para usar la terminal.</x:String>
+  <x:String x:Key="Text.Rama.Terminal.AskCommitMessage" xml:space="preserve">Pedir mensaje a Claude</x:String>
+  <x:String x:Key="Text.Rama.Terminal.AskCommitMessageNote" xml:space="preserve">Escribe el pedido en la terminal. Tú lo envías con Enter.</x:String>
   <x:String x:Key="Text.Rama.Rail.Settings" xml:space="preserve">Ajustes</x:String>
   <x:String x:Key="Text.Rama.Tagline" xml:space="preserve">Cliente git del equipo</x:String>
   <x:String x:Key="Text.Rama.Rail.Accounts" xml:space="preserve">Cuentas</x:String>
