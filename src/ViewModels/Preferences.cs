@@ -462,12 +462,6 @@ namespace SourceGit.ViewModels
             set;
         } = [];
 
-        public AvaloniaList<AI.Service> OpenAIServices
-        {
-            get;
-            set;
-        } = [];
-
         public double LastCheckUpdateTime
         {
             get => _lastCheckUpdateTime;
@@ -610,24 +604,6 @@ namespace SourceGit.ViewModels
         public void AutoRemoveInvalidNode()
         {
             RemoveInvalidRepositoriesRecursive(RepositoryNodes);
-        }
-
-        public void UpdateAvailableAIModels()
-        {
-            Task.Run(() =>
-            {
-                foreach (var service in OpenAIServices)
-                {
-                    try
-                    {
-                        service.FetchAvailableModels();
-                    }
-                    catch
-                    {
-                        // Ignore errors.
-                    }
-                }
-            });
         }
 
         public void Save()

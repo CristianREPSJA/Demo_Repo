@@ -944,41 +944,6 @@ namespace SourceGit.Views
             var changes = selection.Changes;
             var menu = new ContextMenu();
 
-            MenuItem ai = null;
-            var services = repo.GetPreferredOpenAIServices();
-            if (services.Count > 0)
-            {
-                ai = new MenuItem();
-                ai.Icon = this.CreateMenuIcon("Icons.AIAssist");
-                ai.Header = App.Text("ChangeCM.GenerateCommitMessage");
-
-                if (services.Count == 1)
-                {
-                    ai.Click += (_, e) =>
-                    {
-                        DoOpenAIAssistant(repo, services[0], changes);
-                        e.Handled = true;
-                    };
-                }
-                else
-                {
-                    foreach (var service in services)
-                    {
-                        var dup = service;
-
-                        var item = new MenuItem();
-                        item.Header = service.Name;
-                        item.Click += (_, e) =>
-                        {
-                            DoOpenAIAssistant(repo, dup, changes);
-                            e.Handled = true;
-                        };
-
-                        ai.Items.Add(item);
-                    }
-                }
-            }
-
             if (changes.Count == 1)
             {
                 var change = changes[0];
@@ -1143,12 +1108,6 @@ namespace SourceGit.Views
                     menu.Items.Add(new MenuItem() { Header = "-" });
                 }
 
-                if (ai != null)
-                {
-                    menu.Items.Add(ai);
-                    menu.Items.Add(new MenuItem() { Header = "-" });
-                }
-
                 if (selection.IsSingleFolder)
                 {
                     var history = new MenuItem();
@@ -1289,12 +1248,6 @@ namespace SourceGit.Views
                 menu.Items.Add(stash);
                 menu.Items.Add(patch);
 
-                if (ai != null)
-                {
-                    menu.Items.Add(new MenuItem() { Header = "-" });
-                    menu.Items.Add(ai);
-                }
-
                 if (selection.IsSingleFolder)
                 {
                     var history = new MenuItem();
@@ -1408,17 +1361,6 @@ namespace SourceGit.Views
 
             menu.Items.Add(custom);
             menu.Items.Add(new MenuItem() { Header = "-" });
-        }
-
-        private void DoOpenAIAssistant(ViewModels.Repository repo, AI.Service serivce, List<Models.Change> changes)
-        {
-            var owner = TopLevel.GetTopLevel(this) as Window;
-            if (owner == null)
-                return;
-
-            var assistant = new ViewModels.AIAssistant(repo, serivce, changes);
-            var view = new AIAssistant() { DataContext = assistant };
-            view.Show(owner);
         }
     }
 }

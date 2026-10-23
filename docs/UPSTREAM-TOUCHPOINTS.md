@@ -4,3 +4,10 @@ Formato: `ruta` — motivo.
 
 - `src/SourceGit.csproj` — referencia a lib/Rama.Core.
 - `SourceGit.slnx` — proyectos lib/ y tests/.
+
+F1: removed AI
+- `src/AI/*`, `src/ViewModels/AIAssistant.cs`, `src/Views/AIAssistant.axaml(.cs)` — F1: removed AI (eliminados).
+- `src/SourceGit.csproj`, `THIRD-PARTY-LICENSES.md`, `README.md` — F1: removed AI.
+- `src/Models/RepositorySettings.cs`, `src/ViewModels/{Preferences,Repository,RepositoryConfigure}.cs`, `src/App.axaml.cs` — F1: removed AI.
+- `src/Views/{CommitMessageToolBox,Preferences,RepositoryConfigure}.axaml(.cs)`, `src/Views/WorkingCopy.axaml.cs` — F1: removed AI.
+- `src/Resources/Icons.axaml`, `src/Resources/Locales/*.axaml` (16 archivos) — F1: removed AI.

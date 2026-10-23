@@ -42,12 +42,6 @@ namespace SourceGit.Models
             set;
         } = false;
 
-        public string PreferredOpenAIService
-        {
-            get;
-            set;
-        } = "---";
-
         public AvaloniaList<CommitTemplate> CommitTemplates
         {
             get;

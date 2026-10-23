@@ -16,11 +16,6 @@
   <x:String x:Key="Text.AddWorktree.Location.Placeholder" xml:space="preserve">Διαδρομή για αυτό το worktree. Υποστηρίζεται σχετική διαδρομή.</x:String>
   <x:String x:Key="Text.AddWorktree.Name" xml:space="preserve">Όνομα κλάδου:</x:String>
   <x:String x:Key="Text.AddWorktree.Name.Placeholder" xml:space="preserve">Προαιρετικό. Προεπιλογή είναι το όνομα του φακέλου προορισμού.</x:String>
-  <x:String x:Key="Text.AIAssistant" xml:space="preserve">Βοηθός AI</x:String>
-  <x:String x:Key="Text.AIAssistant.Model" xml:space="preserve">ΜΟΝΤΕΛΟ</x:String>
-  <x:String x:Key="Text.AIAssistant.Regen" xml:space="preserve">ΕΠΑΝΑΔΗΜΙΟΥΡΓΙΑ</x:String>
-  <x:String x:Key="Text.AIAssistant.Tip" xml:space="preserve">Χρήση AI για δημιουργία μηνύματος commit</x:String>
-  <x:String x:Key="Text.AIAssistant.Use" xml:space="preserve">Χρήση</x:String>
   <x:String x:Key="Text.App.Hide" xml:space="preserve">Απόκρυψη SourceGit</x:String>
   <x:String x:Key="Text.App.HideOthers" xml:space="preserve">Απόκρυψη άλλων</x:String>
   <x:String x:Key="Text.App.ShowAll" xml:space="preserve">Εμφάνιση όλων</x:String>
@@ -98,7 +93,6 @@
   <x:String x:Key="Text.Cancel" xml:space="preserve">ΑΚΥΡΟ</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutFirstParentRevision" xml:space="preserve">Επαναφορά στη γονική αναθεώρηση</x:String>
   <x:String x:Key="Text.ChangeCM.CheckoutThisRevision" xml:space="preserve">Επαναφορά σε αυτή την αναθεώρηση</x:String>
-  <x:String x:Key="Text.ChangeCM.GenerateCommitMessage" xml:space="preserve">Δημιουργία μηνύματος commit</x:String>
   <x:String x:Key="Text.ChangeCM.Merge" xml:space="preserve">Συγχώνευση (ενσωματωμένη)</x:String>
   <x:String x:Key="Text.ChangeCM.MergeExternal" xml:space="preserve">Συγχώνευση (εξωτερική)</x:String>
   <x:String x:Key="Text.ChangeCM.ResetFileTo" xml:space="preserve">Επαναφορά αρχείου(-ων) στο ${0}$</x:String>
@@ -265,9 +259,6 @@
   <x:String x:Key="Text.Configure.IssueTracker.Share" xml:space="preserve">Κοινή χρήση αυτού του κανόνα στο αρχείο .issuetracker</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate" xml:space="preserve">URL αποτελέσματος:</x:String>
   <x:String x:Key="Text.Configure.IssueTracker.URLTemplate.Tip" xml:space="preserve">Χρησιμοποιήστε $1, $2 για πρόσβαση στις τιμές των ομάδων της κανονικής έκφρασης.</x:String>
-  <x:String x:Key="Text.Configure.OpenAI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred" xml:space="preserve">Προτιμώμενη υπηρεσία:</x:String>
-  <x:String x:Key="Text.Configure.OpenAI.Preferred.Tip" xml:space="preserve">Αν οριστεί η «Προτιμώμενη υπηρεσία», το SourceGit θα τη χρησιμοποιεί μόνο σε αυτό το αποθετήριο. Διαφορετικά, αν υπάρχουν περισσότερες από μία διαθέσιμες υπηρεσίες, θα εμφανίζεται μενού για να επιλέξετε μία.</x:String>
   <x:String x:Key="Text.Configure.Proxy" xml:space="preserve">HTTP Proxy</x:String>
   <x:String x:Key="Text.Configure.Proxy.Placeholder" xml:space="preserve">HTTP proxy που χρησιμοποιεί αυτό το αποθετήριο</x:String>
   <x:String x:Key="Text.Configure.User" xml:space="preserve">Όνομα χρήστη</x:String>
@@ -642,14 +633,6 @@
   <x:String x:Key="Text.Period.YearsAgo" xml:space="preserve">{0} χρόνια πριν</x:String>
   <x:String x:Key="Text.Period.Yesterday" xml:space="preserve">Χθες</x:String>
   <x:String x:Key="Text.Preferences" xml:space="preserve">Προτιμήσεις</x:String>
-  <x:String x:Key="Text.Preferences.AI" xml:space="preserve">AI</x:String>
-  <x:String x:Key="Text.Preferences.AI.AdditionalPrompt" xml:space="preserve">Επιπλέον prompt (χρησιμοποιήστε `-` για να απαριθμήσετε τις απαιτήσεις σας)</x:String>
-  <x:String x:Key="Text.Preferences.AI.ApiKey" xml:space="preserve">Κλειδί API</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model" xml:space="preserve">Μοντέλο</x:String>
-  <x:String x:Key="Text.Preferences.AI.Model.AutoFetchAvailableModels" xml:space="preserve">Αυτόματη ανάκτηση διαθέσιμων model-ids</x:String>
-  <x:String x:Key="Text.Preferences.AI.Name" xml:space="preserve">Όνομα</x:String>
-  <x:String x:Key="Text.Preferences.AI.ReadApiKeyFromEnv" xml:space="preserve">Η τιμή που εισήχθη είναι το όνομα για φόρτωση του κλειδιού API από το ENV</x:String>
-  <x:String x:Key="Text.Preferences.AI.Server" xml:space="preserve">Διακομιστής</x:String>
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">ΕΜΦΑΝΙΣΗ</x:String>
   <x:String x:Key="Text.Preferences.Appearance.DefaultFont" xml:space="preserve">Προεπιλεγμένη γραμματοσειρά</x:String>
   <x:String x:Key="Text.Preferences.Appearance.EditorTabWidth" xml:space="preserve">Πλάτος tab επεξεργαστή</x:String>
