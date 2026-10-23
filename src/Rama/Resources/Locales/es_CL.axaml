@@ -2,6 +2,7 @@
   <!-- Español (Chile): hereda es_ES (que a su vez hereda en_US) y solo sobrescribe lo propio de Rama. -->
   <ResourceDictionary.MergedDictionaries>
     <ResourceInclude Source="avares://SourceGit/Resources/Locales/es_ES.axaml"/>
+    <ResourceInclude Source="avares://SourceGit/Rama/Resources/Locales/es_CL.Casing.axaml"/>
   </ResourceDictionary.MergedDictionaries>
 
   <!-- Marca -->

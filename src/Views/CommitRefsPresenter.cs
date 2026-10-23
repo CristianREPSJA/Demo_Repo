@@ -74,6 +74,8 @@ namespace SourceGit.Views
             public bool IsHead { get; set; } = false;
             public double Width { get; set; } = 0.0;
             public List<FormattedText> Remotes { get; set; } = [];
+            public IBrush Pill { get; set; } = null; // RAMA
+            public IBrush Ink { get; set; } = null; // RAMA
         }
 
         public static readonly StyledProperty<FontFamily> FontFamilyProperty =
@@ -170,14 +172,12 @@ namespace SourceGit.Views
             return null;
         }
 
+        // RAMA: pastillas palidas (fondo + tinta por carril), sin bordes ni degradados
         public override void Render(DrawingContext context)
         {
             if (_items.Count == 0)
                 return;
 
-            var useGraphColor = UseGraphColor;
-            var fg = Foreground;
-            var bg = Background;
             var allowWrap = AllowWrap;
             var x = 1.5;
             var y = 0.5;
@@ -195,28 +195,7 @@ namespace SourceGit.Views
                 }
 
                 var entireRect = new RoundedRect(new Rect(x, y, item.Width, 16), new CornerRadius(4));
-                if (item.IsHead)
-                {
-                    if (useGraphColor)
-                    {
-                        if (bg != null)
-                            context.DrawRectangle(bg, null, entireRect);
-
-                        using (context.PushOpacity(.6))
-                            context.DrawRectangle(item.Brush, null, entireRect);
-                    }
-                }
-                else
-                {
-                    if (bg != null)
-                        context.DrawRectangle(bg, null, entireRect);
-
-                    var labelRect = new RoundedRect(new Rect(x + 16, y, item.Width - 16, 16), new CornerRadius(4, 0, 0, 4));
-                    using (context.PushOpacity(.2))
-                        context.DrawRectangle(item.Brush, null, labelRect);
-                }
-
-                context.DrawLine(new Pen(item.Brush), new Point(x + 16, y), new Point(x + 16, y + 16));
+                context.DrawRectangle(item.Pill, null, entireRect);
                 context.DrawText(item.Label, new Point(x + 20, y + 8.0 - item.Label.Height * 0.5));
 
                 if (item.Remotes.Count > 0)
@@ -225,28 +204,24 @@ namespace SourceGit.Views
 
                     if (hasSingleRemote)
                     {
-                        context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
                         using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                            context.DrawGeometry(fg, null, remoteIcon);
+                            context.DrawGeometry(item.Ink, null, remoteIcon);
                     }
                     else
                     {
                         foreach (var remote in item.Remotes)
                         {
-                            context.DrawLine(new Pen(item.Brush), new Point(rx, y), new Point(rx, y + 16));
                             using (context.PushTransform(Matrix.CreateTranslation(rx + 4, y + 4)))
-                                context.DrawGeometry(fg, null, remoteIcon);
+                                context.DrawGeometry(item.Ink, null, remoteIcon);
                             context.DrawText(remote, new Point(rx + 16, y + 8.0 - remote.Height * 0.5));
                             rx += remote.WidthIncludingTrailingWhitespace + 22;
                         }
                     }
                 }
 
-                context.DrawRectangle(null, new Pen(item.Brush), entireRect);
-
                 var icon = CommitRefsIconCache.Instance.GetIcon(item.Decorator.Type);
                 using (context.PushTransform(Matrix.CreateTranslation(x + 3, y + 3)))
-                    context.DrawGeometry(fg, null, icon);
+                    context.DrawGeometry(item.Ink, null, icon);
 
                 x += item.Width + 4;
             }
@@ -293,7 +268,6 @@ namespace SourceGit.Views
             var typeface = new Typeface(FontFamily);
             var typefaceHead = new Typeface(FontFamily, FontStyle.Normal, FontWeight.Bold);
             var typefaceRemote = new Typeface(FontFamily, FontStyle.Italic, FontWeight.Bold);
-            var fg = Foreground;
             var normalBG = UseGraphColor ? Models.CommitGraph.Pens[commit.Color].Brush : Brushes.Gray;
             var labelSize = FontSize;
             var requiredHeight = 16.0;
@@ -318,6 +292,11 @@ namespace SourceGit.Views
                     IsHead = decorator.Type is Models.DecoratorType.CurrentBranchHead or Models.DecoratorType.CurrentCommitHead,
                 };
                 _items.Add(item);
+                // RAMA: pastilla palida por carril (fondo + tinta)
+                var pair = ResolvePair(item, decorator, normalBG);
+                item.Pill = new SolidColorBrush(pair.Background);
+                item.Ink = new SolidColorBrush(pair.Ink);
+                var fg = item.Ink;
 
                 if (item.IsHead)
                 {
@@ -400,6 +379,16 @@ namespace SourceGit.Views
 
             InvalidateVisual();
             return new Size(requiredWidth, requiredHeight);
+        }
+
+        // RAMA
+        private static Branding.PillPalette.Pair ResolvePair(RenderItem item, Models.Decorator decorator, IBrush laneBrush)
+        {
+            if (item.IsHead)
+                return Branding.PillPalette.ForLane(Branding.GraphPalette.Lanes[2]);
+            if (decorator.Type == Models.DecoratorType.Tag || laneBrush is not ISolidColorBrush solid)
+                return Branding.PillPalette.Neutral2;
+            return Branding.PillPalette.ForLane(solid.Color);
         }
 
         private List<RenderItem> _items = new List<RenderItem>();

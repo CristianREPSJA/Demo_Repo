@@ -11,17 +11,24 @@ namespace SourceGit.Views
     public class ChangeStatusIcon : Control
     {
         private static readonly string[] INDICATOR = ["?", "M", "T", "+", "−", "➜", "❏", "?", "!"];
+        // RAMA: M ambar palido, A menta, D rosa, R lila
+        private static readonly Color MOD = Color.Parse("#e9b866");
+        private static readonly Color ADD = Color.Parse("#5cc58a");
+        private static readonly Color DEL = Color.Parse("#e0718f");
+        private static readonly Color REN = Color.Parse("#b294e6");
+        private static readonly Color SKY = Color.Parse("#5aa9e6");
+        private static readonly Color CONFLICT = Color.Parse("#ee9ab1");
         private static readonly Color[] COLOR =
         [
             Colors.Transparent,
-            Colors.Goldenrod,
-            Colors.Goldenrod,
-            Colors.LimeGreen,
-            Colors.Tomato,
-            Colors.Orchid,
-            Colors.Goldenrod,
-            Colors.SkyBlue,
-            Colors.OrangeRed,
+            MOD,
+            MOD,
+            ADD,
+            DEL,
+            REN,
+            MOD,
+            SKY,
+            CONFLICT,
         ];
 
         public static readonly DirectProperty<ChangeStatusIcon, bool> IsUnstagedChangeProperty =
@@ -57,17 +64,8 @@ namespace SourceGit.Views
             var idx = (int)(_isUnstagedChange ? _change.WorkTree : _change.Index);
             var indicator = INDICATOR[idx];
             var color = COLOR[idx];
-            var hsl = color.ToHsl();
-            var color2 = ActualThemeVariant == ThemeVariant.Dark
-                ? new HslColor(hsl.A, hsl.H, hsl.S, hsl.L - 0.1).ToRgb()
-                : new HslColor(hsl.A, hsl.H, hsl.S, hsl.L + 0.1).ToRgb();
-
-            var background = new LinearGradientBrush
-            {
-                GradientStops = [new GradientStop(color, 0), new GradientStop(color2, 1)],
-                StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
-                EndPoint = new RelativePoint(0, 1, RelativeUnit.Relative),
-            };
+            // RAMA: letra de estado coloreada sobre fondo tenue plano (sin degradado ni texto blanco)
+            var background = new SolidColorBrush(color, 0.18);
 
             var txt = new FormattedText(
                 indicator,
@@ -75,7 +73,7 @@ namespace SourceGit.Views
                 FlowDirection.LeftToRight,
                 typeface,
                 Bounds.Width * 0.8,
-                Brushes.White);
+                new SolidColorBrush(color));
 
             var corner = (float)Math.Max(2, Bounds.Width / 16);
             var textOrigin = new Point((Bounds.Width - txt.Width) * 0.5, (Bounds.Height - txt.Height) * 0.5);
