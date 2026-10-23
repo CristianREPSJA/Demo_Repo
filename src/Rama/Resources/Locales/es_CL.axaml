@@ -46,4 +46,39 @@
   <x:String x:Key="Text.Rama.Accounts.RemovedOk" xml:space="preserve">Cuenta quitada.</x:String>
   <x:String x:Key="Text.Rama.Accounts.Expired" xml:space="preserve">El token está vencido.</x:String>
   <x:String x:Key="Text.Rama.Accounts.ExpiresIn" xml:space="preserve">El token vence en {0} días.</x:String>
+
+  <!-- Clonar repositorio -->
+  <x:String x:Key="Text.Rama.Clone.Title" xml:space="preserve">Clonar repositorio</x:String>
+  <x:String x:Key="Text.Rama.Clone.Subtitle" xml:space="preserve">Desde tus cuentas conectadas o una URL</x:String>
+  <x:String x:Key="Text.Rama.Clone.Accounts" xml:space="preserve">Cuentas conectadas</x:String>
+  <x:String x:Key="Text.Rama.Clone.Account.ExpiresIn" xml:space="preserve">API token, vence en {0} días</x:String>
+  <x:String x:Key="Text.Rama.Clone.Account.Expired" xml:space="preserve">API token vencido</x:String>
+  <x:String x:Key="Text.Rama.Clone.Account.Renew" xml:space="preserve">Renovar token</x:String>
+  <x:String x:Key="Text.Rama.Clone.ConnectAccount" xml:space="preserve">Conectar otra cuenta</x:String>
+  <x:String x:Key="Text.Rama.Clone.TokensNote" xml:space="preserve">Los tokens se guardan en el llavero del sistema, nunca en archivos.</x:String>
+  <x:String x:Key="Text.Rama.Clone.Cloning" xml:space="preserve">Clonando </x:String>
+  <x:String x:Key="Text.Rama.Clone.Starting" xml:space="preserve">Iniciando clonado</x:String>
+  <x:String x:Key="Text.Rama.Clone.Cancel" xml:space="preserve">Cancelar</x:String>
+  <x:String x:Key="Text.Rama.Clone.Search" xml:space="preserve">Buscar repositorios</x:String>
+  <x:String x:Key="Text.Rama.Clone.Project" xml:space="preserve">Proyecto</x:String>
+  <x:String x:Key="Text.Rama.Clone.AllProjects" xml:space="preserve">Todos los proyectos</x:String>
+  <x:String x:Key="Text.Rama.Clone.Count" xml:space="preserve">{0} repositorios</x:String>
+  <x:String x:Key="Text.Rama.Clone.NoAccount" xml:space="preserve">No hay repositorios. Conecta una cuenta en la página Cuentas.</x:String>
+  <x:String x:Key="Text.Rama.Clone.Url" xml:space="preserve">URL del repositorio remoto</x:String>
+  <x:String x:Key="Text.Rama.Clone.Col.Repo" xml:space="preserve">Repositorio</x:String>
+  <x:String x:Key="Text.Rama.Clone.Col.Project" xml:space="preserve">Proyecto</x:String>
+  <x:String x:Key="Text.Rama.Clone.Col.Branch" xml:space="preserve">Rama principal</x:String>
+  <x:String x:Key="Text.Rama.Clone.Col.Updated" xml:space="preserve">Actualizado</x:String>
+  <x:String x:Key="Text.Rama.Clone.Col.Size" xml:space="preserve">Tamaño</x:String>
+  <x:String x:Key="Text.Rama.Clone.Cloned" xml:space="preserve">Ya clonado</x:String>
+  <x:String x:Key="Text.Rama.Clone.Open" xml:space="preserve">Abrir</x:String>
+  <x:String x:Key="Text.Rama.Clone.Destination" xml:space="preserve">Destino</x:String>
+  <x:String x:Key="Text.Rama.Clone.Browse" xml:space="preserve">Examinar</x:String>
+  <x:String x:Key="Text.Rama.Clone.Submodules" xml:space="preserve">Inicializar submódulos</x:String>
+  <x:String x:Key="Text.Rama.Clone.HttpsNote" xml:space="preserve">Se clonará por HTTPS usando Git Credential Manager.</x:String>
+  <x:String x:Key="Text.Rama.Clone.Action" xml:space="preserve">Clonar {0}</x:String>
+  <x:String x:Key="Text.Rama.Clone.ActionPlain" xml:space="preserve">Clonar</x:String>
+  <x:String x:Key="Text.Rama.Clone.Error.Destination" xml:space="preserve">Indica una carpeta de destino válida.</x:String>
+  <x:String x:Key="Text.Rama.Clone.Error.NotEmpty" xml:space="preserve">La carpeta de destino ya existe y no está vacía.</x:String>
+  <x:String x:Key="Text.Rama.Clone.Error.Failed" xml:space="preserve">No se pudo clonar el repositorio.</x:String>
 </ResourceDictionary>

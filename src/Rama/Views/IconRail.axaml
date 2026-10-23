@@ -108,7 +108,7 @@
           <Path Classes="glyph" Data="{StaticResource RailIcon.Board}"/>
         </Button>
 
-        <Button Classes="rail"
+        <Button Classes="rail" Classes.active="{Binding IsClone}"
                 Command="{Binding CloneCommand}"
                 ToolTip.Tip="{DynamicResource Text.Rama.Rail.Clone}"
                 AutomationProperties.Name="{DynamicResource Text.Rama.Rail.Clone}">

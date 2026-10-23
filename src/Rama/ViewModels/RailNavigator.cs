@@ -12,6 +12,7 @@ namespace SourceGit.ViewModels
         JiraBoard,
         Terminal,
         Accounts,
+        Clone,
     }
 
     // Navegacion del riel: destinos con pagina propia y acciones (Clonar, Ajustes) que abren dialogos.
@@ -29,6 +30,7 @@ namespace SourceGit.ViewModels
                     OnPropertyChanged(nameof(IsJiraBoard));
                     OnPropertyChanged(nameof(IsTerminal));
                     OnPropertyChanged(nameof(IsAccounts));
+                    OnPropertyChanged(nameof(IsClone));
                 }
             }
         }
@@ -38,6 +40,7 @@ namespace SourceGit.ViewModels
         public bool IsJiraBoard => _current == RailDestination.JiraBoard;
         public bool IsTerminal => _current == RailDestination.Terminal;
         public bool IsAccounts => _current == RailDestination.Accounts;
+        public bool IsClone => _current == RailDestination.Clone;
 
         public int PendingReviewsCount
         {
@@ -60,16 +63,7 @@ namespace SourceGit.ViewModels
         [RelayCommand]
         private void Clone()
         {
-            Current = RailDestination.Repository;
-
-            var launcher = App.GetLauncher();
-            if (launcher == null)
-                return;
-
-            if (launcher.ActivePage.Data is not Welcome)
-                launcher.AddNewTab();
-
-            Welcome.Instance.Clone();
+            Current = RailDestination.Clone;
         }
 
         [RelayCommand]

@@ -38,3 +38,6 @@ F4a: restyle pantallas git
 - `src/SourceGit.csproj` — referencia a lib/Rama.Terminal (terminal integrada, F5).
 - `SourceGit.slnx` — proyectos lib/Rama.Terminal y tests/Rama.Terminal.Tests.
 - `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal).
+
+F7/F8: pagina Clonar
+- `src/Views/Launcher.axaml` — pagina `ClonePage` en el contenedor de destinos (destino Clonar del riel).

@@ -1,0 +1,234 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SourceGit.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="SourceGit.Views.ClonePage"
+             x:DataType="vm:ClonePageViewModel">
+  <!-- RAMA: pagina completa "Clonar repositorio" (maqueta docs/mockups/Clone.html) -->
+  <UserControl.Styles>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.link TextBlock">
+      <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+    <Style Selector="Button.tab">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0,0,0,2"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Padding" Value="4,0"/>
+      <Setter Property="Height" Value="36"/>
+      <Setter Property="Margin" Value="0,0,20,-1"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+    </Style>
+    <Style Selector="Button.tab:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="Button.tab.active /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="BorderBrush" Value="#ECECEC"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
+    <Style Selector="ListBox.repos ListBoxItem">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Margin" Value="0"/>
+    </Style>
+    <Style Selector="TextBlock.faint">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,*">
+    <Border Grid.Row="0" Padding="16,8" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border2}" Background="{DynamicResource Brush.ToolBar}">
+      <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <TextBlock Text="{DynamicResource Text.Rama.Clone.Title}" FontSize="16" FontWeight="SemiBold"/>
+        <TextBlock Classes="faint" Text="{DynamicResource Text.Rama.Clone.Subtitle}" VerticalAlignment="Center"/>
+      </StackPanel>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="290,*">
+      <!-- Cuentas y progreso -->
+      <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource Brush.Border2}" Background="{DynamicResource Brush.Window}">
+        <DockPanel>
+          <Border DockPanel.Dock="Bottom" IsVisible="{Binding IsCloning}" Padding="16,12,16,16"
+                  BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border2}" Background="{DynamicResource Brush.ToolBar}">
+            <StackPanel Spacing="6">
+              <DockPanel>
+                <Button DockPanel.Dock="Right" Classes="link" Padding="6,2" Command="{Binding CancelCloneCommand}">
+                  <TextBlock Text="{DynamicResource Text.Rama.Clone.Cancel}"/>
+                </Button>
+                <TextBlock FontSize="12" Foreground="{DynamicResource Brush.FG2}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                  <Run Text="{DynamicResource Text.Rama.Clone.Cloning}"/>
+                  <Run Text="{Binding CloningName}" FontFamily="{DynamicResource Fonts.Monospace}" Foreground="{DynamicResource Brush.FG1}"/>
+                </TextBlock>
+              </DockPanel>
+              <ProgressBar Height="6" Minimum="0" Maximum="100" Value="{Binding ProgressPercent}"
+                           IsIndeterminate="{Binding ProgressIndeterminate}" ShowProgressText="False"
+                           AutomationProperties.Name="{Binding CloningName}"/>
+              <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Classes="faint" Text="{Binding ProgressTransferred}"/>
+                <TextBlock FontSize="12" Foreground="{DynamicResource Brush.FG2}" Text="{Binding ProgressText}"/>
+              </DockPanel>
+            </StackPanel>
+          </Border>
+
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+              <Border Padding="16,14,16,10" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border2}">
+                <TextBlock Text="{DynamicResource Text.Rama.Clone.Accounts}" FontSize="14" FontWeight="SemiBold"/>
+              </Border>
+
+              <ItemsControl ItemsSource="{Binding Accounts}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:CloneAccountCard">
+                    <Border Padding="16,12" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Brush.Border2}">
+                      <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding Platform}" FontWeight="Medium"/>
+                        <TextBlock Classes="muted" FontSize="12" Text="{Binding Detail}" TextTrimming="CharacterEllipsis"/>
+                        <StackPanel Spacing="4" IsVisible="{Binding HasExpiry}">
+                          <TextBlock FontSize="12" Foreground="#F0C27A" Text="{Binding ExpiryText}" TextWrapping="Wrap"/>
+                          <Button Classes="link" HorizontalAlignment="Left"
+                                  Command="{Binding $parent[UserControl].((vm:ClonePageViewModel)DataContext).GoToAccountsCommand}">
+                            <TextBlock Text="{DynamicResource Text.Rama.Clone.Account.Renew}"/>
+                          </Button>
+                        </StackPanel>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <StackPanel Margin="16,12,16,16" Spacing="8">
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Command="{Binding GoToAccountsCommand}" Content="{DynamicResource Text.Rama.Clone.ConnectAccount}"/>
+                <TextBlock Classes="faint" FontSize="11" TextWrapping="Wrap" Text="{DynamicResource Text.Rama.Clone.TokensNote}"/>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+
+      <!-- Principal -->
+      <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*,Auto" Background="{DynamicResource Brush.Window}">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,0" Height="36">
+          <Button Classes="tab" Classes.active="{Binding IsAzureTab}" Command="{Binding SelectTabCommand}"
+                  CommandParameter="{x:Static vm:CloneTab.Azure}" Content="Azure DevOps"/>
+          <Button Classes="tab" Classes.active="{Binding IsBitbucketTab}" Command="{Binding SelectTabCommand}"
+                  CommandParameter="{x:Static vm:CloneTab.Bitbucket}" Content="Bitbucket"/>
+          <Button Classes="tab" Classes.active="{Binding IsUrlTab}" Command="{Binding SelectTabCommand}"
+                  CommandParameter="{x:Static vm:CloneTab.Url}" Content="URL"/>
+        </StackPanel>
+
+        <Border Grid.Row="0" Height="1" VerticalAlignment="Bottom" Background="{DynamicResource Brush.Border2}"/>
+
+        <!-- Busqueda y filtro (pestanas de proveedor) -->
+        <DockPanel Grid.Row="1" Margin="16,12" LastChildFill="False" IsVisible="{Binding IsProviderTab}">
+          <TextBox DockPanel.Dock="Left" Width="320" Height="32" Text="{Binding Search, Mode=TwoWay}"
+                   Watermark="{DynamicResource Text.Rama.Clone.Search}"
+                   AutomationProperties.Name="{DynamicResource Text.Rama.Clone.Search}"/>
+          <ComboBox DockPanel.Dock="Left" Margin="8,0,0,0" Width="200" Height="32" ItemsSource="{Binding Projects}"
+                    SelectedIndex="{Binding SelectedProjectIndex, Mode=TwoWay}"
+                    AutomationProperties.Name="{DynamicResource Text.Rama.Clone.Project}"/>
+          <TextBlock DockPanel.Dock="Right" Classes="faint" VerticalAlignment="Center" Text="{Binding CountText}"/>
+        </DockPanel>
+
+        <!-- URL -->
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Margin="16,16" Spacing="6" VerticalAlignment="Top" IsVisible="{Binding IsUrlTab}">
+          <TextBlock Classes="muted" FontSize="12" Text="{DynamicResource Text.Rama.Clone.Url}"/>
+          <TextBox Height="32" Text="{Binding UrlText, Mode=TwoWay}" Watermark="https://dev.azure.com/org/proyecto/_git/repositorio"
+                   FontFamily="{DynamicResource Fonts.Monospace}" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Tabla -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,*" IsVisible="{Binding IsProviderTab}">
+          <Grid Grid.Row="0" Height="32" Margin="16,0" ColumnDefinitions="*,150,120,100,84">
+            <Grid.Styles>
+              <Style Selector="TextBlock"><Setter Property="FontSize" Value="12"/><Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+            </Grid.Styles>
+            <TextBlock Grid.Column="0" Text="{DynamicResource Text.Rama.Clone.Col.Repo}"/>
+            <TextBlock Grid.Column="1" Text="{DynamicResource Text.Rama.Clone.Col.Project}"/>
+            <TextBlock Grid.Column="2" Text="{DynamicResource Text.Rama.Clone.Col.Branch}"/>
+            <TextBlock Grid.Column="3" Text="{DynamicResource Text.Rama.Clone.Col.Updated}" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Column="4" Text="{DynamicResource Text.Rama.Clone.Col.Size}" HorizontalAlignment="Right"/>
+          </Grid>
+
+          <Border Grid.Row="1" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Brush.Border2}">
+            <Grid>
+              <ListBox Classes="repos" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
+                       Background="Transparent" BorderThickness="0" Padding="0">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:CloneRowViewModel">
+                    <Grid MinHeight="48" Margin="16,0" ColumnDefinitions="*,150,120,100,84" VerticalAlignment="Center">
+                      <StackPanel Grid.Column="0" Margin="0,6" Spacing="0" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                          <TextBlock Text="{Binding Name}" FontWeight="Medium" VerticalAlignment="Center"/>
+                          <Border IsVisible="{Binding IsCloned}" Background="#1C3326" CornerRadius="4" Padding="6,0" VerticalAlignment="Center">
+                            <TextBlock Text="{DynamicResource Text.Rama.Clone.Cloned}" FontSize="11" Foreground="#8FDCAE"/>
+                          </Border>
+                          <Button Classes="link" IsVisible="{Binding IsCloned}" VerticalAlignment="Center"
+                                  Command="{Binding $parent[UserControl].((vm:ClonePageViewModel)DataContext).OpenClonedCommand}"
+                                  CommandParameter="{Binding}">
+                            <TextBlock Text="{DynamicResource Text.Rama.Clone.Open}"/>
+                          </Button>
+                        </StackPanel>
+                        <TextBlock Classes="faint" IsVisible="{Binding HasDescription}" Text="{Binding Description}" TextTrimming="CharacterEllipsis"/>
+                      </StackPanel>
+                      <TextBlock Grid.Column="1" Classes="muted" VerticalAlignment="Center" Text="{Binding Project}" TextTrimming="CharacterEllipsis"/>
+                      <TextBlock Grid.Column="2" Classes="muted" VerticalAlignment="Center" FontFamily="{DynamicResource Fonts.Monospace}" FontSize="12" Text="{Binding Branch}"/>
+                      <TextBlock Grid.Column="3" Classes="faint" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding UpdatedText}"/>
+                      <TextBlock Grid.Column="4" Classes="muted" VerticalAlignment="Center" HorizontalAlignment="Right" Text="{Binding SizeText}"/>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+
+              <ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Top" IsVisible="{Binding IsLoading}"/>
+              <TextBlock Margin="16,24" HorizontalAlignment="Left" VerticalAlignment="Top" TextWrapping="Wrap"
+                         Foreground="{DynamicResource Brush.FG2}" IsVisible="{Binding HasMessage}" Text="{Binding Message}"/>
+            </Grid>
+          </Border>
+        </Grid>
+
+        <!-- Destino -->
+        <Border Grid.Row="3" IsVisible="{Binding ShowFooter}" Padding="16,14" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource Brush.Border2}" Background="{DynamicResource Brush.ToolBar}">
+          <Grid ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="8">
+              <StackPanel Spacing="4">
+                <TextBlock Classes="muted" FontSize="12" Text="{DynamicResource Text.Rama.Clone.Destination}"/>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBox Grid.Column="0" Height="32" Text="{Binding Destination, Mode=TwoWay}"
+                           FontFamily="{DynamicResource Fonts.Monospace}" FontSize="12"
+                           AutomationProperties.Name="{DynamicResource Text.Rama.Clone.Destination}"/>
+                  <Button Grid.Column="1" Margin="8,0,0,0" Height="32" Content="{DynamicResource Text.Rama.Clone.Browse}" Click="OnBrowse"/>
+                </Grid>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="16">
+                <CheckBox IsChecked="{Binding InitSubmodules, Mode=TwoWay}" Content="{DynamicResource Text.Rama.Clone.Submodules}"/>
+                <TextBlock Classes="faint" VerticalAlignment="Center" IsVisible="{Binding ShowHttpsNote}"
+                           Text="{DynamicResource Text.Rama.Clone.HttpsNote}"/>
+              </StackPanel>
+              <TextBlock FontSize="12" Foreground="#E5837F" TextWrapping="Wrap" IsVisible="{Binding HasCloneError}" Text="{Binding CloneError}"/>
+            </StackPanel>
+            <Button Grid.Column="1" Classes="flat primary" Margin="16,0,0,0" Height="36" VerticalAlignment="Bottom"
+                    Command="{Binding CloneCommand}" IsEnabled="{Binding CanClone}" Content="{Binding ActionText}"/>
+          </Grid>
+        </Border>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

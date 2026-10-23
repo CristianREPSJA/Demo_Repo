@@ -1,5 +1,6 @@
 using Rama.Core.Azure;
 using Rama.Core.Bitbucket;
+using Rama.Core.Clone;
 using Rama.Core.Http;
 using Rama.Core.Integrations;
 using Rama.Core.Jira;
@@ -141,6 +142,28 @@ public sealed class AccountsService
             var client = new JiraClient(_http, JiraClient.SiteBaseUrl(account.Site), account.Email, secret);
             return (await client.GetMyselfAsync(ct).ConfigureAwait(false)).DisplayName;
         }, ct);
+
+    // ---- Catálogo de repos para clonar (el token se lee del llavero y nunca sale de aquí) ----
+    public async Task<IReadOnlyList<CloneRepoItem>> ListAzureReposAsync(AzureAccount account, CancellationToken ct = default)
+    {
+        var pat = await _secrets.GetAsync(AzureConnection.SecretService, account.Organization, ct).ConfigureAwait(false);
+        if (string.IsNullOrEmpty(pat)) throw new ApiException(0, "No hay PAT guardado para " + account.Organization + ".");
+        var repos = await new AzureDevOpsClient(_http, account.ToConnection(), pat).ListReposAsync(ct).ConfigureAwait(false);
+        return repos.Select(r => CloneRepoItem.From(r, account.Project)).ToList();
+    }
+
+    public async Task<IReadOnlyList<CloneRepoItem>> ListBitbucketReposAsync(BitbucketAccount account, CancellationToken ct = default)
+    {
+        var client = await new BitbucketCredentials(_secrets).CreateClientAsync(_http, account.Email, ct).ConfigureAwait(false)
+            ?? throw new ApiException(0, "No hay token guardado para " + account.Email + ".");
+        var spaces = string.IsNullOrWhiteSpace(account.Workspace)
+            ? (await client.ListWorkspacesAsync(ct).ConfigureAwait(false)).Select(w => w.Slug).ToList()
+            : [account.Workspace];
+        var items = new List<CloneRepoItem>();
+        foreach (var space in spaces)
+            items.AddRange((await client.ListRepositoriesAsync(space, ct).ConfigureAwait(false)).Select(CloneRepoItem.From));
+        return items;
+    }
 
     // ---- Vencimiento (Bitbucket y Jira; la cuenta es el email) ----
     public Task<TokenExpiryStatus> GetExpiryStatusAsync(AccountPlatform platform, string email, CancellationToken ct = default) =>
