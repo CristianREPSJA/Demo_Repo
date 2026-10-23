@@ -153,7 +153,7 @@ namespace SourceGit
                     if (overrides.GraphColors.Count > 0)
                         Models.CommitGraph.SetPens(overrides.GraphColors, overrides.GraphPenThickness);
                     else
-                        Models.CommitGraph.SetDefaultPens(overrides.GraphPenThickness);
+                        Branding.GraphPalette.Apply(overrides.GraphPenThickness); // RAMA
 
                     app.Resources.MergedDictionaries.Add(resDic);
                     app._themeOverrides = resDic;
@@ -165,7 +165,7 @@ namespace SourceGit
             }
             else
             {
-                Models.CommitGraph.SetDefaultPens();
+                Branding.GraphPalette.Apply(); // RAMA
             }
         }
 

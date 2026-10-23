@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:s="using:SourceGit"
              x:Class="SourceGit.App"
-             Name="SourceGit"
+             Name="Rama"
              RequestedThemeVariant="Dark">
   <Application.Resources>
     <ResourceDictionary>
@@ -10,6 +10,8 @@
         <ResourceInclude Source="/Resources/Icons.axaml"/>
         <ResourceInclude Source="/Resources/Fonts.axaml"/>
         <ResourceInclude Source="/Resources/Themes.axaml"/>
+        <!-- RAMA: tema grafito sobre Themes.axaml -->
+        <ResourceInclude Source="/Rama/Resources/Theme.Graphite.axaml"/>
       </ResourceDictionary.MergedDictionaries>
 
       <ResourceInclude x:Key="de_DE" Source="/Resources/Locales/de_DE.axaml"/>
@@ -28,6 +30,8 @@
       <ResourceInclude x:Key="ja_JP" Source="/Resources/Locales/ja_JP.axaml"/>
       <ResourceInclude x:Key="ta_IN" Source="/Resources/Locales/ta_IN.axaml"/>
       <ResourceInclude x:Key="ko_KR" Source="/Resources/Locales/ko_KR.axaml"/>
+      <!-- RAMA: es_CL -->
+      <ResourceInclude x:Key="es_CL" Source="/Rama/Resources/Locales/es_CL.axaml"/>
     </ResourceDictionary>
   </Application.Resources>
 

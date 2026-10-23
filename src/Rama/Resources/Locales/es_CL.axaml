@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Español (Chile): hereda es_ES (que a su vez hereda en_US) y solo sobrescribe lo propio de Rama. -->
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceInclude Source="avares://SourceGit/Resources/Locales/es_ES.axaml"/>
+  </ResourceDictionary.MergedDictionaries>
+
+  <!-- Marca -->
+  <x:String x:Key="Text.About.Menu" xml:space="preserve">Acerca de Rama</x:String>
+  <x:String x:Key="Text.About.SubTitle" xml:space="preserve">Cliente git del equipo</x:String>
+  <x:String x:Key="Text.App.Hide" xml:space="preserve">Ocultar Rama</x:String>
+  <x:String x:Key="Text.Askpass" xml:space="preserve">Rama Askpass</x:String>
+  <x:String x:Key="Text.Statistics.Tips" xml:space="preserve">Rama analizará como máximo 200.000 commits de la rama de destino.</x:String>
+
+  <!-- Voseo/tuteo chileno neutro: "Ingresa" en lugar de "Introduce" -->
+  <x:String x:Key="Text.Askpass.Passphrase" xml:space="preserve">Ingresa la frase de contraseña:</x:String>
+
+  <!-- Textos nuevos de Rama -->
+  <x:String x:Key="Text.Rama.AppName" xml:space="preserve">Rama</x:String>
+  <x:String x:Key="Text.Rama.Tagline" xml:space="preserve">Cliente git del equipo</x:String>
+</ResourceDictionary>

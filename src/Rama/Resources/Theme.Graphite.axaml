@@ -1,0 +1,61 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- Rama: tema grafito. Se mezcla despues de Themes.axaml y sobrescribe Color.* (ver docs/THEME-MAPPING.md). -->
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Dark">
+      <!-- Acento unico -->
+      <Color x:Key="SystemAccentColor">#FFE6A23C</Color>
+      <Color x:Key="SystemAccentColorLight1">#FFEFB055</Color>
+      <Color x:Key="SystemAccentColorLight2">#FFF0C27A</Color>
+      <Color x:Key="SystemAccentColorLight3">#FFF5D6A4</Color>
+      <Color x:Key="SystemAccentColorDark1">#FFC98A2B</Color>
+      <Color x:Key="SystemAccentColorDark2">#FFA87122</Color>
+      <Color x:Key="SystemAccentColorDark3">#FF7F5519</Color>
+      <Color x:Key="SystemListLowColor">#FF25272B</Color>
+      <Color x:Key="SystemListMediumColor">#FF2C2E33</Color>
+
+      <!-- Superficies -->
+      <Color x:Key="Color.Window">#FF17181A</Color>
+      <Color x:Key="Color.WindowBorder">#FF2C2E33</Color>
+      <Color x:Key="Color.TitleBar">#FF17181A</Color>
+      <Color x:Key="Color.ToolBar">#FF1D1E21</Color>
+      <Color x:Key="Color.Popup">#FF25272B</Color>
+      <Color x:Key="Color.PopupBorder">#FF3A3D43</Color>
+      <Color x:Key="Color.Contents">#FF1D1E21</Color>
+      <Color x:Key="Color.SubPanel">#FF25272B</Color>
+      <Color x:Key="Color.Badge">#FF2C2E33</Color>
+      <Color x:Key="Color.BadgeFG">#FFECECEC</Color>
+
+      <!-- Conflictos -->
+      <Color x:Key="Color.Conflict">#FF2A2416</Color>
+      <Color x:Key="Color.Conflict.Foreground">#FFF0C27A</Color>
+      <Color x:Key="Color.Conflict.MineBG">#405AA9E6</Color>
+      <Color x:Key="Color.Conflict.TheirsBG">#40E6A23C</Color>
+
+      <!-- Bordes y botones planos -->
+      <Color x:Key="Color.Border0">#FF222327</Color>
+      <Color x:Key="Color.Border1">#FF3A3D43</Color>
+      <Color x:Key="Color.Border2">#FF2C2E33</Color>
+      <Color x:Key="Color.FlatButton.Background">#FF25272B</Color>
+      <Color x:Key="Color.FlatButton.BackgroundHovered">#FF2C2E33</Color>
+      <Color x:Key="Color.FlatButton.FloatingBorder">#FF3A3D43</Color>
+
+      <!-- Texto -->
+      <Color x:Key="Color.FG1">#FFECECEC</Color>
+      <Color x:Key="Color.FG2">#FFA9ABB1</Color>
+
+      <!-- Diff -->
+      <Color x:Key="Color.Diff.EmptyBG">#40000000</Color>
+      <Color x:Key="Color.Diff.AddedBG">#FF17301F</Color>
+      <Color x:Key="Color.Diff.DeletedBG">#FF34191F</Color>
+      <Color x:Key="Color.Diff.AddedHighlight">#FF24502F</Color>
+      <Color x:Key="Color.Diff.DeletedHighlight">#FF5A2533</Color>
+      <Color x:Key="Color.Diff.BlockBorderHighlight">#FFE6A23C</Color>
+
+      <!-- Enlaces y codigo en linea -->
+      <Color x:Key="Color.Link">#FF5AA9E6</Color>
+      <Color x:Key="Color.InlineCode">#FF2C2E33</Color>
+      <Color x:Key="Color.InlineCodeFG">#FFECECEC</Color>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
