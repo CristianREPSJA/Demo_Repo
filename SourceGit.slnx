@@ -66,6 +66,7 @@
 	</Folder>
 
 	<Folder Name="/tests/">
+		<Project Path="tests/Rama.App.Tests/Rama.App.Tests.csproj" />
 		<Project Path="tests/Rama.Core.Tests/Rama.Core.Tests.csproj" />
 		<Project Path="tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj" />
 	</Folder>

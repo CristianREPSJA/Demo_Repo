@@ -148,7 +148,7 @@ namespace SourceGit.ViewModels
             if (reparsed)
             {
                 Blocks = BuildBlocks(_document);
-                _currentIndex = Math.Min(_currentIndex, _document.ConflictCount - 1);
+                _currentIndex = _document.ConflictCount == 0 ? -1 : Math.Clamp(_currentIndex, 0, _document.ConflictCount - 1);
             }
 
             Recompose();

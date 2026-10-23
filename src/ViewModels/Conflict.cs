@@ -79,9 +79,10 @@ namespace SourceGit.ViewModels
             await _wc.UseMineAsync([_change]);
         }
 
-        public MergeConflictEditor CreateOpenMergeEditorRequest()
+        // RAMA: abre el resolvedor a 3 paneles (F4b) en vez de MergeConflictEditor.
+        public ConflictResolver CreateOpenMergeEditorRequest()
         {
-            return _state == Models.ConflictFileState.UnmergedText ? new MergeConflictEditor(_repo, _head, _change.Path) : null;
+            return _state == Models.ConflictFileState.UnmergedText ? new ConflictResolver(_repo, _head, _change.Path) : null;
         }
 
         public async Task MergeExternalAsync()

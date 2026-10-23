@@ -38,3 +38,9 @@ F4a: restyle pantallas git
 - `src/SourceGit.csproj` — referencia a lib/Rama.Terminal (terminal integrada, F5).
 - `SourceGit.slnx` — proyectos lib/Rama.Terminal y tests/Rama.Terminal.Tests.
 - `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal).
+
+F4b: resolvedor de conflictos
+- `src/ViewModels/MergeConflictEditor.cs` — escritura + stage extraidos a `WriteAndStageAsync` (reutilizado por ConflictResolver).
+- `src/ViewModels/Conflict.cs` — `CreateOpenMergeEditorRequest` abre `ConflictResolver` (3 paneles) en vez de MergeConflictEditor.
+- `src/Views/WorkingCopy.axaml.cs` — menu "Merge" del archivo en conflicto abre `ConflictResolver`.
+- `SourceGit.slnx` — proyecto tests/Rama.App.Tests (integracion de ViewModels sin ventana).

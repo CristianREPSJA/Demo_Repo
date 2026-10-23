@@ -56,7 +56,7 @@ Maquetas aprobadas: https://claude.ai/artifact/3f8qaNha2wKGNMNPwm2zbN
 ### F4 — Pantallas git restyle (4 d)
 - [ ] Historial/grafo/WIP vía estilos en `Resources/Rama/Styles.Rama.axaml`.
 - [ ] Diff lado a lado por defecto; stage/descartar por bloque.
-- [ ] Conflicto 3 paneles: casillas por región + resultado editable (AvaloniaEdit); lógica `Rama.Core/Conflicts/ResolutionComposer`.
+- [x] Conflicto 3 paneles: casillas por región + resultado editable (AvaloniaEdit); lógica `Rama.Core/Conflicts/ResolutionComposer`.
 - [ ] Clonar: pestaña "Desde proveedor" (se completa en F7/F8).
 - Acepta: stage/descartar de un bloque verificado con `git diff --cached`; conflicto mixto + edición manual queda stageado sin marcadores.
 

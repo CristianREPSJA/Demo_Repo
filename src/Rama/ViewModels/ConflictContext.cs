@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 
 namespace SourceGit.ViewModels
@@ -38,28 +37,6 @@ namespace SourceGit.ViewModels
                 ComposeBanner(operation, conflicted), repo.MarkWorkingCopyDirtyManually);
         }
 
-        // Modo independiente (--merge-conflict): solo se conoce el estado de merge leyendo .git.
-        public static ConflictContext FromStandalone(string repoPath, string filePath)
-        {
-            var current = new Commands.QueryCurrentBranch(repoPath).GetResult()?.Trim();
-            var head = new Commands.QuerySingleCommit(repoPath, "HEAD").GetResult();
-            var gitDir = new Commands.QueryGitDir(repoPath).GetResult();
-            if (string.IsNullOrEmpty(current))
-                current = ShortSha(head?.SHA);
-
-            var mergeHead = gitDir == null ? null : Path.Combine(gitDir, "MERGE_HEAD");
-            if (mergeHead == null || !File.Exists(mergeHead))
-                return new ConflictContext(repoPath, filePath, current, ShortSha(head?.SHA),
-                    App.Text("Rama.Conflict.StashOrPatch"), null, string.Empty, null);
-
-            var sourceSha = File.ReadAllText(mergeHead).Trim();
-            var source = new Commands.QuerySingleCommit(repoPath, sourceSha).GetResult();
-            var sourceName = source?.GetFriendlyName() ?? ShortSha(sourceSha);
-            var conflicted = new Commands.QueryUnmergedCount(repoPath).GetResult();
-            var banner = ComposeBanner(App.Text("Rama.Conflict.Banner.Merge", sourceName, current), conflicted);
-            return new ConflictContext(repoPath, filePath, current, ShortSha(head?.SHA), sourceName, ShortSha(sourceSha), banner, null);
-        }
-
         private static string ComposeBanner(string operation, int conflicted)
         {
             if (conflicted <= 0)
@@ -76,26 +53,3 @@ namespace SourceGit.ViewModels
     }
 }
 
-namespace SourceGit.Commands
-{
-    // RAMA: cuenta archivos sin fusionar (git diff --name-only --diff-filter=U).
-    public class QueryUnmergedCount : Command
-    {
-        public QueryUnmergedCount(string repo)
-        {
-            WorkingDirectory = repo;
-            Context = repo;
-            RaiseError = false;
-            Args = "diff --name-only --diff-filter=U";
-        }
-
-        public int GetResult()
-        {
-            var rs = ReadToEnd();
-            if (!rs.IsSuccess)
-                return 0;
-
-            return rs.StdOut.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Distinct().Count();
-        }
-    }
-}
