@@ -14,5 +14,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 
 "$DOTNET" build "$REPO/SourceGit.slnx" -c "$CONFIG" -p:DisableAOT=true
 if [ "${SKIP_TESTS:-0}" != "1" ]; then
-    "$DOTNET" test "$REPO/tests/Rama.Core.Tests/Rama.Core.Tests.csproj" -c "$CONFIG" --no-build --collect:"XPlat Code Coverage"
+    for t in tests/Rama.Core.Tests/Rama.Core.Tests.csproj tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj; do
+        "$DOTNET" test "$REPO/$t" -c "$CONFIG" --no-build --collect:"XPlat Code Coverage"
+    done
 fi
