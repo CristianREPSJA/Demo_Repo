@@ -35,6 +35,19 @@ namespace SourceGit.ViewModels
             }
         }
 
+        public RailNavigator()
+        {
+            // El sondeo de revisiones corre con la app abierta; el riel solo refleja el conteo.
+            var reviews = SourceGit.Rama.RamaServices.Reviews;
+            _pendingReviewsCount = reviews.PendingCount;
+            reviews.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(PendingReviewsViewModel.PendingCount))
+                    PendingReviewsCount = reviews.PendingCount;
+            };
+            reviews.EnsureStarted();
+        }
+
         public bool IsRepository => _current == RailDestination.Repository;
         public bool IsPendingReviews => _current == RailDestination.PendingReviews;
         public bool IsJiraBoard => _current == RailDestination.JiraBoard;

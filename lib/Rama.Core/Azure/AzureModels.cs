@@ -29,7 +29,10 @@ public sealed record PullRequestReviewer(string Id, string DisplayName, Vote Vot
 public sealed record PullRequestInfo(int Id, string Title, string Status, bool IsDraft, string CreatedById,
     string CreatedByName, DateTimeOffset? CreatedOn, string SourceBranch, string TargetBranch, string RepositoryId,
     string RepositoryName, string? ProjectId, string? SourceCommitId, string? MergeStatus,
-    IReadOnlyList<PullRequestReviewer> Reviewers, string WebUrl);
+    IReadOnlyList<PullRequestReviewer> Reviewers, string WebUrl)
+{
+    public string? Description { get; init; }
+}
 
 public enum PolicyStatus { Approved, Rejected, Running, Queued, NotApplicable, Broken, Unknown }
 

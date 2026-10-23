@@ -16,6 +16,7 @@ namespace SourceGit.Rama
         public static AccountsService Accounts => _accounts.Value;
         public static InAppNotifier InApp { get; } = new();
         public static INotifier Notifier => _notifier.Value;
+        public static SourceGit.ViewModels.PendingReviewsViewModel Reviews => _reviews.Value;
 
         private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(30) };
 
@@ -24,6 +25,8 @@ namespace SourceGit.Rama
             var path = Path.Combine(Native.OS.BasicDirectories.ConfigDir, AccountsFileName);
             return new AccountsService(new AccountsStore(path), SecretStoreFactory.Create(), Http);
         });
+
+        private static readonly Lazy<SourceGit.ViewModels.PendingReviewsViewModel> _reviews = new(() => new SourceGit.ViewModels.PendingReviewsViewModel());
 
         private static readonly Lazy<INotifier> _notifier = new(() => NotifierFactory.Create(InApp));
     }

@@ -31,6 +31,7 @@ internal sealed class PrDto
 {
     public int PullRequestId { get; set; }
     public string? Title { get; set; }
+    public string? Description { get; set; }
     public string? Status { get; set; }
     public bool IsDraft { get; set; }
     public IdentityDto? CreatedBy { get; set; }

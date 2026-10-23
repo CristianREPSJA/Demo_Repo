@@ -150,7 +150,7 @@ public sealed class AzureDevOpsClient : ApiClientBase
         return new PullRequestInfo(p.PullRequestId, p.Title ?? "", p.Status ?? "", p.IsDraft,
             p.CreatedBy?.Id ?? "", p.CreatedBy?.DisplayName ?? "", p.CreationDate,
             p.SourceRefName ?? "", p.TargetRefName ?? "", repo?.Id ?? "", repo?.Name ?? "", repo?.Project?.Id,
-            p.LastMergeSourceCommit?.CommitId, p.MergeStatus, reviewers, web);
+            p.LastMergeSourceCommit?.CommitId, p.MergeStatus, reviewers, web) { Description = p.Description };
     }
 
     private static PipelineApproval MapApproval(ApprovalDto a) => new(a.Id ?? "", a.Status ?? "",

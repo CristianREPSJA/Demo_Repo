@@ -23,15 +23,21 @@ public sealed class PendingWorkService(AzureDevOpsClient client)
 
     // Pendiente: no soy el autor, no es borrador y mi voto directo es "sin votar".
     // Limitación: revisores que son grupos solo cuentan si el usuario figura con su propio id.
-    internal static bool NeedsMyVote(PullRequestInfo pr, string myId) =>
+    public static bool NeedsMyVote(PullRequestInfo pr, string myId) =>
         !pr.IsDraft && !string.Equals(pr.CreatedById, myId, StringComparison.OrdinalIgnoreCase)
         && pr.Reviewers.Any(r => string.Equals(r.Id, myId, StringComparison.OrdinalIgnoreCase) && r.Vote == Vote.NoVote);
 
+    public string PrKey(PullRequestInfo p) =>
+        $"pr:{client.Connection.Organization}/{client.Connection.Project}/{p.RepositoryId}/{p.Id}@{p.SourceCommitId}";
+
+    public string ApprovalKey(PipelineApproval a) =>
+        $"approval:{client.Connection.Organization}/{client.Connection.Project}/{a.Id}";
+
     private PendingItem ToItem(PullRequestInfo p) => new(
-        $"pr:{client.Connection.Organization}/{client.Connection.Project}/{p.RepositoryId}/{p.Id}@{p.SourceCommitId}",
+        PrKey(p),
         PendingKind.PullRequestReview, $"#{p.Id} {p.Title}", $"{p.RepositoryName} · {p.CreatedByName}", p.WebUrl, p.CreatedOn);
 
     private PendingItem ToItem(PipelineApproval a) => new(
-        $"approval:{client.Connection.Organization}/{client.Connection.Project}/{a.Id}",
+        ApprovalKey(a),
         PendingKind.PipelineApproval, a.PipelineName, a.Instructions ?? "Aprobación pendiente", null, a.CreatedOn);
 }

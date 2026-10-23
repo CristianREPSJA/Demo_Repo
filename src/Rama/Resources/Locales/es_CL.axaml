@@ -118,4 +118,44 @@
   <x:String x:Key="Text.Rama.Jira.Dismiss" xml:space="preserve">Cerrar</x:String>
   <x:String x:Key="Text.Rama.Jira.Select" xml:space="preserve">Elige una opción</x:String>
   <x:String x:Key="Text.Rama.Jira.People" xml:space="preserve">Tickets por persona</x:String>
+  <!-- Revisiones pendientes -->
+  <x:String x:Key="Text.Rama.Reviews.Title" xml:space="preserve">Pendientes de mi aprobación</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Group.PullRequests" xml:space="preserve">Pull requests</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Group.Deployments" xml:space="preserve">Despliegues</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Group.Mine" xml:space="preserve">Mis PRs</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Empty.Title" xml:space="preserve">Conecta tu organización de Azure DevOps</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Empty.Body" xml:space="preserve">Agrega una cuenta de Azure DevOps para ver lo que espera tu aprobación.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Empty.Action" xml:space="preserve">Ir a Cuentas</x:String>
+  <x:String x:Key="Text.Rama.Reviews.NothingPending" xml:space="preserve">No tienes nada pendiente.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.SelectOne" xml:space="preserve">Selecciona un elemento de la lista.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Updated" xml:space="preserve">Actualizado {0}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Refresh" xml:space="preserve">Actualizar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Retry" xml:space="preserve">Reintentar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Loading" xml:space="preserve">Cargando…</x:String>
+  <x:String x:Key="Text.Rama.Reviews.LoadError" xml:space="preserve">No se pudo cargar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Wants" xml:space="preserve">{0} quiere fusionar {1} de {2} en {3}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.MoreVotes" xml:space="preserve">Más opciones de voto</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Complete" xml:space="preserve">Completar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Tab.Summary" xml:space="preserve">Resumen</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Tab.Files" xml:space="preserve">Archivos</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Tab.Commits" xml:space="preserve">Commits</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Tab.Conversation" xml:space="preserve">Conversación</x:String>
+  <x:String x:Key="Text.Rama.Reviews.OpenInAzure" xml:space="preserve">Abrir en Azure DevOps</x:String>
+  <x:String x:Key="Text.Rama.Reviews.TabLater" xml:space="preserve">Esta vista aún no está disponible en Rama.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Policies" xml:space="preserve">Políticas de la rama {0}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.NoPolicies" xml:space="preserve">Sin políticas para esta rama.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Reviewers" xml:space="preserve">Revisores</x:String>
+  <x:String x:Key="Text.Rama.Reviews.You" xml:space="preserve">(tú)</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Description" xml:space="preserve">Descripción</x:String>
+  <x:String x:Key="Text.Rama.Reviews.NoDescription" xml:space="preserve">Sin descripción.</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Confirm.Yes" xml:space="preserve">Confirmar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Confirm.No" xml:space="preserve">Cancelar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Confirm.RejectPr" xml:space="preserve">¿Rechazar este pull request?</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Confirm.ApproveDeploy" xml:space="preserve">¿Aprobar el despliegue de {0}?</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Confirm.RejectDeploy" xml:space="preserve">¿Rechazar el despliegue de {0}?</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Title" xml:space="preserve">Despliegue que espera tu aprobación</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Approvers" xml:space="preserve">Aprobadores: {0}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Comment" xml:space="preserve">Comentario (opcional)</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Reject" xml:space="preserve">Rechazar</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Approve" xml:space="preserve">Aprobar despliegue</x:String>
 </ResourceDictionary>
