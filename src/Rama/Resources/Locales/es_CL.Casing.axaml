@@ -18,6 +18,7 @@
   <x:String x:Key="Text.CommitDetail.Info.Author" xml:space="preserve">Autor</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Committer" xml:space="preserve">Committer</x:String>
   <x:String x:Key="Text.CommitDetail.Info.ContainsIn.Title" xml:space="preserve">Commit está contenido en</x:String>
+  <x:String x:Key="Text.CommitDetail.Info.GotoChangesPage" xml:space="preserve">Muestra solo los primeros 100 cambios. Ver todos los cambios en la pestaña Cambios.</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Message" xml:space="preserve">Mensaje</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Parents" xml:space="preserve">Padres</x:String>
   <x:String x:Key="Text.CommitDetail.Info.Refs" xml:space="preserve">Refs</x:String>
@@ -52,6 +53,7 @@
   <x:String x:Key="Text.Histories.Header.Author" xml:space="preserve">Autor</x:String>
   <x:String x:Key="Text.Histories.Header.AuthorTime" xml:space="preserve">Hora del autor</x:String>
   <x:String x:Key="Text.Histories.Header.CommitTime" xml:space="preserve">Fecha de commit</x:String>
+  <x:String x:Key="Text.Histories.Header.GraphAndSubject" xml:space="preserve">Gráfico y asunto</x:String>
   <x:String x:Key="Text.Histories.HighlightsInGraph" xml:space="preserve">Destacados en el gráfico</x:String>
   <x:String x:Key="Text.Histories.Selected" xml:space="preserve">{0} commits seleccionados</x:String>
   <x:String x:Key="Text.Histories.ShowColumns" xml:space="preserve">Mostrar columnas</x:String>
@@ -63,6 +65,7 @@
   <x:String x:Key="Text.MergeConflictEditor.UseBoth" xml:space="preserve">Usar ambos</x:String>
   <x:String x:Key="Text.MergeConflictEditor.Mine" xml:space="preserve">Míos</x:String>
   <x:String x:Key="Text.MergeConflictEditor.Result" xml:space="preserve">Resultado</x:String>
+  <x:String x:Key="Text.MergeConflictEditor.SaveAndStage" xml:space="preserve">Guardar y hacer stage</x:String>
   <x:String x:Key="Text.MergeConflictEditor.Theirs" xml:space="preserve">Suyos</x:String>
   <x:String x:Key="Text.MergeConflictEditor.UseMine" xml:space="preserve">Usar míos</x:String>
   <x:String x:Key="Text.MergeConflictEditor.UseTheirs" xml:space="preserve">Usar suyos</x:String>
@@ -70,6 +73,8 @@
   <x:String x:Key="Text.Preferences.Appearance" xml:space="preserve">Apariencia</x:String>
   <x:String x:Key="Text.Preferences.DiffMerge" xml:space="preserve">Herramienta diff/merge</x:String>
   <x:String x:Key="Text.Preferences.General" xml:space="preserve">General</x:String>
+  <x:String x:Key="Text.Preferences.General.ShowChangesPageByDefault" xml:space="preserve">Mostrar la página `Cambios locales` por defecto</x:String>
+  <x:String x:Key="Text.Preferences.General.ShowChangesTabInCommitDetailByDefault" xml:space="preserve">Mostrar pestaña de `Cambios` en los detalles del commit por defecto</x:String>
   <x:String x:Key="Text.Preferences.GPG" xml:space="preserve">Firma GPG</x:String>
   <x:String x:Key="Text.Preferences.Integration" xml:space="preserve">Integración</x:String>
   <x:String x:Key="Text.Preferences.Shell" xml:space="preserve">Shell/terminal</x:String>
@@ -118,6 +123,7 @@
   <x:String x:Key="Text.ViewLogs.Clear" xml:space="preserve">Limpiar todo</x:String>
   <x:String x:Key="Text.Welcome.DragDropTip" xml:space="preserve">Soporta arrastrar y soltar carpetas. soporta agrupación personalizada.</x:String>
   <x:String x:Key="Text.WorkingCopy.Commit" xml:space="preserve">Confirmar</x:String>
+  <x:String x:Key="Text.WorkingCopy.CommitAndPush" xml:space="preserve">Confirmar y push</x:String>
   <x:String x:Key="Text.WorkingCopy.Conflicts" xml:space="preserve">Conflictos detectados</x:String>
   <x:String x:Key="Text.WorkingCopy.Conflicts.Merge" xml:space="preserve">Merge</x:String>
   <x:String x:Key="Text.WorkingCopy.Conflicts.OpenExternalMergeToolAllConflicts" xml:space="preserve">Abrir todos los conflictos en herramienta de merge externa</x:String>

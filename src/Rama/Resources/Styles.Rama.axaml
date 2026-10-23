@@ -24,15 +24,15 @@
   </Style>
 
   <!-- Seleccion neutra (#2c2e33) en listas y filas del historial; el ambar queda para HEAD/primario/foco -->
-  <Style Selector="ListBox ListBoxItem:selected /template/ Border#PART_Background">
+  <Style Selector=":is(ListBox) ListBoxItem:selected /template/ Border#PART_Background">
     <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
     <Setter Property="Opacity" Value="1"/>
   </Style>
-  <Style Selector="ListBox:focus-within ListBoxItem:selected /template/ Border#PART_Background">
+  <Style Selector=":is(ListBox):focus-within ListBoxItem:selected /template/ Border#PART_Background">
     <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
     <Setter Property="Opacity" Value="1"/>
   </Style>
-  <Style Selector="ListBox:focus-within ListBoxItem:selected:pointerover /template/ Border#PART_Background">
+  <Style Selector=":is(ListBox):focus-within ListBoxItem:selected:pointerover /template/ Border#PART_Background">
     <Setter Property="Background" Value="{DynamicResource Brush.Badge}"/>
     <Setter Property="Opacity" Value="1"/>
   </Style>

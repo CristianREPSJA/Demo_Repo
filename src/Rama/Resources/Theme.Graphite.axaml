@@ -63,6 +63,19 @@
       <SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FF1C1406"/>
       <SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FF1C1406"/>
       <SolidColorBrush x:Key="AccentButtonForegroundDisabled" Color="#FF1C1406"/>
+
+      <!-- Seleccion neutra en listas y grillas (el ambar queda para HEAD/primario/foco) -->
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelected" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedPointerOver" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedPressed" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundSelectedDisabled" Color="#FF25272B"/>
+      <SolidColorBrush x:Key="ListBoxItemBackgroundPointerOver" Color="#FF25272B"/>
+      <SolidColorBrush x:Key="ListBoxItemForegroundSelected" Color="#FFECECEC"/>
+      <SolidColorBrush x:Key="ListBoxItemForegroundSelectedPointerOver" Color="#FFECECEC"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedBackgroundBrush" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedHoveredBackgroundBrush" Color="#FF33363B"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedUnfocusedBackgroundBrush" Color="#FF2C2E33"/>
+      <SolidColorBrush x:Key="DataGridRowSelectedHoveredUnfocusedBackgroundBrush" Color="#FF33363B"/>
     </ResourceDictionary>
   </ResourceDictionary.ThemeDictionaries>
   <SolidColorBrush x:Key="Brush.OnAccent" Color="#FF1C1406"/>

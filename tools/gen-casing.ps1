@@ -1,4 +1,4 @@
-# Genera src/Rama/Resources/Locales/es_CL.Casing.axaml: pasa a "sentence case" las cadenas TODO-MAYUSCULAS de en_US/es_ES.
+﻿# Genera src/Rama/Resources/Locales/es_CL.Casing.axaml: pasa a "sentence case" las cadenas TODO-MAYUSCULAS de en_US/es_ES.
 $root = Split-Path $PSScriptRoot -Parent
 $keep = @('URL','LFS','SHA','HEAD','GPG','SSH','CLI','ID','CI','HTTP','HTTPS','PR','SVN','GIT','UI','OK','API','CRLF','LF','PAT','JSON','XML','CSV','RGB','UTC')
 function Read-Map($p) {
@@ -10,7 +10,7 @@ function Read-Map($p) {
 }
 $eff = Read-Map "$root/src/Resources/Locales/en_US.axaml"
 (Read-Map "$root/src/Resources/Locales/es_ES.axaml").GetEnumerator() | ForEach-Object { $eff[$_.Key] = $_.Value }
-$manual = @{ 'Text.WorkingCopy.Unstaged'='Sin preparar'; 'Text.WorkingCopy.Staged'='Preparados'; 'Text.WorkingCopy.Commit'='Confirmar' }
+$manual = @{ 'Text.WorkingCopy.CommitAndPush'='Confirmar y push'; 'Text.Histories.Header.GraphAndSubject'='Gráfico y asunto'; 'Text.CommitDetail.Info.GotoChangesPage'='Muestra solo los primeros 100 cambios. Ver todos los cambios en la pestaña Cambios.'; 'Text.MergeConflictEditor.SaveAndStage'='Guardar y hacer stage'; 'Text.Preferences.General.ShowChangesPageByDefault'='Mostrar la página `Cambios locales` por defecto'; 'Text.Preferences.General.ShowChangesTabInCommitDetailByDefault'='Mostrar pestaña de `Cambios` en los detalles del commit por defecto'; 'Text.WorkingCopy.Unstaged'='Sin preparar'; 'Text.WorkingCopy.Staged'='Preparados'; 'Text.WorkingCopy.Commit'='Confirmar' }
 function To-Sentence($v) {
   $words = $v -split ' '
   $out = for ($i=0; $i -lt $words.Count; $i++) {
