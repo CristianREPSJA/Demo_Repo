@@ -58,7 +58,7 @@ public sealed class Poller : IAsyncDisposable
 
         if (loop is not null)
         {
-            try { await loop.ConfigureAwait(false); } catch (OperationCanceledException) { }
+            try { await loop.ConfigureAwait(false); } catch (Exception ex) when (ex is OperationCanceledException or ObjectDisposedException) { }
         }
         lock (_gate)
         {
@@ -81,16 +81,26 @@ public sealed class Poller : IAsyncDisposable
 
     private async Task RunAsync(CancellationToken ct)
     {
-        var first = true;
+        // El primer ciclo y el posterior a una reanudación se ejecutan de inmediato, sin esperar el timer.
+        var immediate = true;
         while (!ct.IsCancellationRequested)
         {
-            if (!first && !await _timer!.WaitForNextTickAsync(ct).ConfigureAwait(false)) break;
-            first = false;
+            if (!immediate && !await _timer!.WaitForNextTickAsync(ct).ConfigureAwait(false)) break;
+            immediate = false;
 
             var paused = await ExecuteTickAsync(ct).ConfigureAwait(false);
-            TickCompleted?.Invoke();
-            if (paused) await WaitForResumeAsync(ct).ConfigureAwait(false);
+            RaiseTickCompleted();
+            if (!paused) continue;
+            await WaitForResumeAsync(ct).ConfigureAwait(false);
+            immediate = true;
         }
+    }
+
+    // Un suscriptor defectuoso no debe matar el bucle ni propagarse a StopAsync.
+    private void RaiseTickCompleted()
+    {
+        try { TickCompleted?.Invoke(); }
+        catch (Exception ex) { LastError = ex; }
     }
 
     // Devuelve true si el ciclo terminó en error de autenticación (pausa).
@@ -143,10 +153,6 @@ public sealed class Poller : IAsyncDisposable
             CurrentInterval = _options.Interval;
             _timer = new PeriodicTimer(CurrentInterval, _time);
         }
-        // Tras reanudar se ejecuta un ciclo inmediato: el bucle vuelve a esperar el timer, así que se fuerza aquí.
-        var paused = await ExecuteTickAsync(ct).ConfigureAwait(false);
-        TickCompleted?.Invoke();
-        if (paused) await WaitForResumeAsync(ct).ConfigureAwait(false);
     }
 
     private void SetInterval(TimeSpan interval)

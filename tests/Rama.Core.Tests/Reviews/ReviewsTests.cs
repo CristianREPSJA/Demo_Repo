@@ -4,6 +4,7 @@ using Rama.Core.Azure;
 using Rama.Core.Http;
 using Rama.Core.Notifications;
 using Rama.Core.Reviews;
+using Rama.Core.Tests.Support;
 
 namespace Rama.Core.Tests.Reviews;
 
@@ -28,7 +29,13 @@ public class ReviewsTests
     private sealed class RecordingNotifier : INotifier
     {
         public List<NotificationMessage> Sent { get; } = [];
-        public Task NotifyAsync(NotificationMessage m, CancellationToken ct = default) { Sent.Add(m); return Task.CompletedTask; }
+        public TaskCompletionSource First { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public Task NotifyAsync(NotificationMessage m, CancellationToken ct = default)
+        {
+            Sent.Add(m);
+            First.TrySetResult();
+            return Task.CompletedTask;
+        }
     }
 
     private static AzureDevOpsClient Client(RouteHandler h) => new(new HttpClient(h),
@@ -343,18 +350,20 @@ public class ReviewsTests
         var calls = 0;
         var notifier = new RecordingNotifier();
         var svc = Service(new RouteHandler { Respond = Route });
-        var tick = new TaskCompletionSource();
+        var time = new FakeTimeProvider();
+        var seeded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         await using var mon = new ReviewsMonitor(async ct =>
         {
             var s = await svc.LoadAsync(ct);
             if (Interlocked.Increment(ref calls) < 2) return s;
-            tick.TrySetResult();
             return s with { Deployments = [.. s.Deployments, ReviewMapper.ToDeployment(new PipelineApproval("z", "pending", "api", null, null, []), "approval:z")] };
-        }, notifier, new Rama.Core.Polling.PollerOptions(TimeSpan.FromMilliseconds(20), TimeSpan.FromMilliseconds(40)));
+        }, notifier, new Rama.Core.Polling.PollerOptions(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(120)), time);
+        mon.Updated += () => seeded.TrySetResult();
 
         mon.Start();
-        await tick.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        for (var i = 0; i < 200 && notifier.Sent.Count == 0; i++) await Task.Delay(25);
+        await seeded.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        time.Advance(TimeSpan.FromSeconds(60));
+        await notifier.First.Task.WaitAsync(TimeSpan.FromSeconds(10));
         await mon.StopAsync();
         Assert.Contains(notifier.Sent, m => m.Body == "api espera tu aprobación");
     }

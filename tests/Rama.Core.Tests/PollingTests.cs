@@ -128,12 +128,11 @@ public class PollerTests
         await h.WaitTick();
         Assert.True(h.Poller.IsPaused);
         h.Time.Advance(TimeSpan.FromMinutes(30));
-        await Task.Delay(100);
-        Assert.Equal(1, h.Calls); // no sondea en pausa
+        Assert.True(h.Poller.IsPaused); // en pausa el reloj no dispara ciclos
 
         h.Poller.Resume();
         await h.WaitTick();
-        Assert.Equal(2, h.Calls);
+        Assert.Equal(2, h.Calls); // un ciclo sondeado en pausa daría 3
         Assert.False(h.Poller.IsPaused);
         h.Poller.Resume(); // sin pausa: no-op
     }
@@ -179,6 +178,36 @@ public class PollerTests
         await h.WaitTick();
         await h.Poller.StopAsync();
         Assert.False(h.Poller.IsRunning);
+        Assert.False(h.Poller.IsPaused);
+    }
+
+    [Fact]
+    public async Task SubscriberThatThrows_DoesNotKillLoopOrStop()
+    {
+        await using var h = new Harness();
+        var boom = new InvalidOperationException("suscriptor");
+        h.Poller.TickCompleted += () => throw boom;
+        h.Poller.Start();
+        await h.WaitTick();
+        Assert.Same(boom, h.Poller.LastError);
+        await h.AdvanceAndWait(Interval);
+        Assert.Equal(2, h.Calls);
+        await h.Poller.StopAsync();
+    }
+
+    [Fact]
+    public async Task AuthPause_ManyResumes_RunsAsLoopWithoutNesting()
+    {
+        await using var h = new Harness();
+        h.Plan = n => n <= 50 ? new ApiAuthException(HttpStatusCode.Unauthorized, null) : null;
+        h.Poller.Start();
+        await h.WaitTick();
+        for (var i = 0; i < 50; i++)
+        {
+            h.Poller.Resume();
+            await h.WaitTick();
+        }
+        Assert.Equal(51, h.Calls);
         Assert.False(h.Poller.IsPaused);
     }
 
