@@ -20,6 +20,8 @@ public class ChildEnvironmentTests
     [Fact]
     public void Sanitize_RemovesBlockedVariables()
     {
+        Assert.True(ChildEnvironment.IsBlocked("RAMA_TERMINAL_DEMO"));
+        Assert.True(ChildEnvironment.IsBlocked("rama_x"));
         var result = ChildEnvironment.Sanitize(Sample(), isWindows: false);
         Assert.DoesNotContain("NO_COLOR", result.Keys);
         Assert.DoesNotContain("CLAUDECODE", result.Keys);

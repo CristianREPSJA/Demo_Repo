@@ -18,8 +18,9 @@ public sealed class LinuxSecretServiceStore : ISecretStore
     {
         SecretStoreFactory.Validate(service, account);
         using var schema = new Schema();
+        using var attrs = new Attributes(service, account);
         var err = IntPtr.Zero;
-        var ptr = Native.Lookup(schema.Ptr, IntPtr.Zero, ref err, "service", service, "account", account, IntPtr.Zero);
+        var ptr = Native.Lookup(schema.Ptr, attrs.Table, IntPtr.Zero, ref err);
         ThrowIfError(err);
         if (ptr == IntPtr.Zero) return Task.FromResult<string?>(null);
         try { return Task.FromResult<string?>(Marshal.PtrToStringUTF8(ptr)); }
@@ -31,9 +32,9 @@ public sealed class LinuxSecretServiceStore : ISecretStore
         SecretStoreFactory.Validate(service, account);
         ArgumentNullException.ThrowIfNull(secret);
         using var schema = new Schema();
+        using var attrs = new Attributes(service, account);
         var err = IntPtr.Zero;
-        Native.Store(schema.Ptr, DefaultCollection, $"Rama:{service}:{account}", secret, IntPtr.Zero, ref err,
-            "service", service, "account", account, IntPtr.Zero);
+        Native.Store(schema.Ptr, attrs.Table, DefaultCollection, $"Rama:{service}:{account}", secret, IntPtr.Zero, ref err);
         ThrowIfError(err);
         return Task.CompletedTask;
     }
@@ -42,8 +43,9 @@ public sealed class LinuxSecretServiceStore : ISecretStore
     {
         SecretStoreFactory.Validate(service, account);
         using var schema = new Schema();
+        using var attrs = new Attributes(service, account);
         var err = IntPtr.Zero;
-        Native.Clear(schema.Ptr, IntPtr.Zero, ref err, "service", service, "account", account, IntPtr.Zero);
+        Native.Clear(schema.Ptr, attrs.Table, IntPtr.Zero, ref err);
         ThrowIfError(err);
         return Task.CompletedTask;
     }
@@ -51,9 +53,41 @@ public sealed class LinuxSecretServiceStore : ISecretStore
     private static void ThrowIfError(IntPtr gerror)
     {
         if (gerror == IntPtr.Zero) return;
-        // GError: { guint32 domain; gint code; gchar* message } -> código en offset 4.
+        // GError: { guint32 domain; gint code; gchar* message } -> código en offset 4, mensaje en offset 8.
         var code = Marshal.ReadInt32(gerror, 4);
-        throw new SecretStoreException($"libsecret falló (código {code}).", code);
+        var message = Marshal.PtrToStringUTF8(Marshal.ReadIntPtr(gerror, 8)) ?? "sin mensaje";
+        Native.ErrorFree(gerror);
+        throw new SecretStoreException($"libsecret falló (código {code}): {message}", code);
+    }
+
+    // GHashTable<string,string> con los atributos; las cadenas nativas se liberan al terminar.
+    private sealed class Attributes : IDisposable
+    {
+        private readonly List<IntPtr> _strings = [];
+        public IntPtr Table { get; }
+
+        public Attributes(string service, string account)
+        {
+            var hash = NativeLibrary.GetExport(NativeLibrary.Load(GLib), "g_str_hash");
+            var equal = NativeLibrary.GetExport(NativeLibrary.Load(GLib), "g_str_equal");
+            Table = Native.TableNew(hash, equal, IntPtr.Zero, IntPtr.Zero);
+            Add("service", service);
+            Add("account", account);
+        }
+
+        private void Add(string key, string value)
+        {
+            var (k, v) = (Marshal.StringToCoTaskMemUTF8(key), Marshal.StringToCoTaskMemUTF8(value));
+            _strings.Add(k);
+            _strings.Add(v);
+            Native.TableInsert(Table, k, v);
+        }
+
+        public void Dispose()
+        {
+            Native.TableUnref(Table);
+            foreach (var s in _strings) Marshal.FreeCoTaskMem(s);
+        }
     }
 
     // SecretSchema: name, flags, 32 pares (nombre, tipo), reservados. Todo cero salvo lo indicado.
@@ -83,31 +117,37 @@ public sealed class LinuxSecretServiceStore : ISecretStore
         }
     }
 
+    private const string GLib = "libglib-2.0.so.0";
+
     private static class Native
     {
         private const string Lib = "libsecret-1.so.0";
 
-        [DllImport(Lib, EntryPoint = "secret_password_store_sync")]
-        internal static extern bool Store(IntPtr schema, string collection,
+        [DllImport(Lib, EntryPoint = "secret_password_storev_sync")]
+        internal static extern bool Store(IntPtr schema, IntPtr attributes,
+            [MarshalAs(UnmanagedType.LPUTF8Str)] string collection,
             [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string password,
-            IntPtr cancellable, ref IntPtr error,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n1, [MarshalAs(UnmanagedType.LPUTF8Str)] string v1,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n2, [MarshalAs(UnmanagedType.LPUTF8Str)] string v2,
-            IntPtr end);
+            IntPtr cancellable, ref IntPtr error);
 
-        [DllImport(Lib, EntryPoint = "secret_password_lookup_sync")]
-        internal static extern IntPtr Lookup(IntPtr schema, IntPtr cancellable, ref IntPtr error,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n1, [MarshalAs(UnmanagedType.LPUTF8Str)] string v1,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n2, [MarshalAs(UnmanagedType.LPUTF8Str)] string v2,
-            IntPtr end);
+        [DllImport(Lib, EntryPoint = "secret_password_lookupv_sync")]
+        internal static extern IntPtr Lookup(IntPtr schema, IntPtr attributes, IntPtr cancellable, ref IntPtr error);
 
-        [DllImport(Lib, EntryPoint = "secret_password_clear_sync")]
-        internal static extern bool Clear(IntPtr schema, IntPtr cancellable, ref IntPtr error,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n1, [MarshalAs(UnmanagedType.LPUTF8Str)] string v1,
-            [MarshalAs(UnmanagedType.LPUTF8Str)] string n2, [MarshalAs(UnmanagedType.LPUTF8Str)] string v2,
-            IntPtr end);
+        [DllImport(Lib, EntryPoint = "secret_password_clearv_sync")]
+        internal static extern bool Clear(IntPtr schema, IntPtr attributes, IntPtr cancellable, ref IntPtr error);
 
         [DllImport(Lib, EntryPoint = "secret_password_free")]
         internal static extern void Free(IntPtr password);
+
+        [DllImport(GLib, EntryPoint = "g_hash_table_new_full")]
+        internal static extern IntPtr TableNew(IntPtr hash, IntPtr equal, IntPtr keyDestroy, IntPtr valueDestroy);
+
+        [DllImport(GLib, EntryPoint = "g_hash_table_insert")]
+        internal static extern bool TableInsert(IntPtr table, IntPtr key, IntPtr value);
+
+        [DllImport(GLib, EntryPoint = "g_hash_table_unref")]
+        internal static extern void TableUnref(IntPtr table);
+
+        [DllImport(GLib, EntryPoint = "g_error_free")]
+        internal static extern void ErrorFree(IntPtr error);
     }
 }

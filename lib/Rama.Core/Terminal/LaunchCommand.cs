@@ -8,6 +8,8 @@ public sealed record LaunchCommand(string App, IReadOnlyList<string> Args)
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         var ext = Path.GetExtension(path);
         var isBatch = ext.Equals(".cmd", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bat", StringComparison.OrdinalIgnoreCase);
-        return isWindows && isBatch ? new("cmd.exe", ["/c", path]) : new(path, []);
+        return isWindows && isBatch
+            ? new(SystemTools.CmdExe, ["/d", "/c", "\"" + path + "\""])
+            : new(path, []);
     }
 }

@@ -32,7 +32,8 @@ public sealed class WindowsCredentialStore : ISecretStore
                 return Task.FromResult<string?>(string.Empty);
             var bytes = new byte[cred.CredentialBlobSize];
             Marshal.Copy(cred.CredentialBlob, bytes, 0, bytes.Length);
-            return Task.FromResult<string?>(Encoding.UTF8.GetString(bytes));
+            try { return Task.FromResult<string?>(Encoding.UTF8.GetString(bytes)); }
+            finally { Array.Clear(bytes); }
         }
         finally
         {
@@ -69,6 +70,7 @@ public sealed class WindowsCredentialStore : ISecretStore
         finally
         {
             Array.Clear(bytes);
+            Marshal.Copy(bytes, 0, blob, bytes.Length); // bytes ya en cero: borra el blob nativo
             Marshal.FreeHGlobal(blob);
         }
         return Task.CompletedTask;

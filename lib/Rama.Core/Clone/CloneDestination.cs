@@ -29,6 +29,8 @@ public static class CloneDestination
     {
         var invalid = Path.GetInvalidFileNameChars();
         var clean = new string((name ?? "").Trim().Select(c => invalid.Contains(c) ? '-' : c).ToArray());
+        // Windows no admite nombres con punto/espacio final; solo puntos (".", "..") apuntarían a carpetas especiales.
+        clean = clean.TrimEnd('.', ' ');
         return clean.Length == 0 ? "repo" : clean;
     }
 

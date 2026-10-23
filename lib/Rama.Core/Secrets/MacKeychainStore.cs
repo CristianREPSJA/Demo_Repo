@@ -25,7 +25,8 @@ public sealed class MacKeychainStore : ISecretStore
         {
             var bytes = new byte[len];
             Marshal.Copy(data, bytes, 0, bytes.Length);
-            return Task.FromResult<string?>(Encoding.UTF8.GetString(bytes));
+            try { return Task.FromResult<string?>(Encoding.UTF8.GetString(bytes)); }
+            finally { Array.Clear(bytes); }
         }
         finally
         {

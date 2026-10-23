@@ -273,9 +273,11 @@ namespace SourceGit
                 if (TryLaunchAsAskpass(desktop))
                     return;
 
+#if DEBUG
                 // RAMA: entrada oculta de desarrollo para probar la terminal integrada (RAMA_TERMINAL_DEMO=1).
                 if (Rama.Terminal.TerminalDemo.TryLaunch(desktop))
                     return;
+#endif
 
                 TryLaunchAsNormal(desktop);
             }

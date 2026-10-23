@@ -8,7 +8,7 @@ public static class ShellResolver
         ArgumentNullException.ThrowIfNull(env);
         ArgumentNullException.ThrowIfNull(locator);
         if (isWindows)
-            return locator.Find("pwsh", EnvLookup.Get(env, "PATH"), EnvLookup.Get(env, "PATHEXT")) ?? "powershell.exe";
+            return locator.Find("pwsh", EnvLookup.Get(env, "PATH"), EnvLookup.Get(env, "PATHEXT")) ?? SystemTools.PowerShellExe;
 
         var shell = EnvLookup.Get(env, "SHELL");
         return string.IsNullOrWhiteSpace(shell) ? "/bin/bash" : shell;

@@ -9,7 +9,7 @@ public static class ChildEnvironment
     public const string ColorTerm = "truecolor";
     public const string DefaultUtf8Locale = "en_US.UTF-8";
 
-    private static readonly string[] BlockedPrefixes = ["CLAUDE_", "SOURCEGIT_"];
+    private static readonly string[] BlockedPrefixes = ["CLAUDE_", "SOURCEGIT_", "RAMA_"];
     private static readonly string[] BlockedNames = ["NO_COLOR", "CLAUDECODE"];
 
     public static IReadOnlyDictionary<string, string> Sanitize(IDictionary<string, string> env) =>

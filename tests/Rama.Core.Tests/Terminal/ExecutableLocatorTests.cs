@@ -94,7 +94,7 @@ public class ExecutableLocatorTests
     public void ShellResolver_Windows_FallsBackToPowershell()
     {
         var locator = new ExecutableLocator(Files(), isWindows: true);
-        Assert.Equal("powershell.exe", ShellResolver.Resolve(new Dictionary<string, string>(), locator, isWindows: true));
+        Assert.Equal(SystemTools.PowerShellExe, ShellResolver.Resolve(new Dictionary<string, string>(), locator, isWindows: true));
     }
 
     [Fact]
@@ -107,14 +107,14 @@ public class ExecutableLocatorTests
     }
 
     [Theory]
-    [InlineData(@"C:\x\claude.cmd", true, "cmd.exe", @"/c|C:\x\claude.cmd")]
-    [InlineData(@"C:\x\claude.BAT", true, "cmd.exe", @"/c|C:\x\claude.BAT")]
+    [InlineData(@"C:\x\claude.cmd", true, "<cmd>", "/d|/c|\"C:\\x\\claude.cmd\"")]
+    [InlineData(@"C:\x y\claude.BAT", true, "<cmd>", "/d|/c|\"C:\\x y\\claude.BAT\"")]
     [InlineData(@"C:\x\claude.exe", true, @"C:\x\claude.exe", "")]
     [InlineData("/usr/bin/claude", false, "/usr/bin/claude", "")]
     public void LaunchCommand_WrapsBatchFilesOnWindows(string path, bool isWindows, string app, string args)
     {
         var cmd = LaunchCommand.For(path, isWindows);
-        Assert.Equal(app, cmd.App);
+        Assert.Equal(app == "<cmd>" ? SystemTools.CmdExe : app, cmd.App);
         Assert.Equal(args, string.Join("|", cmd.Args));
     }
 }

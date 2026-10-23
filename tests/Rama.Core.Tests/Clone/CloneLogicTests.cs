@@ -85,6 +85,11 @@ public class CloneLogicTests
         Assert.Equal("repo", CloneDestination.Default(null, "repo"));
         Assert.Equal("a-b", CloneDestination.Sanitize("a/b"));
         Assert.Equal("repo", CloneDestination.Sanitize(" "));
+        Assert.Equal("repo", CloneDestination.Sanitize("."));
+        Assert.Equal("repo", CloneDestination.Sanitize(".."));
+        Assert.Equal("repo", CloneDestination.Sanitize("... "));
+        Assert.Equal("a", CloneDestination.Sanitize("a. ."));
+        Assert.Equal(".hidden", CloneDestination.Sanitize(".hidden"));
         Assert.Equal("proj", CloneDestination.NameFromUrl("https://h/o/proj.git"));
         Assert.Equal("proj", CloneDestination.NameFromUrl("git@h:o/proj/"));
         Assert.Equal(("C:\\dev", "repo"), CloneDestination.Split(@"C:\dev\repo\"));

@@ -37,7 +37,7 @@ F4a: restyle pantallas git
 - `src/ViewModels/Preferences.cs` — defaults: diff lado a lado ON, avatar de iniciales (no estilo GitHub).
 - `src/SourceGit.csproj` — referencia a lib/Rama.Terminal (terminal integrada, F5).
 - `SourceGit.slnx` — proyectos lib/Rama.Terminal y tests/Rama.Terminal.Tests.
-- `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal).
+- `src/App.axaml.cs` — entrada oculta `RAMA_TERMINAL_DEMO=1` (abre solo el panel de terminal). Solo en Debug (#if DEBUG).
 
 F7/F8: pagina Clonar
 - `src/Views/Launcher.axaml` — pagina `ClonePage` en el contenedor de destinos (destino Clonar del riel).
