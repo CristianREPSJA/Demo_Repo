@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Rama: tablero Jira</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<!-- Artboard interactivo: el selector de personas, el filtro y "Crear rama" cambian el estado. -->
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#17181a}
+.app{--ground:#17181a;--surface:#1d1e21;--raised:#25272b;--active:#2c2e33;--border:#2c2e33;--rule:#222327;--control:#3a3d43;--text:#ececec;--muted:#a9abb1;--faint:#8c8f96;--amber:#e6a23c;--amber-ink:#1c1406;--sky:#5aa9e6;--mint:#5cc58a;--rose:#e0718f;--lilac:#b294e6;--add:#5cc58a;--del:#e0718f;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:13px;line-height:20px;color:var(--text);background:var(--ground);font-variant-numeric:tabular-nums}
+.app ::selection{background:#e6a23c55}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px}
+.ico{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.rail-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--faint);background:none;border:0;cursor:pointer}
+.rail-btn:hover{color:var(--text);background:var(--raised)}
+.rail-btn[aria-current="page"]{color:var(--text);background:var(--active)}
+.tb-btn{height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 10px;border-radius:6px;border:0;background:none;color:var(--muted);font:inherit;cursor:pointer;white-space:nowrap}
+.tb-btn:hover{background:var(--raised);color:var(--text)}
+.tb-btn:focus-visible,.rail-btn:focus-visible,.btn:focus-visible,.row:focus-visible,.person:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+.count{font-size:11px;line-height:16px;padding:0 5px;border-radius:4px;background:var(--active);color:var(--text)}
+.sec-h{display:flex;align-items:center;gap:6px;height:28px;padding:0 12px;color:var(--muted);font-size:12px;font-weight:500}
+.sec-h .n{margin-left:auto;color:var(--faint);font-weight:400}
+.item{display:flex;align-items:center;gap:8px;height:28px;padding:0 12px 0 28px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.item:hover{background:var(--raised);color:var(--text)}
+.item .t{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.ref{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 6px;border-radius:4px;font-size:11px;line-height:20px;font-weight:500;white-space:nowrap;flex:none;border:1px solid}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 150px 92px 72px;align-items:center;height:30px;padding:0 16px 0 104px;column-gap:12px;cursor:default}
+.row:hover{background:#1f2023}
+.row.sel{background:var(--active)}
+.msg{display:flex;align-items:center;gap:6px;min-width:0}
+.msg .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.who{display:flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap;overflow:hidden}
+.av{width:20px;height:20px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;line-height:20px}
+.when{color:var(--faint);white-space:nowrap;text-align:right}
+.sha{color:var(--faint);text-align:right}
+.file{display:grid;grid-template-columns:16px minmax(0,1fr) auto;align-items:center;column-gap:8px;height:28px;padding:0 16px;color:var(--muted)}
+.file:hover{background:var(--raised);color:var(--text)}
+.st{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:500;text-align:center}
+.path{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:rtl;text-align:left}
+.lines{font-size:11px;white-space:nowrap}
+.btn{height:32px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;border-radius:6px;font:inherit;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn.primary{background:var(--amber);color:var(--amber-ink);border:0}
+.btn.primary:hover{background:#efb055}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--control)}
+.btn.ghost:hover{background:var(--raised)}
+.field{width:100%;box-sizing:border-box;background:var(--ground);border:1px solid var(--control);border-radius:6px;color:var(--text);font:inherit;padding:6px 10px}
+.field:focus{outline:2px solid var(--amber);outline-offset:-1px;border-color:transparent}
+.field::placeholder{color:var(--faint)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.app ::-webkit-scrollbar{width:10px;height:10px}
+.app ::-webkit-scrollbar-thumb{background:#33363b;border-radius:5px;border:2px solid #17181a}
+.person{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 8px;border-radius:6px;border:1px solid transparent;background:none;color:var(--muted);font:inherit;cursor:pointer;white-space:nowrap}
+.person:hover{background:var(--raised);color:var(--text)}
+.person.on,.person.on:hover{background:var(--active);border-color:var(--control);color:var(--text)}
+.col{position:relative;min-width:0;display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--rule);border-radius:8px;background:var(--ground)}
+.card{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.card .sum{margin:0;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card.float{position:absolute;z-index:3;left:14px;right:-8px;top:78px;transform:rotate(1.5deg);background:var(--raised);border-color:var(--control);box-shadow:0 12px 32px rgba(0,0,0,.45);cursor:grabbing}
+.slot{height:112px;border:1px dashed var(--control);border-radius:8px;box-sizing:border-box}
+.mini-btn{height:24px;display:inline-flex;align-items:center;padding:0 8px;margin-left:-8px;border-radius:6px;border:0;background:none;color:var(--text);font:inherit;font-size:12px;font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--control)}
+.mini-btn:hover{background:var(--raised);text-decoration-color:var(--muted)}
+.mini-btn:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+</style>
+</helmet>
+<div class="app" data-interactive="true" style="min-height: 900px; display: flex; flex-wrap: wrap">
+
+  <!-- Riel de secciones -->
+  <nav aria-label="Secciones" style="width: 52px; flex: 0 0 52px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; border-right: 1px solid var(--border); background: var(--ground)">
+    <a href="Main.dc.html" aria-label="Rama, inicio" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px">
+      <svg width="22" height="22" viewBox="0 0 22 22" role="img" aria-label="Rama"><path d="M7 20V9.5c0-2.5 1.6-4 4-4h1.5" stroke="#e6a23c" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M7 13c0-2 1.4-3.2 3.4-3.2H15" stroke="#e6a23c" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".55"/><circle cx="16" cy="5.5" r="2.6" fill="#e6a23c"/><circle cx="17.6" cy="9.8" r="1.9" fill="#e6a23c" opacity=".55"/></svg>
+    </a>
+    <a class="rail-btn" href="Main.dc.html" aria-label="Repositorio" title="Repositorio"><svg class="ico" viewBox="0 0 16 16"><circle cx="4" cy="3.5" r="1.6"/><circle cx="4" cy="12.5" r="1.6"/><circle cx="12" cy="5.5" r="1.6"/><path d="M4 5.1v5.8M12 7.1c0 2.4-2 3.3-6.4 4.4"/></svg></a>
+    <a class="rail-btn" href="PR.dc.html" aria-label="Revisiones pendientes: 2" title="Revisiones pendientes" style="position: relative"><svg class="ico" viewBox="0 0 16 16"><circle cx="4" cy="3.5" r="1.6"/><circle cx="4" cy="12.5" r="1.6"/><circle cx="12" cy="12.5" r="1.6"/><path d="M4 5.1v5.8M12 10.9V6.5a2 2 0 00-2-2H7.5M9 3L7.5 4.5 9 6"/></svg><span style="position: absolute; top: 2px; right: 1px; min-width: 16px; height: 16px; padding: 0 3px; box-sizing: border-box; border-radius: 8px; background: #3a2f1a; color: #f0c27a; font-size: 10px; line-height: 16px; text-align: center; font-weight: 600">2</span></a>
+    <button class="rail-btn" aria-current="page" aria-label="Tablero Jira" title="Tablero Jira"><svg class="ico" viewBox="0 0 16 16"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="M6 2.5v11M10 2.5v11"/></svg></button>
+    <a class="rail-btn" href="Clone.dc.html" aria-label="Clonar repositorio" title="Clonar repositorio"><svg class="ico" viewBox="0 0 16 16"><path d="M8 2.5v8M5 7.5l3 3 3-3M3 13.5h10"/></svg></a>
+    <a class="rail-btn" href="Terminal.dc.html" aria-label="Terminal" title="Terminal"><svg class="ico" viewBox="0 0 16 16"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M4.5 6l2 2-2 2M8.5 10.5h3"/></svg></a>
+    <div style="flex: 1"></div>
+    <button class="rail-btn" aria-label="Ajustes" title="Ajustes"><svg class="ico" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M14.2 8h-1.6M3.4 8H1.8M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1M12.4 12.4l-1.1-1.1M4.7 4.7L3.6 3.6"/></svg></button>
+  </nav>
+
+  <div style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column">
+
+    <!-- Barra superior -->
+    <header style="min-height: 48px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 6px 12px; border-bottom: 1px solid var(--border); background: var(--surface)">
+      <div style="display: flex; flex-direction: column; line-height: 16px; padding-left: 6px">
+        <h1 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 20px">Tablero VEN</h1>
+        <span style="font-size: 11px; color: var(--faint)">Sprint 24, termina el 31 oct</span>
+      </div>
+
+      <div style="flex: 1 1 24px"></div>
+
+      <span style="font-size: 12px; color: var(--faint); white-space: nowrap">Sincronizado con Jira hace 40 s</span>
+      <button class="tb-btn" aria-label="Actualizar ahora" title="Actualizar ahora" style="padding: 0 8px"><svg class="ico" viewBox="0 0 16 16"><path d="M13.5 8a5.5 5.5 0 11-1.8-4.1"/><path d="M13.5 2.5v3h-3"/></svg></button>
+      <span style="width: 1px; height: 24px; background: var(--border)"></span>
+      <label style="position: relative; display: flex; align-items: center">
+        <span class="vh">Filtrar tickets</span>
+        <svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="position: absolute; left: 9px; color: var(--faint); width: 14px; height: 14px"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+        <input class="field" type="search" placeholder="Filtrar tickets" value="{{ query }}" onInput="{{ setQuery }}" style="width: 220px; height: 32px; padding-left: 30px">
+      </label>
+    </header>
+
+    <main style="flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--ground)">
+
+      <!-- Selector de personas -->
+      <div role="group" aria-label="Tickets por persona" style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 12px 16px 4px">
+        <sc-for list="{{ people }}" as="p" hint-placeholder-count="5">
+          <button class="{{ p.cls }}" aria-pressed="{{ p.pressed }}" onClick="{{ p.pick }}">
+            <span class="av" style="{{ p.avStyle }}">{{ p.initials }}</span>
+            <span>{{ p.name }}</span>
+            <sc-if value="{{ p.isMe }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; color: var(--faint)">Tú</span></sc-if>
+            <span class="count">{{ p.count }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <!-- Columnas del tablero -->
+      <div style="flex: 1; overflow-x: auto; padding: 8px 16px 0">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; align-items: start; min-height: 560px; padding-right: 12px">
+          <sc-for list="{{ columns }}" as="col" hint-placeholder-count="4">
+            <section class="col" style="{{ col.style }}" aria-label="{{ col.name }}">
+              <div style="display: flex; align-items: center; gap: 8px; height: 24px">
+                <h2 style="margin: 0; font-size: 13px; font-weight: 600; line-height: 20px">{{ col.name }}</h2>
+                <span class="count">{{ col.count }}</span>
+              </div>
+
+              <sc-if value="{{ col.hasDrop }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 1px dashed var(--amber); border-radius: 8px; padding: 8px 10px; color: #f0c27a; font-size: 12px; text-align: center">Soltar para mover a En revisión</div>
+              </sc-if>
+              <sc-if value="{{ col.hasNote }}" hint-placeholder-val="{{ false }}">
+                <p style="margin: 0; color: var(--muted); font-size: 12px; line-height: 16px">Tu flujo no permite pasar de En curso a Listo</p>
+              </sc-if>
+              <sc-if value="{{ col.isEmpty }}" hint-placeholder-val="{{ false }}">
+                <p style="margin: 0; padding: 8px 2px; color: var(--faint); font-size: 12px">Sin tickets en esta columna</p>
+              </sc-if>
+
+              <sc-if value="{{ col.hasFloat }}" hint-placeholder-val="{{ false }}">
+                <article class="card float" aria-label="Tarjeta en movimiento VEN-415">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                    <span class="mono" style="color: var(--text); font-weight: 500">VEN-415</span>
+                    <span class="mono" style="color: var(--muted)">3 pts</span>
+                  </div>
+                  <p class="sum">Nota de crédito parcial desde boleta</p>
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px">
+                    <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--muted)"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><path d="M4.5 2.5h7v11L8 10.8 4.5 13.5z"/></svg>Historia</span>
+                    <span style="color: #ee9ab1">Alta</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px; color: var(--faint)"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><circle cx="4" cy="3.5" r="1.6"/><circle cx="4" cy="12.5" r="1.6"/><circle cx="12" cy="5.5" r="1.6"/><path d="M4 5.1v5.8M12 7.1c0 2.4-2 3.3-6.4 4.4"/></svg><span class="mono" style="font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">feature/VEN-415-nota-credito-parcial</span></div>
+                </article>
+              </sc-if>
+
+              <sc-for list="{{ col.cards }}" as="card" hint-placeholder-count="3">
+                <div>
+                  <sc-if value="{{ card.isGhost }}" hint-placeholder-val="{{ false }}">
+                    <div class="slot" aria-hidden="true"></div>
+                  </sc-if>
+                  <sc-if value="{{ card.isReal }}" hint-placeholder-val="{{ true }}">
+                    <article class="card">
+                      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                        <span class="mono" style="color: var(--text); font-weight: 500">{{ card.key }}</span>
+                        <span class="mono" style="color: var(--muted)">{{ card.pointsLabel }}</span>
+                      </div>
+                      <p class="sum">{{ card.summary }}</p>
+                      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px">
+                        <span style="display: inline-flex; align-items: center; gap: 6px; color: var(--muted)">
+                          <sc-if value="{{ card.isStory }}" hint-placeholder-val="{{ true }}"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><path d="M4.5 2.5h7v11L8 10.8 4.5 13.5z"/></svg></sc-if>
+                          <sc-if value="{{ card.isBug }}" hint-placeholder-val="{{ false }}"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><rect x="5" y="5" width="6" height="8" rx="3"/><path d="M6.5 5a1.5 1.5 0 013 0M2.5 8h2.5M11 8h2.5M3.5 4.5L5.5 6.5M12.5 4.5L10.5 6.5M3.5 12l2-1.5M12.5 12l-2-1.5"/></svg></sc-if>
+                          <sc-if value="{{ card.isTask }}" hint-placeholder-val="{{ false }}"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.5 8.2l1.8 1.8 3.2-3.5"/></svg></sc-if>
+                          {{ card.typeLabel }}
+                        </span>
+                        <span style="{{ card.priStyle }}">{{ card.priority }}</span>
+                      </div>
+                      <sc-if value="{{ card.hasBranch }}" hint-placeholder-val="{{ true }}">
+                        <div style="display: flex; align-items: center; gap: 6px; color: var(--faint); min-width: 0"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true" style="width: 14px; height: 14px"><circle cx="4" cy="3.5" r="1.6"/><circle cx="4" cy="12.5" r="1.6"/><circle cx="12" cy="5.5" r="1.6"/><path d="M4 5.1v5.8M12 7.1c0 2.4-2 3.3-6.4 4.4"/></svg><span class="mono" style="font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap" title="{{ card.branch }}">{{ card.branch }}</span></div>
+                      </sc-if>
+                      <sc-if value="{{ card.noBranch }}" hint-placeholder-val="{{ false }}">
+                        <div><button class="mini-btn" onClick="{{ card.create }}" aria-label="{{ card.createLabel }}">Crear rama</button></div>
+                      </sc-if>
+                    </article>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </section>
+          </sc-for>
+        </div>
+      </div>
+
+      <p style="margin: 0; padding: 12px 16px 16px; color: var(--faint); font-size: 12px">Al mover una tarjeta se aplica la transición en Jira. Si Jira la rechaza, vuelve a su columna y verás el motivo.</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = Object.assign({ selected: 'diego', query: '', branches: {} }, this.state);
+    const PEOPLE = [
+      { id: 'diego', name: 'Diego Muñoz', initials: 'DM', bg: '#3a2f1a', ink: '#f0c27a', isMe: true },
+      { id: 'camila', name: 'Camila Rojas', initials: 'CR', bg: '#1c3326', ink: '#8fdcae', isMe: false },
+      { id: 'valentina', name: 'Valentina Soto', initials: 'VS', bg: '#36202a', ink: '#ee9ab1', isMe: false },
+      { id: 'matias', name: 'Matías Fuentes', initials: 'MF', bg: '#1b2c3b', ink: '#8ec5ef', isMe: false },
+      { id: 'ignacio', name: 'Ignacio Pérez', initials: 'IP', bg: '#22293a', ink: '#a9bff0', isMe: false }
+    ];
+    const COLS = ['Por hacer', 'En curso', 'En revisión', 'Listo'];
+    // [clave, persona, columna, tipo, prioridad, puntos, resumen, slug, rama existente]
+    const T = [
+      ['VEN-409', 'diego', 'Por hacer', 'Tarea', 'Baja', 2, 'Mostrar RUT con puntos y guion en la nota de venta', 'rut-formato-nota-venta', ''],
+      ['VEN-418', 'diego', 'Por hacer', 'Error', 'Alta', 2, 'Stock negativo al anular un despacho parcial', 'stock-negativo-despacho', ''],
+      ['VEN-412', 'diego', 'En curso', 'Historia', 'Media', 5, 'Descuento por volumen en notas de venta', 'descuentos-volumen', 'feature/VEN-412-descuentos-volumen'],
+      ['VEN-415', 'diego', 'En curso', 'Historia', 'Alta', 3, 'Nota de crédito parcial desde boleta', 'nota-credito-parcial', 'feature/VEN-415-nota-credito-parcial'],
+      ['VEN-401', 'diego', 'En revisión', 'Tarea', 'Media', 3, 'Validar folio de boleta duplicado antes de emitir', 'folio-boleta-duplicado', 'feature/VEN-401-folio-boleta-duplicado'],
+      ['VEN-395', 'diego', 'Listo', 'Tarea', 'Baja', 1, 'Quitar columna obsoleta del reporte de despachos', 'reporte-despachos', 'feature/VEN-395-reporte-despachos'],
+
+      ['VEN-406', 'camila', 'Por hacer', 'Historia', 'Media', 5, 'Cotización con vigencia configurable por cliente', 'vigencia-cotizacion', ''],
+      ['VEN-411', 'camila', 'Por hacer', 'Tarea', 'Baja', 2, 'Paginar en el servidor el listado de despachos', 'paginacion-despachos', ''],
+      ['VEN-399', 'camila', 'En curso', 'Error', 'Alta', 3, 'El SII rechaza la nota de crédito por glosa vacía', 'glosa-nota-credito', 'feature/VEN-399-glosa-nota-credito'],
+      ['VEN-403', 'camila', 'En revisión', 'Historia', 'Media', 8, 'Conciliación de pagos con transferencias del banco', 'conciliacion-pagos', 'feature/VEN-403-conciliacion-pagos'],
+      ['VEN-387', 'camila', 'Listo', 'Tarea', 'Baja', 2, 'Actualizar la plantilla PDF de la boleta electrónica', 'plantilla-pdf-boleta', 'feature/VEN-387-plantilla-pdf-boleta'],
+
+      ['VEN-414', 'valentina', 'Por hacer', 'Tarea', 'Media', 3, 'Exportar el libro de ventas a CSV', 'libro-ventas-csv', ''],
+      ['VEN-421', 'valentina', 'Por hacer', 'Error', 'Baja', 1, 'Total con decimales mal redondeado en la vista previa', 'decimales-vista-previa', ''],
+      ['VEN-392', 'valentina', 'En curso', 'Historia', 'Media', 5, 'Anulación de boleta con motivo obligatorio', 'anulacion-boleta-motivo', ''],
+      ['VEN-408', 'valentina', 'En curso', 'Error', 'Alta', 2, 'El folio de la nota de crédito se repite tras reiniciar el servicio', 'folio-nota-credito', 'feature/VEN-408-folio-nota-credito'],
+      ['VEN-398', 'valentina', 'En revisión', 'Historia', 'Alta', 8, 'Libro de ventas electrónico para el SII', 'libro-ventas-sii', 'feature/VEN-398-libro-ventas-sii'],
+      ['VEN-380', 'valentina', 'Listo', 'Tarea', 'Baja', 1, 'Corregir el texto del correo de envío de boleta', 'texto-correo-boleta', 'feature/VEN-380-texto-correo-boleta'],
+
+      ['VEN-413', 'matias', 'Por hacer', 'Historia', 'Media', 5, 'Historial de precios por producto', 'historial-precios', ''],
+      ['VEN-417', 'matias', 'Por hacer', 'Error', 'Alta', 3, 'El despacho queda pendiente tras recibir la guía firmada', 'despacho-guia-firmada', ''],
+      ['VEN-404', 'matias', 'En curso', 'Tarea', 'Media', 2, 'Validar el dígito verificador del RUT al crear clientes', 'dv-rut-clientes', 'feature/VEN-404-dv-rut-clientes'],
+      ['VEN-377', 'matias', 'En revisión', 'Historia', 'Media', 5, 'Búsqueda de clientes por RUT', 'busqueda-clientes-rut', 'feature/VEN-377-busqueda-clientes-rut'],
+      ['VEN-384', 'matias', 'Listo', 'Error', 'Media', 2, 'La búsqueda ignora el RUT con K minúscula', 'rut-k-minuscula', 'feature/VEN-384-rut-k-minuscula'],
+
+      ['VEN-416', 'ignacio', 'Por hacer', 'Tarea', 'Media', 3, 'Preparar las notas de la versión 3.9', 'notas-version-3-9', ''],
+      ['VEN-410', 'ignacio', 'En curso', 'Historia', 'Media', 5, 'Alerta de stock mínimo por bodega', 'alerta-stock-minimo', ''],
+      ['VEN-405', 'ignacio', 'En revisión', 'Tarea', 'Baja', 2, 'Script de respaldo previo al despliegue', 'respaldo-despliegue', 'feature/VEN-405-respaldo-despliegue'],
+      ['VEN-420', 'ignacio', 'Listo', 'Error', 'Alta', 2, 'Redondeo de IVA en boletas', 'redondeo-iva', 'hotfix/VEN-420-redondeo-iva'],
+      ['VEN-373', 'ignacio', 'Listo', 'Tarea', 'Baja', 1, 'Publicar la versión 3.8.0 en producción', 'publicar-3-8-0', 'release/3.8']
+    ];
+
+    const q = (st.query || '').trim().toLowerCase();
+    const isDiego = st.selected === 'diego';
+    const dragKey = 'VEN-415';
+
+    const toCard = (r) => {
+      const key = r[0];
+      const branch = st.branches[key] || r[8];
+      const newBranch = 'feature/' + key + '-' + r[7];
+      return {
+        key,
+        summary: r[6],
+        typeLabel: r[3],
+        isStory: r[3] === 'Historia',
+        isBug: r[3] === 'Error',
+        isTask: r[3] === 'Tarea',
+        priority: r[4],
+        priStyle: r[4] === 'Alta' ? 'color:#ee9ab1' : 'color:#a9abb1',
+        pointsLabel: r[5] + ' pts',
+        branch,
+        hasBranch: !!branch,
+        noBranch: !branch,
+        createLabel: 'Crear rama ' + newBranch,
+        create: () => this.setState({ branches: Object.assign({}, st.branches, { [key]: newBranch }) }),
+        isGhost: isDiego && key === dragKey,
+        isReal: !(isDiego && key === dragKey)
+      };
+    };
+
+    const mine = T.filter((r) => r[1] === st.selected);
+    const visible = mine.filter((r) => !q || r[0].toLowerCase().includes(q) || r[6].toLowerCase().includes(q));
+
+    const columns = COLS.map((name) => {
+      const cards = visible.filter((r) => r[2] === name).map(toCard);
+      const isDrop = isDiego && name === 'En revisión';
+      const isDim = isDiego && name === 'Listo';
+      return {
+        name,
+        count: cards.length,
+        cards,
+        isEmpty: cards.length === 0 && !isDrop,
+        hasDrop: isDrop,
+        hasFloat: isDrop,
+        hasNote: isDim,
+        style: isDrop ? 'outline:1px dashed #e6a23c;outline-offset:-1px' : (isDim ? 'opacity:.45' : '')
+      };
+    });
+
+    const people = PEOPLE.map((p) => {
+      const on = p.id === st.selected;
+      return {
+        name: p.name,
+        initials: p.initials,
+        isMe: p.isMe,
+        count: T.filter((r) => r[1] === p.id).length,
+        cls: on ? 'person on' : 'person',
+        pressed: on ? 'true' : 'false',
+        avStyle: 'background:' + p.bg + ';color:' + p.ink,
+        pick: () => this.setState({ selected: p.id })
+      };
+    });
+
+    return {
+      people,
+      columns,
+      query: st.query,
+      setQuery: (e) => this.setState({ query: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>
