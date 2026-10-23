@@ -57,3 +57,4 @@ F10: CI y empaquetado
 - `.github/workflows/{build,ci,package,release,format-check,localization-check,homebrew-notify}.yml` — `on: workflow_dispatch` solo (no correr con marca SourceGit). CI propio: `.github/workflows/rama-ci.yml` y `azure-pipelines.yml`.
 - `build/scripts/package.{linux.sh,osx-app.sh,win.ps1}` — artefactos `rama_*`, `Rama.app`, `RAMA_SKIP_APPIMAGE`.
 - `build/resources/{_common/applications/sourcegit.desktop,app/App.plist,deb/DEBIAN/control,rpm/SPECS/build.spec,flatpak/sourcegit.desktop}` — nombre/descripcion Rama (ejecutable e instalacion en /opt/sourcegit sin cambios).
+- `src/Commands/Clone.cs` — `--` antes de la URL (la URL nunca se interpreta como opción de git).

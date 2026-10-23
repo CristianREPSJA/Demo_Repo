@@ -108,6 +108,7 @@
   <x:String x:Key="Text.Rama.Clone.HttpsNote" xml:space="preserve">Se clonará por HTTPS usando Git Credential Manager.</x:String>
   <x:String x:Key="Text.Rama.Clone.Action" xml:space="preserve">Clonar {0}</x:String>
   <x:String x:Key="Text.Rama.Clone.ActionPlain" xml:space="preserve">Clonar</x:String>
+  <x:String x:Key="Text.Rama.Clone.Error.Url" xml:space="preserve">La URL del repositorio no es válida.</x:String>
   <x:String x:Key="Text.Rama.Clone.Error.Destination" xml:space="preserve">Indica una carpeta de destino válida.</x:String>
   <x:String x:Key="Text.Rama.Clone.Error.NotEmpty" xml:space="preserve">La carpeta de destino ya existe y no está vacía.</x:String>
   <x:String x:Key="Text.Rama.Clone.Error.Failed" xml:space="preserve">No se pudo clonar el repositorio.</x:String>

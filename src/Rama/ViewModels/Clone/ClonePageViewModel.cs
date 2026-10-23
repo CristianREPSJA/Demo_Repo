@@ -156,6 +156,12 @@ namespace SourceGit.ViewModels
                 return;
 
             var url = IsUrlTab ? UrlText.Trim() : SelectedRow.Item.CloneUrl;
+            if (url.StartsWith('-') || !Models.Remote.IsValidURL(url))
+            {
+                CloneError = App.Text("Rama.Clone.Error.Url");
+                return;
+            }
+
             await RunCloneAsync(url, Destination.Trim(), CurrentName);
         }
 

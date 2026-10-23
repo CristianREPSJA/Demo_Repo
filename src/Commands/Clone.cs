@@ -14,6 +14,7 @@ namespace SourceGit.Commands
             builder.Append("clone --progress --verbose ");
             if (!string.IsNullOrEmpty(extraArgs))
                 builder.Append(extraArgs).Append(' ');
+            builder.Append("-- "); // RAMA: la URL nunca se interpreta como opción
             builder.Append(url.Quoted()).Append(' ');
             if (!string.IsNullOrEmpty(localName))
                 builder.Append(localName.Quoted());

@@ -157,7 +157,9 @@ public sealed class AccountsService
         var pat = await _secrets.GetAsync(AzureConnection.SecretService, account.Organization, ct).ConfigureAwait(false);
         if (string.IsNullOrEmpty(pat)) throw new ApiException(0, "No hay PAT guardado para " + account.Organization + ".");
         var repos = await new AzureDevOpsClient(_http, account.ToConnection(), pat).ListReposAsync(ct).ConfigureAwait(false);
-        return repos.Select(r => CloneRepoItem.From(r, account.Project)).ToList();
+        // Se omiten repos con URL de clonado inválida (no se confía en la URL que devuelve la API).
+        return repos.Where(r => AzureDevOpsClient.TryValidateCloneUrl(r.RemoteUrl) is not null)
+            .Select(r => CloneRepoItem.From(r, account.Project)).ToList();
     }
 
     public async Task<IReadOnlyList<CloneRepoItem>> ListBitbucketReposAsync(BitbucketAccount account, CancellationToken ct = default)

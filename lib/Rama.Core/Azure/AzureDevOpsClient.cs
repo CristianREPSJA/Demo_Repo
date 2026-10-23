@@ -51,7 +51,24 @@ public sealed class AzureDevOpsClient : ApiClientBase
         });
 
     // El PAT nunca va en la URL; lo resuelve el credential helper de git.
-    public static string CloneUrlFor(AzureRepo repo) => repo.RemoteUrl;
+    // Valida la URL que entrega la API antes de pasarla a git (solo https a hosts de Azure DevOps).
+    public static string CloneUrlFor(AzureRepo repo)
+    {
+        ArgumentNullException.ThrowIfNull(repo);
+        return TryValidateCloneUrl(repo.RemoteUrl) ?? throw new ApiException(0, "URL de clonado no válida para " + repo.Name + ".");
+    }
+
+    public static string? TryValidateCloneUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url) || url[0] == '-' || url.Any(c => char.IsControl(c) || c is '"' or '\\' or '\'' or ' '))
+            return null;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+            return null;
+        var host = uri.IdnHost;
+        var ok = host.Equals("dev.azure.com", StringComparison.OrdinalIgnoreCase) ||
+                 host.EndsWith(".visualstudio.com", StringComparison.OrdinalIgnoreCase);
+        return ok ? url : null;
+    }
 
     public Task<IReadOnlyList<PullRequestInfo>> ListPullRequestsAsync(string? reviewerId = null, string? creatorId = null,
         CancellationToken ct = default) =>
