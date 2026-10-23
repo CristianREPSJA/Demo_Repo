@@ -395,7 +395,7 @@ namespace SourceGit.Views
                         mergeBuiltin.Click += async (_, e) =>
                         {
                             var head = await new Commands.QuerySingleCommit(repo.FullPath, "HEAD").GetResultAsync();
-                            this.ShowWindow(new ViewModels.MergeConflictEditor(repo, head, change.Path));
+                            this.ShowWindow(new ViewModels.ConflictResolver(repo, head, change.Path)); // RAMA: resolvedor F4b
                             e.Handled = true;
                         };
 

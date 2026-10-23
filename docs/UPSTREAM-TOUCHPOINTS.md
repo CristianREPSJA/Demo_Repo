@@ -47,3 +47,8 @@ F5b: cableado de la terminal
 - `src/Views/Repository.axaml` — fila inferior con `TerminalHost` (panel de terminal del repositorio).
 - `src/Views/RepositoryToolbar.axaml(.cs)` — botón "Terminal" que alterna el panel inferior.
 - `src/Views/WorkingCopy.axaml(.cs)` — botón "Pedir mensaje a Claude" y nota bajo el formulario de commit.
+F4b: resolvedor de conflictos
+- `src/ViewModels/MergeConflictEditor.cs` — escritura + stage extraidos a `WriteAndStageAsync` (reutilizado por ConflictResolver).
+- `src/ViewModels/Conflict.cs` — `CreateOpenMergeEditorRequest` abre `ConflictResolver` (3 paneles) en vez de MergeConflictEditor.
+- `src/Views/WorkingCopy.axaml.cs` — menu "Merge" del archivo en conflicto abre `ConflictResolver`.
+- `SourceGit.slnx` — proyecto tests/Rama.App.Tests (integracion de ViewModels sin ventana).

@@ -193,25 +193,37 @@ namespace SourceGit.ViewModels
             if (builder.Length > 1)
                 builder.Length--; // Remove extra '\n'
 
-            try
+            // RAMA: escritura + stage extraídos a WriteAndStageAsync para reutilizarlos en ConflictResolver.
+            var error = await WriteAndStageAsync(_repo.FullPath, _filePath, builder.ToString());
+            if (error == null)
             {
-                // Write merged content to file
-                var fullPath = Path.Combine(_repo.FullPath, _filePath);
-                await File.WriteAllTextAsync(fullPath, builder.ToString());
-
-                // Stage the file
-                var pathSpecFile = Path.GetTempFileName();
-                await File.WriteAllTextAsync(pathSpecFile, _filePath);
-                await new Commands.Add(_repo.FullPath, pathSpecFile).ExecAsync();
-                File.Delete(pathSpecFile);
-
                 _repo.MarkWorkingCopyDirtyManually();
                 return true;
             }
+
+            Error = $"Failed to save and stage: {error}";
+            return false;
+        }
+
+        // RAMA: escribe el contenido resuelto y hace stage del archivo; devuelve null o el mensaje de error.
+        internal static async Task<string> WriteAndStageAsync(string repoPath, string filePath, string content, Encoding encoding = null)
+        {
+            try
+            {
+                // Write merged content to file
+                var fullPath = Path.Combine(repoPath, filePath);
+                await File.WriteAllTextAsync(fullPath, content, encoding ?? new UTF8Encoding(false));
+
+                // Stage the file
+                var pathSpecFile = Path.GetTempFileName();
+                await File.WriteAllTextAsync(pathSpecFile, filePath);
+                var staged = await new Commands.Add(repoPath, pathSpecFile).ExecAsync();
+                File.Delete(pathSpecFile);
+                return staged ? null : "git add failed";
+            }
             catch (Exception ex)
             {
-                Error = $"Failed to save and stage: {ex.Message}";
-                return false;
+                return ex.Message;
             }
         }
 

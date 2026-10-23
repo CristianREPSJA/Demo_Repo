@@ -19,7 +19,7 @@ $env:DOTNET_NOLOGO = '1'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 if (-not $SkipTests) {
-    foreach ($tests in @('tests/Rama.Core.Tests/Rama.Core.Tests.csproj', 'tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj')) {
+    foreach ($tests in @('tests/Rama.Core.Tests/Rama.Core.Tests.csproj', 'tests/Rama.App.Tests/Rama.App.Tests.csproj', 'tests/Rama.Terminal.Tests/Rama.Terminal.Tests.csproj')) {
         & $dotnet test (Join-Path $repo $tests) -c $Configuration --no-build --collect:"XPlat Code Coverage"
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     }
