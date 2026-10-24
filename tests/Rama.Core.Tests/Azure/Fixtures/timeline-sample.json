@@ -1,0 +1,100 @@
+{
+    "records":  [
+                    {
+                        "id":  "dcf0d67f-0ea3-51f5-9909-07310f8f9bcd",
+                        "parentId":  "c3c109a3-3aa6-5526-97b4-679feacfb7ea",
+                        "type":  "Task",
+                        "name":  "CmdLine",
+                        "identifier":  null,
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  2,
+                        "startTime":  "2026-10-23T23:46:49.8466667Z",
+                        "finishTime":  "2026-10-23T23:46:50.1366667Z"
+                    },
+                    {
+                        "id":  "28e6c7b8-bbaf-4a3e-865e-2c14a9fa3edf",
+                        "parentId":  "c3c109a3-3aa6-5526-97b4-679feacfb7ea",
+                        "type":  "Task",
+                        "name":  "Initialize job",
+                        "identifier":  null,
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  1,
+                        "startTime":  "2026-10-23T23:46:48.33Z",
+                        "finishTime":  "2026-10-23T23:46:49.84Z"
+                    },
+                    {
+                        "id":  "64395c9e-5746-4ce9-9f33-38d947096aa2",
+                        "parentId":  "c3c109a3-3aa6-5526-97b4-679feacfb7ea",
+                        "type":  "Task",
+                        "name":  "Finalize Job",
+                        "identifier":  null,
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  3,
+                        "startTime":  "2026-10-23T23:46:50.14Z",
+                        "finishTime":  "2026-10-23T23:46:50.18Z"
+                    },
+                    {
+                        "id":  "a17f077c-245b-5b18-9f81-5af63fbb7c16",
+                        "parentId":  "f16fe9ed-3bc7-55dd-df1a-61e827ff9570",
+                        "type":  "Phase",
+                        "name":  "Desplegar",
+                        "identifier":  "Aprobacion.Desplegar",
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  1,
+                        "startTime":  "2026-10-23T23:46:47.9866667Z",
+                        "finishTime":  "2026-10-23T23:47:00.2066667Z"
+                    },
+                    {
+                        "id":  "f16fe9ed-3bc7-55dd-df1a-61e827ff9570",
+                        "parentId":  null,
+                        "type":  "Stage",
+                        "name":  "Aprobacion",
+                        "identifier":  "Aprobacion",
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  1,
+                        "startTime":  "2026-10-23T23:46:47.9866667Z",
+                        "finishTime":  "2026-10-23T23:47:00.3466667Z"
+                    },
+                    {
+                        "id":  "c3c109a3-3aa6-5526-97b4-679feacfb7ea",
+                        "parentId":  "a17f077c-245b-5b18-9f81-5af63fbb7c16",
+                        "type":  "Job",
+                        "name":  "Desplegar",
+                        "identifier":  "Aprobacion.Desplegar.Desplegar",
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  null,
+                        "startTime":  "2026-10-23T23:46:47.9866667Z",
+                        "finishTime":  "2026-10-23T23:46:50.1833333Z"
+                    },
+                    {
+                        "id":  "6f5cfc04-8292-4ad2-854a-768af8f9e203",
+                        "parentId":  "37d4aeef-7713-5cb4-cd81-e9ade1623a92",
+                        "type":  "Checkpoint.Approval",
+                        "name":  "Checkpoint.Approval",
+                        "identifier":  "6f5cfc04-8292-4ad2-854a-768af8f9e203",
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  null,
+                        "startTime":  "2026-10-23T23:37:08.3233333Z",
+                        "finishTime":  "2026-10-23T23:37:13.6766667Z"
+                    },
+                    {
+                        "id":  "37d4aeef-7713-5cb4-cd81-e9ade1623a92",
+                        "parentId":  "f16fe9ed-3bc7-55dd-df1a-61e827ff9570",
+                        "type":  "Checkpoint",
+                        "name":  "Checkpoint",
+                        "identifier":  "Checkpoint",
+                        "state":  "completed",
+                        "result":  "succeeded",
+                        "order":  null,
+                        "startTime":  "2026-10-23T23:37:08.3566667Z",
+                        "finishTime":  "2026-10-23T23:37:13.83Z"
+                    }
+                ]
+}

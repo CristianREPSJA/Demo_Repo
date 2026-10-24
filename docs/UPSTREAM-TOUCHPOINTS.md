@@ -58,3 +58,6 @@ F10: CI y empaquetado
 - `build/scripts/package.{linux.sh,osx-app.sh,win.ps1}` — artefactos `rama_*`, `Rama.app`, `RAMA_SKIP_APPIMAGE`.
 - `build/resources/{_common/applications/sourcegit.desktop,app/App.plist,deb/DEBIAN/control,rpm/SPECS/build.spec,flatpak/sourcegit.desktop}` — nombre/descripcion Rama (ejecutable e instalacion en /opt/sourcegit sin cambios).
 - `src/Commands/Clone.cs` — `--` antes de la URL (la URL nunca se interpreta como opción de git).
+
+Entra: login con Microsoft para Azure DevOps
+- `src/Commands/Command.cs` — `Rama.GitAuth.PrepareAsync` antes de comandos de red (ExecAsync/ReadToEndAsync) y `Rama.GitAuth.Apply` en `CreateGitStartInfo` (Bearer de Entra por `GIT_CONFIG_*` en el entorno del hijo).

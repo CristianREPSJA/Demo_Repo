@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Rama.Core.Azure;
 using Rama.Core.Jira;
 
@@ -5,10 +6,20 @@ namespace Rama.Core.Accounts;
 
 public enum AccountPlatform { Azure, Bitbucket, Jira }
 
-// Configuración NO secreta de las cuentas; los tokens viven solo en ISecretStore.
-public sealed record AzureAccount(string OrgUrl, string Project, string? DisplayName = null)
+// Cómo se autentica una cuenta de Azure DevOps: PAT (llavero) o sesión de Microsoft (Entra, caché de MSAL).
+public enum AzureAuthKind { Pat, Entra }
+
+// Configuración NO secreta de las cuentas; los tokens viven solo en ISecretStore (PAT) o en el caché de MSAL (Entra).
+public sealed record AzureAccount(
+    string OrgUrl,
+    string Project,
+    string? DisplayName = null,
+    [property: JsonConverter(typeof(JsonStringEnumConverter<AzureAuthKind>))] AzureAuthKind Auth = AzureAuthKind.Pat,
+    string? UserName = null,
+    string? EntraClientId = null)
 {
     public string Organization => AzureConnection.ParseOrganization(OrgUrl);
+    public bool IsEntra => Auth == AzureAuthKind.Entra;
     public AzureConnection ToConnection() => new(Organization, Project);
 }
 

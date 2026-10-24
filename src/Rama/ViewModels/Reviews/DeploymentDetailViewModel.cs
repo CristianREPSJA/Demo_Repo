@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using Rama.Core.Azure;
 using Rama.Core.Reviews;
 
 namespace SourceGit.ViewModels
 {
-    // Aprobación de etapa de pipeline. SUPUESTO: la API de approvals no trae las etapas de la ejecución,
-    // así que se muestra solo la información de la aprobación (sin fila de etapas).
+    // Aprobación de etapa de pipeline. Verificado 2026-10-23: la aprobación trae pipeline.owner.id (id de la
+    // ejecución) y las etapas salen del timeline de build; se cargan aparte y sin bloquear la decisión.
     public partial class DeploymentDetailViewModel : ReviewDetailViewModel
     {
         public string ApproversText { get; }
@@ -27,6 +30,34 @@ namespace SourceGit.ViewModels
             ApproversText = App.Text("Rama.Reviews.Deploy.Approvers",
                 string.Join(", ", steps.Select(s => s.ApproverName).Where(n => n.Length > 0).Distinct()));
             Instructions = item.Approval?.Instructions ?? string.Empty;
+            if (item.Approval?.RunId is { } runId)
+                _ = LoadStagesAsync(runId, Lifetime);
+        }
+
+        public IReadOnlyList<StageRowViewModel> Stages { get; private set; } = [];
+        public bool HasStages => Stages.Count > 0;
+        public bool HasStagesError => StagesError.Length > 0;
+
+        [ObservableProperty]
+        private string _stagesError = string.Empty;
+
+        partial void OnStagesErrorChanged(string value) => OnPropertyChanged(nameof(HasStagesError));
+
+        // Error no fatal: solo oculta la fila de etapas y muestra un aviso; aprobar/rechazar sigue disponible.
+        // Continúa en el hilo de UI (sin ConfigureAwait), donde se crea el panel.
+        private async Task LoadStagesAsync(int runId, CancellationToken ct)
+        {
+            try
+            {
+                var stages = await Service.LoadRunStagesAsync(runId, ct);
+                Stages = stages.Select(s => new StageRowViewModel(s)).ToList();
+                OnPropertyChanged(nameof(Stages));
+                OnPropertyChanged(nameof(HasStages));
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                StagesError = App.Text("Rama.Reviews.Deploy.Stages.Error", ex.Message);
+            }
         }
 
         [RelayCommand]

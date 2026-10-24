@@ -43,6 +43,8 @@ namespace SourceGit.Commands
 
             var errs = new List<string>();
 
+            await Rama.GitAuth.PrepareAsync(Args).ConfigureAwait(false); // RAMA: renueva el token de Entra antes de ir a la red
+
             using var proc = new Process();
             proc.StartInfo = CreateGitStartInfo(true);
             proc.OutputDataReceived += (_, e) => HandleOutput(e.Data, errs);
@@ -135,6 +137,8 @@ namespace SourceGit.Commands
 
         protected async Task<Result> ReadToEndAsync()
         {
+            await Rama.GitAuth.PrepareAsync(Args).ConfigureAwait(false); // RAMA: renueva el token de Entra antes de ir a la red
+
             using var proc = new Process();
             proc.StartInfo = CreateGitStartInfo(true);
 
@@ -220,6 +224,9 @@ namespace SourceGit.Commands
             // Working directory
             if (!string.IsNullOrEmpty(WorkingDirectory))
                 start.WorkingDirectory = WorkingDirectory;
+
+            // RAMA: Bearer de Entra para dev.azure.com via GIT_CONFIG_* (solo entorno del hijo; nunca en argv ni en el log)
+            Rama.GitAuth.Apply(start.Environment, Args);
 
             return start;
         }

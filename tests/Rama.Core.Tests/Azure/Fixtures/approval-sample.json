@@ -1,0 +1,63 @@
+{
+    "id":  "6f5cfc04-8292-4ad2-854a-768af8f9e203",
+    "steps":  [
+                  {
+                      "assignedApprover":  {
+                                               "displayName":  "Usuario Demo",
+                                               "id":  "00000000-0000-0000-0000-0000000000aa",
+                                               "uniqueName":  "demo@example.com",
+                                               "descriptor":  "aad.REDACTED"
+                                           },
+                      "actualApprover":  {
+                                             "displayName":  "Usuario Demo",
+                                             "id":  "00000000-0000-0000-0000-0000000000aa",
+                                             "uniqueName":  "demo@example.com",
+                                             "descriptor":  "aad.REDACTED"
+                                         },
+                      "status":  "approved",
+                      "comment":  "Aprobado por prueba",
+                      "lastModifiedOn":  "2026-10-23T23:37:13.6556748Z",
+                      "order":  1,
+                      "lastModifiedBy":  {
+                                             "displayName":  "Usuario Demo",
+                                             "id":  "00000000-0000-0000-0000-0000000000aa",
+                                             "uniqueName":  "demo@example.com",
+                                             "descriptor":  "aad.REDACTED"
+                                         },
+                      "initiatedOn":  "2026-10-23T23:37:08.2882921Z",
+                      "history":  [
+
+                                  ]
+                  }
+              ],
+    "status":  "approved",
+    "createdOn":  "2026-10-23T23:37:08.287Z",
+    "lastModifiedOn":  "2026-10-23T23:37:13.6556748Z",
+    "instructions":  "Aprobación de prueba para Rama",
+    "executionOrder":  "anyOrder",
+    "minRequiredApprovers":  1,
+    "blockedApprovers":  [
+
+                         ],
+    "_links":  {
+                   "self":  {
+                                "href":  "https://dev.azure.com/contoso/00000000-0000-0000-0000-0000000000bb/_apis/pipelines/approvals/6f5cfc04-8292-4ad2-854a-768af8f9e203?%24expand=1"
+                            }
+               },
+    "pipeline":  {
+                     "owner":  {
+                                   "_links":  {
+                                                  "web":  {
+                                                              "href":  "https://dev.azure.com/contoso/00000000-0000-0000-0000-0000000000bb/_build/results?buildId=2"
+                                                          },
+                                                  "self":  {
+                                                               "href":  "https://dev.azure.com/contoso/00000000-0000-0000-0000-0000000000bb/_apis/build/Builds/2"
+                                                           }
+                                              },
+                                   "id":  2,
+                                   "name":  "20261023.2"
+                               },
+                     "id":  "1",
+                     "name":  "rama-aprobacion"
+                 }
+}

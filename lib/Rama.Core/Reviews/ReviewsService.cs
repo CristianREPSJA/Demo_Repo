@@ -51,6 +51,9 @@ public sealed class ReviewsService(AzureDevOpsClient client, PendingWorkService 
     public Task VoteAsync(PullRequestInfo pr, string myId, Vote vote, CancellationToken ct = default) =>
         client.VoteAsync(pr.RepositoryId, pr.Id, myId, vote, ct);
 
+    public Task<IReadOnlyList<RunStage>> LoadRunStagesAsync(int runId, CancellationToken ct = default) =>
+        client.GetRunStagesAsync(runId, ct);
+
     public Task DecideDeploymentAsync(PipelineApproval a, bool approve, string? comment, CancellationToken ct = default) =>
         client.UpdateApprovalAsync(a.Id, approve, string.IsNullOrWhiteSpace(comment) ? null : comment.Trim(), ct);
 }

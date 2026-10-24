@@ -61,6 +61,14 @@
   <x:String x:Key="Text.Rama.Accounts.Azure.Project" xml:space="preserve">Proyecto</x:String>
   <x:String x:Key="Text.Rama.Accounts.Azure.Pat" xml:space="preserve">Token de acceso personal (PAT)</x:String>
   <x:String x:Key="Text.Rama.Accounts.Azure.PatScopes" xml:space="preserve">Permisos del PAT: Code: Read &amp; Write, Build: Read &amp; execute, Pipeline Resources: Use.</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.AuthKind" xml:space="preserve">Autenticación</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.AuthPat" xml:space="preserve">Token de acceso personal (PAT)</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.AuthEntra" xml:space="preserve">Cuenta Microsoft (Entra ID)</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.EntraClientId" xml:space="preserve">Client ID de la aplicación registrada en Entra</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.EntraSignIn" xml:space="preserve">Iniciar sesión con Microsoft</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.EntraSignedInAs" xml:space="preserve">Sesión iniciada como {0}</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.EntraNote" xml:space="preserve">Se abre el navegador para iniciar sesión con tu cuenta del equipo. La sesión queda cifrada en este equipo y se renueva sola; no necesitas PAT (los PAT globales dejan de funcionar el 1 de diciembre de 2026).</x:String>
+  <x:String x:Key="Text.Rama.Accounts.Azure.EntraNoClientId" xml:space="preserve">Falta el Client ID: un administrador debe registrar Rama en Entra ID (ver docs/ENTRA.md) o definir la variable RAMA_ENTRA_CLIENT_ID.</x:String>
   <x:String x:Key="Text.Rama.Accounts.Bitbucket.Workspace" xml:space="preserve">Workspace (opcional)</x:String>
   <x:String x:Key="Text.Rama.Accounts.Bitbucket.Scopes" xml:space="preserve">Scopes del token: read:user:bitbucket, read:workspace:bitbucket, read:repository:bitbucket.</x:String>
   <x:String x:Key="Text.Rama.Accounts.Jira.Site" xml:space="preserve">Sitio</x:String>
@@ -185,4 +193,13 @@
   <x:String x:Key="Text.Rama.Reviews.Deploy.Comment" xml:space="preserve">Comentario (opcional)</x:String>
   <x:String x:Key="Text.Rama.Reviews.Deploy.Reject" xml:space="preserve">Rechazar</x:String>
   <x:String x:Key="Text.Rama.Reviews.Deploy.Approve" xml:space="preserve">Aprobar despliegue</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stages" xml:space="preserve">Etapas de la ejecución</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stages.Error" xml:space="preserve">No se pudieron cargar las etapas: {0}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Pending" xml:space="preserve">Pendiente</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Running" xml:space="preserve">En curso</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Succeeded" xml:space="preserve">Exitosa</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Failed" xml:space="preserve">Fallida</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Canceled" xml:space="preserve">Cancelada</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Skipped" xml:space="preserve">Omitida</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.WaitingForApproval" xml:space="preserve">Esperando aprobación</x:String>
 </ResourceDictionary>
