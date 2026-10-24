@@ -165,11 +165,20 @@ public sealed partial class JiraClient : ApiClientBase, IJiraBoardApi
             Transition = new TransitionIdDto { Id = transitionId },
             Fields = fields is { Count: > 0 } ? fields : null,
         };
-        using var response = await SendAsync(() => new HttpRequestMessage(HttpMethod.Post, url)
+        try
         {
-            Content = System.Net.Http.Json.JsonContent.Create(body, JiraJsonContext.Default.TransitionRequestDto),
-        }, ct).ConfigureAwait(false);
+            using var response = await SendAsync(() => new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = System.Net.Http.Json.JsonContent.Create(body, JiraJsonContext.Default.TransitionRequestDto),
+            }, ct).ConfigureAwait(false);
+        }
+        catch (ApiAuthException ex) when (ex.Reason == ScopeMismatchReason)
+        {
+            throw new ApiAuthException(ex.StatusCode, WriteScopeHint, ex.Reason);
+        }
     }
+
+    private const string WriteScopeHint = "Para mover tarjetas, el token de Jira necesita el permiso write:jira-work.";
 
     private static JiraIssue MapIssue(IssueDto i, string? spField)
     {

@@ -54,4 +54,26 @@ public class JiraLiveTests
         if (issues.Count > 0)
             Assert.NotNull(await c.GetTransitionsAsync(issues[0].Key)); // solo GET; nunca TransitionAsync
     }
+
+    // ÚNICA prueba que escribe: mueve UN issue a una columna, como arrastrar la tarjeta en la app.
+    // Requiere opt-in explícito con RAMA_JIRA_MOVE_ISSUE, RAMA_JIRA_MOVE_BOARD y RAMA_JIRA_MOVE_COLUMN.
+    [LiveJiraFact]
+    public async Task MoveIssue_ToColumn_WhenExplicitlyAuthorized()
+    {
+        if (Env("RAMA_JIRA_MOVE_ISSUE") is not { } key || Env("RAMA_JIRA_MOVE_BOARD") is not { } boardRaw
+            || Env("RAMA_JIRA_MOVE_COLUMN") is not { } columnName || !long.TryParse(boardRaw, out var boardId))
+            return;
+
+        var c = (await ConnectAsync()).Client;
+        var column = Assert.Single((await c.GetBoardConfigurationAsync(boardId)).Columns,
+            col => string.Equals(col.Name, columnName, StringComparison.OrdinalIgnoreCase));
+        var issue = Assert.Single(await c.SearchIssuesAsync($"key = \"{key}\""));
+
+        var plan = TransitionPlanner.Plan(issue, column, await c.GetTransitionsAsync(key));
+        Assert.Equal(PlanKind.Allowed, plan.Kind);
+        await c.TransitionAsync(key, plan.Transition!.Id);
+
+        var after = Assert.Single(await c.SearchIssuesAsync($"key = \"{key}\""));
+        Assert.Contains(after.StatusId, column.StatusIds);
+    }
 }

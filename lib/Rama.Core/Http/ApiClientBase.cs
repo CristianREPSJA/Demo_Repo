@@ -85,11 +85,27 @@ public abstract class ApiClientBase
             }
 
             var signIn = IsSignInPage(response);
+            var scopeMismatch = !signIn && await IsScopeMismatchAsync(response, ct).ConfigureAwait(false);
             response.Dispose();
             throw signIn || status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
-                ? new ApiAuthException(status, _options.MissingScopeHint, signIn ? $"{SignInPageReason} ({(int)status})." : null)
+                ? new ApiAuthException(status, _options.MissingScopeHint,
+                    signIn ? $"{SignInPageReason} ({(int)status})." : scopeMismatch ? ScopeMismatchReason : null)
                 : new ApiException(status, $"La API respondió {(int)status} {status}.");
         }
+    }
+
+    // Atlassian (verificado 2026-10-23): token válido sin el permiso pedido → 401 "Unauthorized; scope does not match".
+    public const string ScopeMismatchReason = "El token es válido, pero no tiene el permiso necesario para esta acción.";
+
+    private static async Task<bool> IsScopeMismatchAsync(HttpResponseMessage response, CancellationToken ct)
+    {
+        if (response.StatusCode is not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)) return false;
+        try
+        {
+            var body = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            return body.Contains("scope does not match", StringComparison.OrdinalIgnoreCase);
+        }
+        catch (HttpRequestException) { return false; }
     }
 
     private async Task<HttpResponseMessage> SendOnceAsync(Func<HttpRequestMessage> factory, bool forceRefresh, CancellationToken ct)

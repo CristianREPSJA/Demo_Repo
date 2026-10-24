@@ -163,6 +163,19 @@ public class JiraClientTests
         Assert.Contains("API token", ex.Message);
     }
 
+    // Forma real (2026-10-23): token con alcance de solo lectura al hacer la transición.
+    [Fact]
+    public async Task Transition_ScopeMismatch_ExplainsMissingWritePermission()
+    {
+        var (c, _) = Make((_, _) => new HttpResponseMessage(HttpStatusCode.Unauthorized)
+        {
+            Content = new StringContent("""{"code":401,"message":"Unauthorized; scope does not match"}""", Encoding.UTF8, "application/json"),
+        });
+        var ex = await Assert.ThrowsAsync<ApiAuthException>(() => c.TransitionAsync("VEN-1", "31"));
+        Assert.Contains("write:jira-work", ex.Message);
+        Assert.DoesNotContain("Revisa el correo", ex.Message);
+    }
+
     [Fact]
     public void BaseUrls_AreValidated()
     {
