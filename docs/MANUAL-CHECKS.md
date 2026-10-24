@@ -43,3 +43,14 @@ Preparación (repo desechable): crear un repo con un archivo y 3 regiones en con
 - [ ] Cerrar con cambios sin guardar pide confirmación.
 - [ ] Archivo con CRLF: tras resolver, los fines de línea se conservan (`git diff --cached` sin cambios de EOL espurios).
 - [ ] Contraste y tipografía coinciden con `docs/mockups/Conflict.html` (tema grafito).
+
+## Etapas en el detalle de aprobación de despliegue (`src/Rama/Views/DeploymentDetailView.axaml`)
+
+Preparación: pipeline con una etapa que requiere aprobación de tu usuario (ej. `rama-aprobacion`) y ejecución pendiente.
+
+- [ ] Revisiones pendientes → Despliegues → seleccionar la aprobación: aparece la tarjeta "Etapas de la ejecución" entre la cabecera y el comentario.
+- [ ] Cada etapa en una fila: nombre a la izquierda, pastilla de estado a la derecha, en el orden de la ejecución.
+- [ ] La etapa que espera tu aprobación muestra "Esperando aprobación" en ámbar; etapas exitosas en menta, fallidas en rosa, pendientes/omitidas/canceladas en neutro.
+- [ ] Con el PAT sin permiso Build (Read): la tarjeta no aparece, se ve el aviso "No se pudieron cargar las etapas…" y Aprobar/Rechazar siguen funcionando.
+- [ ] Aprobación sin id de ejecución (poco común): no hay tarjeta ni aviso.
+- [ ] Estilo coherente con las demás tarjetas `rv-card` (tema grafito).

@@ -68,6 +68,9 @@ public class AzureLiveTests
         Assert.NotEmpty(ap.PipelineName);
         Assert.Contains(ap.Steps, s => s.ApproverId == me.Id && s.ApproverName.Length > 0);
 
+        Assert.NotNull(ap.RunId);
+        Assert.NotEmpty(await c.GetRunStagesAsync(ap.RunId.Value));
+
         await c.UpdateApprovalAsync(ap.Id, approve: true, comment: "Aprobado por prueba en vivo de Rama");
         Assert.DoesNotContain(await c.ListPendingApprovalsAsync(), a => a.Id == ap.Id);
     }
