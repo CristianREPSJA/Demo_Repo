@@ -182,4 +182,129 @@ public class ApiClientBaseTests
     [Fact]
     public void Ctor_RejectsNullHttpClient() =>
         Assert.Throws<ArgumentNullException>(() => new TestClient(null!));
+
+    // ---- Bug real (Azure DevOps 2026-10-23): credenciales inválidas => 203 + página HTML de inicio de sesión ----
+
+    private static HttpResponseMessage Html(HttpStatusCode code) =>
+        new(code) { Content = new StringContent("<html><body>Sign in</body></html>", Encoding.UTF8, "text/html") };
+
+    [Fact]
+    public async Task Status203_IsTreatedAsAuthFailure()
+    {
+        var (c, h, _) = Make(ApiAuth.Pat("SECRETPAT"), null, _ => Html(HttpStatusCode.NonAuthoritativeInformation));
+        var ex = await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Equal(HttpStatusCode.NonAuthoritativeInformation, ex.StatusCode);
+        Assert.Contains("inicio de sesión", ex.Message);
+        Assert.Single(h.Requests);
+        Assert.DoesNotContain("SECRETPAT", ex.ToString());
+    }
+
+    [Fact]
+    public async Task Status200WithHtmlBody_IsTreatedAsAuthFailure()
+    {
+        var (c, _, _) = Make(null, null, _ => Html(HttpStatusCode.OK));
+        var ex = await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Equal(HttpStatusCode.OK, ex.StatusCode);
+    }
+
+    [Fact]
+    public async Task Status203_KeepsReasonWhenHintIsAdded()
+    {
+        var (c, _, _) = Make(null, new ApiClientOptions { MissingScopeHint = "Falta scope" },
+            _ => Html(HttpStatusCode.NonAuthoritativeInformation));
+        var ex = await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Contains("Falta scope", ex.Message);
+        Assert.NotNull(ex.Reason);
+        var rethrown = new ApiAuthException(ex.StatusCode, "Otro hint", ex.Reason);
+        Assert.Contains("inicio de sesión", rethrown.Message);
+        Assert.Contains("Otro hint", rethrown.Message);
+    }
+
+    // ---- Proveedor de autenticación renovable (Entra) ----
+
+    private sealed class FakeTokens : IAccessTokenSource
+    {
+        public List<bool> Calls { get; } = [];
+        public int Counter;
+
+        public Task<string> GetAccessTokenAsync(bool forceRefresh, CancellationToken ct)
+        {
+            Calls.Add(forceRefresh);
+            return Task.FromResult("tok" + (++Counter));
+        }
+    }
+
+    private sealed class ProviderClient(HttpClient http, IAuthProvider auth, ApiClientOptions? o = null)
+        : ApiClientBase(http, auth, o)
+    {
+        public Task<Dictionary<string, string>?> Get(string url) =>
+            GetJsonAsync(url, RamaJsonContext.Default.DictionaryStringString);
+    }
+
+    [Fact]
+    public async Task BearerProvider_RefreshesOnceAndRetriesOn401()
+    {
+        var tokens = new FakeTokens();
+        var h = new FakeHandler(_ => Status(HttpStatusCode.Unauthorized), _ => Json("{\"ok\":\"1\"}"));
+        var c = new ProviderClient(new HttpClient(h), new BearerAuthProvider(tokens));
+        var r = await c.Get("http://x");
+        Assert.Equal("1", r!["ok"]);
+        Assert.Equal(["Bearer tok1", "Bearer tok2"], h.AuthSeen);
+        Assert.Equal([false, true], tokens.Calls);
+    }
+
+    [Fact]
+    public async Task BearerProvider_RefreshesOn203SignInPage()
+    {
+        var tokens = new FakeTokens();
+        var h = new FakeHandler(_ => Html(HttpStatusCode.NonAuthoritativeInformation), _ => Json("{}"));
+        var c = new ProviderClient(new HttpClient(h), new BearerAuthProvider(tokens));
+        await c.Get("http://x");
+        Assert.Equal(2, h.Requests.Count);
+        Assert.Equal([false, true], tokens.Calls);
+    }
+
+    [Fact]
+    public async Task BearerProvider_DoesNotLoopWhen401Persists()
+    {
+        var tokens = new FakeTokens();
+        var h = new FakeHandler(_ => Status(HttpStatusCode.Unauthorized));
+        var c = new ProviderClient(new HttpClient(h), new BearerAuthProvider(tokens));
+        var ex = await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Equal(HttpStatusCode.Unauthorized, ex.StatusCode);
+        Assert.Equal(2, h.Requests.Count);
+    }
+
+    [Fact]
+    public async Task BearerProvider_DoesNotRefreshOn403()
+    {
+        var tokens = new FakeTokens();
+        var h = new FakeHandler(_ => Status(HttpStatusCode.Forbidden));
+        var c = new ProviderClient(new HttpClient(h), new BearerAuthProvider(tokens));
+        await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Single(h.Requests);
+        Assert.Equal([false], tokens.Calls);
+    }
+
+    [Fact]
+    public async Task StaticProvider_NeverRetriesOn401()
+    {
+        var h = new FakeHandler(_ => Status(HttpStatusCode.Unauthorized));
+        var provider = new StaticAuthProvider(ApiAuth.Pat("p"));
+        Assert.False(provider.CanRefresh);
+        var c = new ProviderClient(new HttpClient(h), provider);
+        await Assert.ThrowsAsync<ApiAuthException>(() => c.Get("http://x"));
+        Assert.Single(h.Requests);
+    }
+
+    [Fact]
+    public async Task Provider_IsSkippedWhenRequestAlreadyHasAuthorization()
+    {
+        var tokens = new FakeTokens();
+        var h = new FakeHandler(_ => Json("{}"));
+        var c = new ProviderClient(new HttpClient(h), new BearerAuthProvider(tokens));
+        await c.Get("http://x");
+        Assert.Equal(["Bearer tok1"], h.AuthSeen);
+        Assert.Throws<ArgumentNullException>(() => new ProviderClient(new HttpClient(h), null!));
+    }
 }
