@@ -1,7 +1,11 @@
 namespace Rama.Core.Azure.Entra;
 
 // Token de acceso de Entra para Azure DevOps; UserName es el UPN de la cuenta que inició sesión.
-public sealed record EntraToken(string AccessToken, DateTimeOffset ExpiresOn, string UserName);
+public sealed record EntraToken(string AccessToken, DateTimeOffset ExpiresOn, string UserName)
+{
+    // El ToString() generado imprimiría el token (logs, interpolaciones, depurador): se redacta siempre.
+    public override string ToString() => $"EntraToken {{ UserName = {UserName}, ExpiresOn = {ExpiresOn:O}, AccessToken = *** }}";
+}
 
 // Fachada sobre MSAL para que la lógica sea verificable con fakes. Las implementaciones traducen sus errores a
 // ApiAuthException (cancelado / requiere interacción) o ApiException (servicio), nunca exponen tipos de MSAL.

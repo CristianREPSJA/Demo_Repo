@@ -27,12 +27,23 @@ public static class GitAuthEnvironment
         env[CountVar] = (count + 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
+    // Opciones globales de git que llevan un valor en el token siguiente (`-c clave=valor`, `-C ruta`, ...).
+    private static readonly HashSet<string> GlobalOptionsWithValue = new(StringComparer.Ordinal)
+    {
+        "-c", "-C", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--config-env",
+    };
+
+    // Salta las opciones globales iniciales (`-c k=v`, `--no-optional-locks`, ...) y mira el subcomando real.
     public static bool NeedsNetwork(string? gitArgs)
     {
         if (string.IsNullOrWhiteSpace(gitArgs)) return false;
-        var trimmed = gitArgs.AsSpan().TrimStart();
-        var end = trimmed.IndexOf(' ');
-        var first = end < 0 ? trimmed : trimmed[..end];
-        return NetworkCommands.Contains(first.ToString());
+        var tokens = gitArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < tokens.Length; i++)
+        {
+            var t = tokens[i];
+            if (!t.StartsWith('-')) return NetworkCommands.Contains(t);
+            if (GlobalOptionsWithValue.Contains(t)) i++; // el valor va en el token siguiente
+        }
+        return false;
     }
 }

@@ -185,6 +185,29 @@ public class EntraTests
         Assert.Throws<ArgumentNullException>(() => GitAuthEnvironment.Apply(null!, "tok"));
     }
 
+    [Fact]
+    public void EntraToken_ToStringNeverPrintsAccessToken()
+    {
+        var token = new EntraToken("SECRET-ACCESS", new DateTimeOffset(2026, 10, 23, 12, 0, 0, TimeSpan.Zero), "ana@contoso.cl");
+        var text = token.ToString();
+        Assert.DoesNotContain("SECRET-ACCESS", text);
+        Assert.Contains("ana@contoso.cl", text);
+        Assert.DoesNotContain("SECRET-ACCESS", $"{token}");
+        Assert.Equal("SECRET-ACCESS", token.AccessToken);
+    }
+
+    [Theory]
+    [InlineData("-c protocol.file.allow=always submodule add -- https://x y", true)]
+    [InlineData("-c core.quotepath=off -c credential.helper=manager fetch origin", true)]
+    [InlineData("--no-optional-locks fetch origin", true)]
+    [InlineData("-C /repo push origin HEAD", true)]
+    [InlineData("-c a=b status --porcelain", false)]
+    [InlineData("-c", false)]
+    [InlineData("-c a=b", false)]
+    [InlineData("--version", false)]
+    public void GitEnv_NeedsNetworkSkipsLeadingGlobalOptions(string args, bool expected) =>
+        Assert.Equal(expected, GitAuthEnvironment.NeedsNetwork(args));
+
     [Theory]
     [InlineData("clone --progress -- https://dev.azure.com/o/p/_git/r", true)]
     [InlineData("fetch --progress --verbose origin", true)]

@@ -66,14 +66,22 @@ public sealed partial class AccountsService
             throw new ArgumentException(EntraNotSignedIn, nameof(account));
         var normalized = account with { OrgUrl = $"https://dev.azure.com/{org}" };
         AccountsData next = AccountsData.Empty;
+        AzureAccount? previous = null;
         return MutateAsync(AccountPlatform.Azure,
-            d => next = d with { Azure = Upsert(d.Azure, normalized, a => SameAzure(a, normalized)) },
+            d =>
+            {
+                previous = d.Azure.FirstOrDefault(a => SameAzure(a, normalized));
+                return next = d with { Azure = Upsert(d.Azure, normalized, a => SameAzure(a, normalized)) };
+            },
             async () =>
             {
                 if (!normalized.IsEntra && !string.IsNullOrEmpty(pat))
                     await _secrets.SetAsync(AzureConnection.SecretService, org, pat, ct).ConfigureAwait(false);
                 else if (normalized.IsEntra && !UsesPat(next, org))
                     await _secrets.DeleteAsync(AzureConnection.SecretService, org, ct).ConfigureAwait(false);
+                // Cambio Entra -> PAT: la sesión de Microsoft no debe quedar viva en el caché de MSAL.
+                if (!normalized.IsEntra)
+                    await SignOutEntraIfUnusedAsync(next, previous, ct).ConfigureAwait(false);
             }, ct);
     }
 

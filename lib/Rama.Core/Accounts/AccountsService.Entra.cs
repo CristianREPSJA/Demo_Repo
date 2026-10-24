@@ -94,17 +94,22 @@ public sealed partial class AccountsService
         }
     }
 
-    // Cierra la sesión de MSAL cuando ninguna cuenta restante usa ese usuario con ese Client ID.
-    private async Task SignOutEntraIfUnusedAsync(AccountsData next, AzureAccount removed, CancellationToken ct)
+    // Cierra la sesión de MSAL cuando ninguna cuenta restante usa ese usuario con ese Client ID (al quitar la cuenta
+    // o al pasarla de Entra a PAT). Invalida la fuente para que los clientes vivos dejen de usar el token en memoria.
+    private async Task SignOutEntraIfUnusedAsync(AccountsData next, AzureAccount? removed, CancellationToken ct)
     {
-        if (!removed.IsEntra || string.IsNullOrWhiteSpace(removed.UserName)) return;
+        if (removed is null || !removed.IsEntra || string.IsNullOrWhiteSpace(removed.UserName)) return;
         var clientId = EntraOptions.ResolveClientId(removed.EntraClientId, _getEnv);
         if (clientId is null) return;
         var stillUsed = next.Azure.Any(a => a.IsEntra && a.UserName is not null && SameText(a.UserName, removed.UserName)
             && string.Equals(EntraOptions.ResolveClientId(a.EntraClientId, _getEnv), clientId, StringComparison.OrdinalIgnoreCase));
         if (stillUsed) return;
 
-        lock (_entraLock) _tokenSources.Remove((clientId, removed.UserName.ToLowerInvariant()));
+        lock (_entraLock)
+        {
+            if (_tokenSources.Remove((clientId, removed.UserName.ToLowerInvariant()), out var source))
+                source.Invalidate();
+        }
         await GetAuthenticator(clientId).SignOutAsync(removed.UserName, ct).ConfigureAwait(false);
     }
 

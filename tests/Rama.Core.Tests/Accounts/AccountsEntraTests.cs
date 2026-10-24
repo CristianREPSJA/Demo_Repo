@@ -265,6 +265,54 @@ public class AccountsEntraTests : IDisposable
     }
 
     [Fact]
+    public async Task Remove_InvalidatesTokensOfLiveClients()
+    {
+        _auth.Accounts[Upn] = new EntraToken("t", DateTimeOffset.UtcNow.AddHours(1), Upn);
+        var svc = Make();
+        var a = Draft() with { UserName = Upn };
+        await svc.SaveAzureAsync(a, null);
+        var client = (await svc.CreateAzureClientAsync(a))!;
+        await client.GetCurrentUserAsync();
+        Assert.Equal("t", svc.TryGetCachedAzureGitToken());
+
+        await svc.RemoveAzureAsync(a);
+        Assert.Equal([Upn], _auth.SignedOut);
+        // El cliente vivo ya no tiene token en memoria y MSAL ya no tiene la cuenta: falla pidiendo iniciar sesión.
+        await Assert.ThrowsAsync<ApiAuthException>(() => client.GetCurrentUserAsync());
+        Assert.Equal(["Bearer t"], _authSeen);
+    }
+
+    [Fact]
+    public async Task Save_SwitchingEntraToPat_SignsOutAndInvalidates()
+    {
+        _auth.Accounts[Upn] = new EntraToken("t", DateTimeOffset.UtcNow.AddHours(1), Upn);
+        var svc = Make();
+        var entra = Draft() with { UserName = Upn };
+        await svc.SaveAzureAsync(entra, null);
+        var client = (await svc.CreateAzureClientAsync(entra))!;
+        await client.GetCurrentUserAsync();
+
+        await svc.SaveAzureAsync(new("https://dev.azure.com/acme", "Proj"), "new-pat");
+        Assert.Equal([Upn], _auth.SignedOut);
+        Assert.Equal(AzureAuthKind.Pat, svc.Current.Azure.Single().Auth);
+        Assert.Equal("new-pat", await _secrets.GetAsync("azure-devops", "acme"));
+        await Assert.ThrowsAsync<ApiAuthException>(() => client.GetCurrentUserAsync());
+        Assert.Null(svc.TryGetCachedAzureGitToken());
+    }
+
+    [Fact]
+    public async Task Save_SwitchingEntraToPat_KeepsSessionWhileAnotherAccountUsesIt()
+    {
+        _auth.Accounts[Upn] = new EntraToken("t", DateTimeOffset.UtcNow.AddHours(1), Upn);
+        var svc = Make();
+        await svc.SaveAzureAsync(Draft() with { UserName = Upn }, null);
+        await svc.SaveAzureAsync(Draft() with { Project = "Otro", UserName = Upn }, null);
+        await svc.SaveAzureAsync(new("https://dev.azure.com/acme", "Proj"), "pat");
+        Assert.Empty(_auth.SignedOut);
+        Assert.Equal("t", await svc.TryGetAzureGitTokenAsync());
+    }
+
+    [Fact]
     public async Task GitToken_ComesFromFirstEntraAccount_AndCachedVariantIsSynchronous()
     {
         _auth.Accounts[Upn] = new EntraToken("git-tok", DateTimeOffset.UtcNow.AddHours(1), Upn);

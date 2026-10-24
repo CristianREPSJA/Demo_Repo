@@ -100,6 +100,12 @@ public sealed class MsalEntraAuthenticator : IEntraAuthenticator
         finally { _init.Release(); }
     }
 
+    public const string CacheUnavailableMessage =
+        "No se pudo proteger el caché de sesión de Microsoft en este equipo: el llavero del sistema no está disponible "
+        + "(en Linux se necesita GNOME Keyring o KWallet activo). Rama no guarda tokens sin cifrar; "
+        + "activa el llavero o usa un PAT.";
+
+    // Sin persistencia cifrada verificada no hay login: nunca se cae a un archivo en texto plano.
     private static async Task RegisterPersistentCacheAsync(IPublicClientApplication app, string dir)
     {
         Directory.CreateDirectory(dir);
@@ -109,6 +115,14 @@ public sealed class MsalEntraAuthenticator : IEntraAuthenticator
             .WithMacKeyChain("Rama.Entra", "MSALCache")
             .Build();
         var helper = await MsalCacheHelper.CreateAsync(props).ConfigureAwait(false);
+        try
+        {
+            helper.VerifyPersistence();
+        }
+        catch (MsalCachePersistenceException ex)
+        {
+            throw new ApiException(0, $"{CacheUnavailableMessage} Detalle: {ex.Message}");
+        }
         helper.RegisterCache(app.UserTokenCache);
     }
 }

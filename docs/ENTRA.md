@@ -59,12 +59,35 @@ Sin Client ID válido (GUID), el botón muestra el aviso de que falta registrar 
 4. **Probar conexión** usa solo la sesión en caché (no abre el navegador). **Quitar** borra la cuenta y cierra la
    sesión de MSAL si ninguna otra cuenta usa ese usuario.
 
+## Riesgos conocidos
+
+- **El Bearer viaja en el entorno del proceso git.** Rama lo inyecta en `GIT_CONFIG_VALUE_n` del `git` hijo
+  (solo para `clone/fetch/pull/push/ls-remote/submodule/remote/lfs`). Todo lo que ese `git` ejecute hereda ese
+  entorno: *hooks* del repositorio (`post-checkout`, `post-merge`, `pre-push`…), filtros de LFS/`clean`/`smudge`,
+  `fsmonitor` y helpers externos. Un repositorio malicioso puede leer el token desde un hook.
+- **Paridad con PAT/GCM.** Con el PAT clásico un hook ya puede ejecutar `git credential fill` y obtener la
+  credencial; y el caché de MSAL (DPAPI en Windows) lo descifra cualquier proceso del mismo usuario. Entra no
+  empeora el modelo frente a un atacante activo, pero sí añade una **fuga pasiva** (variable de entorno visible,
+  p. ej. en `env`/volcados de un hook).
+- **Endurecimiento futuro.** Un *credential helper* propio (`credential.helper=<rama> --entra`) evitaría la fuga
+  pasiva por entorno; no detendría a un hook activo, porque git propaga `-c` a los subprocesos vía
+  `GIT_CONFIG_PARAMETERS` y el helper responde a cualquier `git credential fill`. Queda como mejora pendiente.
+- **Recomendación:** no abrir ni clonar repositorios no confiables con una cuenta Entra activa; revisar
+  `.git/hooks`, `.lfsconfig` y `core.fsmonitor` antes de hacer `fetch`/`pull` en repos de terceros.
+- **Caché cifrado obligatorio.** Si el llavero del SO no está disponible (p. ej. Linux sin GNOME Keyring/KWallet),
+  `MsalCacheHelper.VerifyPersistence()` falla y Rama muestra "No se pudo proteger el caché de sesión de Microsoft…"
+  en vez de guardar tokens en texto plano. Alternativa: PAT.
+- **Al quitar la cuenta o pasarla a PAT** se invalida el token en memoria y se cierra la sesión en el caché de
+  MSAL (si ninguna otra cuenta usa ese usuario). Los clientes ya creados fallan con "Inicia sesión con Microsoft
+  otra vez".
+
 ## Limitaciones conocidas
 
 - El token de Azure DevOps dura ~1 h; la renovación es silenciosa mientras el refresh token sea válido (días a
   semanas según la política del tenant). Si falla, hay que volver a pulsar el botón.
 - Los permisos efectivos son los del usuario en Azure DevOps (no hay scopes de PAT): los mensajes "Falta el permiso
   del PAT…" ante `403` indican, en modo Entra, que al usuario le falta ese permiso en la organización/proyecto.
-- Linux necesita un *secret service* activo (GNOME Keyring/KWallet); sin él MSAL Extensions no persiste el caché.
+- Linux necesita un *secret service* activo (GNOME Keyring/KWallet); sin él el login se rechaza con un mensaje claro
+  (ver "Riesgos conocidos").
 - Pendiente de prueba manual (ver `docs/MANUAL-CHECKS.md`): login real, clon/fetch/push con Entra y
   comportamiento tras caducar la sesión. Sin red ni GUI en el entorno de desarrollo no se pudo ejecutar.
