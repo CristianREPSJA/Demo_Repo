@@ -76,13 +76,41 @@
             <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.Project}"/>
             <TextBox Text="{Binding Project, Mode=TwoWay}"/>
           </StackPanel>
+
+          <!-- Método de autenticación: PAT o sesión de Microsoft (Entra) -->
           <StackPanel>
+            <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.AuthKind}"/>
+            <StackPanel Orientation="Horizontal" Spacing="20">
+              <RadioButton GroupName="RamaAzureAuth" IsChecked="{Binding UsePat, Mode=TwoWay}"
+                           Content="{DynamicResource Text.Rama.Accounts.Azure.AuthPat}"/>
+              <RadioButton GroupName="RamaAzureAuth" IsChecked="{Binding UseEntra, Mode=TwoWay}"
+                           Content="{DynamicResource Text.Rama.Accounts.Azure.AuthEntra}"/>
+            </StackPanel>
+          </StackPanel>
+
+          <StackPanel IsVisible="{Binding UsePat}">
             <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.Pat}"/>
             <TextBox Text="{Binding Secret, Mode=TwoWay}" PasswordChar="●" RevealPassword="False"/>
             <TextBlock Classes="saved" Margin="0,6,0,0" IsVisible="{Binding HasSavedSecret}"
                        Text="{DynamicResource Text.Rama.Accounts.SecretSaved}"/>
             <TextBlock Classes="note" Margin="0,6,0,0" Text="{DynamicResource Text.Rama.Accounts.Azure.PatScopes}"/>
           </StackPanel>
+
+          <StackPanel IsVisible="{Binding UseEntra}" Spacing="8">
+            <StackPanel>
+              <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Azure.EntraClientId}"/>
+              <TextBox Text="{Binding EntraClientId, Mode=TwoWay}" Watermark="00000000-0000-0000-0000-000000000000"/>
+              <TextBlock Classes="warn" Margin="0,6,0,0" IsVisible="{Binding IsEntraClientIdMissing}"
+                         TextWrapping="Wrap" Text="{DynamicResource Text.Rama.Accounts.Azure.EntraNoClientId}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+              <Button Classes="flat" Command="{Binding SignInCommand}" IsEnabled="{Binding !IsBusy}"
+                      Content="{DynamicResource Text.Rama.Accounts.Azure.EntraSignIn}"/>
+              <TextBlock Classes="saved" VerticalAlignment="Center" IsVisible="{Binding HasEntraUser}" Text="{Binding EntraUserLabel}"/>
+            </StackPanel>
+            <TextBlock Classes="note" Text="{DynamicResource Text.Rama.Accounts.Azure.EntraNote}"/>
+          </StackPanel>
+
           <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>
         </StackPanel>
       </Border>

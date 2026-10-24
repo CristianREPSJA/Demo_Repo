@@ -93,7 +93,7 @@ namespace SourceGit.ViewModels
             SetStatus(App.Text("Rama.Accounts.RemovedOk"), false);
         });
 
-        private async Task RunAsync(Func<Task> action)
+        protected async Task RunAsync(Func<Task> action)
         {
             if (IsBusy)
                 return;

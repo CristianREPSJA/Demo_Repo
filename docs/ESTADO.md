@@ -6,7 +6,8 @@ Fork de SourceGit v2026.22 (`base/v2026.22`), rama `main`. Remotos de prueba: Gi
 - Cliente F7 completo con PAT: usuario, repos, PR por revisor, detalle, commits, políticas, votos y aprobación de etapas (`tests/Rama.Core.Tests/Azure/AzureLiveTests.cs`, categoría `Live`, se omite sin `RAMA_AZDO_ORG`/`RAMA_AZDO_PROJECT`/`RAMA_AZDO_PAT_FILE`).
 - Corregido: revisores con `isRequired`/`isContainer` en `null` rompían la deserialización; `connectionData` trae `providerDisplayName` en vez de `displayName`.
 - Confirmado: la API de approvals no trae las etapas, pero sí `pipeline.owner.id` (id del build), que serviría para leer la timeline.
-- Login con cuenta Microsoft (Entra, navegador + PKCE) funciona con el tenant del equipo; Rama aún no lo implementa (solo PAT).
+- Login con cuenta Microsoft (Entra, navegador + PKCE) funciona con el tenant del equipo. Implementado en la rama `feat/entra-login` (MSAL detrás de `IEntraAuthenticator`, Bearer renovable en la API, extraheader para git); ver `docs/ENTRA.md`. Pendiente de prueba manual con la app registrada.
+- Corregido: credenciales inválidas/vencidas devuelven `203 + HTML` (no `401`); ahora se reportan como `ApiAuthException` en vez de fallar al leer JSON.
 
 ## Verificado automáticamente
 - Build Debug y Release (`-p:DisableAOT=true -p:DisableUpdateDetection=true`): 0 errores, 0 advertencias.

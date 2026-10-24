@@ -1,4 +1,5 @@
 using Rama.Core.Azure;
+using Rama.Core.Azure.Entra;
 using Rama.Core.Bitbucket;
 using Rama.Core.Clone;
 using Rama.Core.Http;
@@ -10,19 +11,25 @@ namespace Rama.Core.Accounts;
 
 // API que consumen las fases de UI: cuentas guardadas, secretos, prueba de conexión y vencimiento de tokens.
 // Los tokens se leen/escriben solo en ISecretStore con las mismas claves que las fábricas de clientes.
-public sealed class AccountsService
+// La parte Entra (login con Microsoft) está en AccountsService.Entra.cs.
+public sealed partial class AccountsService
 {
     private readonly AccountsStore _store;
     private readonly ISecretStore _secrets;
     private readonly HttpClient _http;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private AccountsData _data = AccountsData.Empty;
+    private volatile bool _loaded;
 
-    public AccountsService(AccountsStore store, ISecretStore secrets, HttpClient http, TimeProvider? time = null)
+    public AccountsService(AccountsStore store, ISecretStore secrets, HttpClient http, TimeProvider? time = null,
+        Func<EntraOptions, IEntraAuthenticator>? entraFactory = null, Func<string, string?>? getEnv = null)
     {
         _store = store;
         _secrets = secrets;
         _http = http;
+        _time = time ?? TimeProvider.System;
+        _entraFactory = entraFactory ?? (o => new MsalEntraAuthenticator(o));
+        _getEnv = getEnv ?? Environment.GetEnvironmentVariable;
         Expiry = new TokenExpiryTracker(secrets, time);
     }
 
@@ -30,8 +37,14 @@ public sealed class AccountsService
     public AccountsData Current => _data;
     public event Action<AccountsChangedEventArgs>? Changed;
 
-    public async Task LoadAsync(CancellationToken ct = default) =>
+    public async Task LoadAsync(CancellationToken ct = default)
+    {
         _data = await _store.LoadAsync(ct).ConfigureAwait(false);
+        _loaded = true;
+    }
+
+    // Carga desde disco solo la primera vez (para llamadores que no son la página de Cuentas).
+    public Task EnsureLoadedAsync(CancellationToken ct = default) => _loaded ? Task.CompletedTask : LoadAsync(ct);
 
     // Servicio de ISecretStore de cada plataforma (la cuenta es org / email).
     public static string SecretServiceOf(AccountPlatform p) => p switch
@@ -44,18 +57,23 @@ public sealed class AccountsService
     public async Task<bool> HasSecretAsync(AccountPlatform platform, string secretAccount, CancellationToken ct = default) =>
         !string.IsNullOrEmpty(await _secrets.GetAsync(SecretServiceOf(platform), secretAccount, ct).ConfigureAwait(false));
 
-    // ---- Azure DevOps (token null/vacío = conservar el PAT guardado) ----
+    // ---- Azure DevOps (token null/vacío = conservar el PAT guardado; con Entra el PAT se ignora y se descarta) ----
     public Task SaveAzureAsync(AzureAccount account, string? pat, CancellationToken ct = default)
     {
         var org = AzureConnection.ParseOrganization(account.OrgUrl);
         ArgumentException.ThrowIfNullOrWhiteSpace(account.Project);
+        if (account.IsEntra && string.IsNullOrWhiteSpace(account.UserName))
+            throw new ArgumentException(EntraNotSignedIn, nameof(account));
         var normalized = account with { OrgUrl = $"https://dev.azure.com/{org}" };
+        AccountsData next = AccountsData.Empty;
         return MutateAsync(AccountPlatform.Azure,
-            d => d with { Azure = Upsert(d.Azure, normalized, a => SameAzure(a, normalized)) },
+            d => next = d with { Azure = Upsert(d.Azure, normalized, a => SameAzure(a, normalized)) },
             async () =>
             {
-                if (!string.IsNullOrEmpty(pat))
+                if (!normalized.IsEntra && !string.IsNullOrEmpty(pat))
                     await _secrets.SetAsync(AzureConnection.SecretService, org, pat, ct).ConfigureAwait(false);
+                else if (normalized.IsEntra && !UsesPat(next, org))
+                    await _secrets.DeleteAsync(AzureConnection.SecretService, org, ct).ConfigureAwait(false);
             }, ct);
     }
 
@@ -67,25 +85,32 @@ public sealed class AccountsService
             d => next = d with { Azure = d.Azure.Where(a => !SameAzure(a, account)).ToList() },
             async () =>
             {
-                if (!next.Azure.Any(a => SameText(a.Organization, org)))
+                if (!UsesPat(next, org))
                     await _secrets.DeleteAsync(AzureConnection.SecretService, org, ct).ConfigureAwait(false);
+                await SignOutEntraIfUnusedAsync(next, account, ct).ConfigureAwait(false);
             }, ct);
     }
 
-    // Cliente listo para usar con el PAT del llavero; null si la cuenta no tiene PAT guardado.
+    private static bool UsesPat(AccountsData d, string org) =>
+        d.Azure.Any(a => !a.IsEntra && SameText(a.Organization, org));
+
+    // Cliente listo para usar: PAT del llavero o Bearer de Entra. null si la cuenta no tiene credencial configurada.
     public async Task<AzureDevOpsClient?> CreateAzureClientAsync(AzureAccount account, CancellationToken ct = default)
     {
+        if (account.IsEntra) return CreateEntraClient(account);
         var connection = account.ToConnection();
         var pat = await connection.LoadPatAsync(_secrets, ct).ConfigureAwait(false);
         return string.IsNullOrEmpty(pat) ? null : new AzureDevOpsClient(_http, connection, pat);
     }
 
     public Task<ConnectionTestResult> TestAzureAsync(AzureAccount account, string? pat, CancellationToken ct = default) =>
-        TestAsync(AccountPlatform.Azure, () => account.Organization, pat, async secret =>
-        {
-            var client = new AzureDevOpsClient(_http, account.ToConnection(), secret);
-            return (await client.GetCurrentUserAsync(ct).ConfigureAwait(false)).DisplayName;
-        }, ct);
+        account.IsEntra
+            ? TestEntraAsync(account, ct)
+            : TestAsync(AccountPlatform.Azure, () => account.Organization, pat, async secret =>
+            {
+                var client = new AzureDevOpsClient(_http, account.ToConnection(), secret);
+                return (await client.GetCurrentUserAsync(ct).ConfigureAwait(false)).DisplayName;
+            }, ct);
 
     // ---- Bitbucket ----
     public Task SaveBitbucketAsync(BitbucketAccount account, string? token, DateOnly? expiry, CancellationToken ct = default)
@@ -154,9 +179,11 @@ public sealed class AccountsService
     // ---- Catálogo de repos para clonar (el token se lee del llavero y nunca sale de aquí) ----
     public async Task<IReadOnlyList<CloneRepoItem>> ListAzureReposAsync(AzureAccount account, CancellationToken ct = default)
     {
-        var pat = await _secrets.GetAsync(AzureConnection.SecretService, account.Organization, ct).ConfigureAwait(false);
-        if (string.IsNullOrEmpty(pat)) throw new ApiException(0, "No hay PAT guardado para " + account.Organization + ".");
-        var repos = await new AzureDevOpsClient(_http, account.ToConnection(), pat).ListReposAsync(ct).ConfigureAwait(false);
+        var client = await CreateAzureClientAsync(account, ct).ConfigureAwait(false)
+            ?? throw new ApiException(0, account.IsEntra
+                ? "No hay sesión de Microsoft para " + account.Organization + ". " + EntraTokenSource.SignInHint
+                : "No hay PAT guardado para " + account.Organization + ".");
+        var repos = await client.ListReposAsync(ct).ConfigureAwait(false);
         // Se omiten repos con URL de clonado inválida (no se confía en la URL que devuelve la API).
         return repos.Where(r => AzureDevOpsClient.TryValidateCloneUrl(r.RemoteUrl) is not null)
             .Select(r => CloneRepoItem.From(r, account.Project)).ToList();

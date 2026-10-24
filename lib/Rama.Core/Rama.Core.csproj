@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Login con Microsoft (Entra ID) para Azure DevOps; versiones presentes en la caché local de NuGet. -->
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.73.1" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.73.1" />
+  </ItemGroup>
+
 </Project>
