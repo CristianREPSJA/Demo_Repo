@@ -48,6 +48,20 @@ public class RunStagesTests
         Assert.Contains("api-version=", h.Urls[0]);
     }
 
+    // Forma real (build 3, 2026-10-23) esperando aprobación: Checkpoint.Approval -> Checkpoint -> Stage(pending).
+    [Fact]
+    public async Task GetRunStages_RealWaitingShape_ReturnsWaitingForApproval()
+    {
+        var json = Timeline(
+            Rec("ap", "Checkpoint.Approval", "Checkpoint.Approval", "inProgress", null, parent: "cp"),
+            Rec("st", "Stage", "Aprobacion", "pending", null),
+            Rec("cp", "Checkpoint", "Checkpoint", "inProgress", null, parent: "st"));
+        var (c, _) = Make(HttpStatusCode.OK, json);
+
+        var s = Assert.Single(await c.GetRunStagesAsync(3));
+        Assert.Equal(RunStageStatus.WaitingForApproval, s.Status);
+    }
+
     [Fact]
     public async Task GetRunStages_OrdersByOrder_NullsLastStable()
     {
