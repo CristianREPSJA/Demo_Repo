@@ -27,8 +27,14 @@ public sealed class ApiAuthException : ApiException
 {
     public string? MissingScopeHint { get; }
 
-    public ApiAuthException(HttpStatusCode statusCode, string? missingScopeHint)
-        : base(statusCode, $"Autenticación rechazada ({(int)statusCode})."
+    // Motivo específico del rechazo (p. ej. página de inicio de sesión); se conserva al reetiquetar el hint.
+    public string? Reason { get; }
+
+    public ApiAuthException(HttpStatusCode statusCode, string? missingScopeHint, string? reason = null)
+        : base(statusCode, (string.IsNullOrWhiteSpace(reason) ? $"Autenticación rechazada ({(int)statusCode})." : reason)
                            + (string.IsNullOrWhiteSpace(missingScopeHint) ? "" : $" {missingScopeHint}"))
-        => MissingScopeHint = missingScopeHint;
+    {
+        MissingScopeHint = missingScopeHint;
+        Reason = string.IsNullOrWhiteSpace(reason) ? null : reason;
+    }
 }

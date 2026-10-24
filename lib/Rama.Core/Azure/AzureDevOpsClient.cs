@@ -3,7 +3,7 @@ using Rama.Core.Http;
 
 namespace Rama.Core.Azure;
 
-// Cliente REST de Azure DevOps (api-version 7.1). Auth Basic ":PAT".
+// Cliente REST de Azure DevOps (api-version 7.1). Auth Basic ":PAT" o Bearer de Entra (IAuthProvider renovable).
 public sealed class AzureDevOpsClient : ApiClientBase
 {
     public const string CodeScopeHint = "Falta el permiso del PAT: Code (Read & write).";
@@ -15,7 +15,12 @@ public sealed class AzureDevOpsClient : ApiClientBase
     public AzureConnection Connection { get; }
 
     public AzureDevOpsClient(HttpClient http, AzureConnection connection, string pat, ApiClientOptions? options = null)
-        : base(http, ApiAuth.Pat(pat), options)
+        : this(http, connection, new StaticAuthProvider(ApiAuth.Pat(pat)), options)
+    {
+    }
+
+    public AzureDevOpsClient(HttpClient http, AzureConnection connection, IAuthProvider auth, ApiClientOptions? options = null)
+        : base(http, auth, options)
     {
         Connection = connection ?? throw new ArgumentNullException(nameof(connection));
     }
@@ -23,11 +28,11 @@ public sealed class AzureDevOpsClient : ApiClientBase
     private string Org => Connection.OrgUrl;
     private string Proj => Connection.ProjectUrl;
 
-    // Reetiqueta 401/403 con el permiso del PAT que corresponde al recurso.
+    // Reetiqueta 401/403 con el permiso del PAT que corresponde al recurso (conserva el motivo, p. ej. página de login).
     private static async Task<T> WithHint<T>(string hint, Func<Task<T>> call)
     {
         try { return await call().ConfigureAwait(false); }
-        catch (ApiAuthException ex) { throw new ApiAuthException(ex.StatusCode, hint); }
+        catch (ApiAuthException ex) { throw new ApiAuthException(ex.StatusCode, hint, ex.Reason); }
     }
 
     public Task<AzureUser> GetCurrentUserAsync(CancellationToken ct = default) =>

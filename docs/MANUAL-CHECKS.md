@@ -54,3 +54,22 @@ Preparación: pipeline con una etapa que requiere aprobación de tu usuario (ej.
 - [ ] Con el PAT sin permiso Build (Read): la tarjeta no aparece, se ve el aviso "No se pudieron cargar las etapas…" y Aprobar/Rechazar siguen funcionando.
 - [ ] Aprobación sin id de ejecución (poco común): no hay tarjeta ni aviso.
 - [ ] Estilo coherente con las demás tarjetas `rv-card` (tema grafito).
+
+## Entra — Iniciar sesión con Microsoft en Azure DevOps (`src/Rama/Views/AccountsPage.axaml`, `docs/ENTRA.md`)
+
+Preparación: app registrada en Entra por un administrador (Client ID a mano) y una organización de Azure DevOps a la que el usuario ya entra con su cuenta Microsoft.
+
+- [ ] En la tarjeta Azure DevOps aparece "Autenticación" con dos opciones: "Token de acceso personal (PAT)" y "Cuenta Microsoft (Entra ID)"; por defecto PAT y el formulario se ve igual que antes.
+- [ ] Al elegir Entra se oculta el campo PAT y aparecen Client ID, el botón "Iniciar sesión con Microsoft" y la nota explicativa.
+- [ ] Sin Client ID (campo vacío y sin `RAMA_ENTRA_CLIENT_ID`): aviso ámbar "Falta el Client ID…"; el botón no abre el navegador y el estado repite el aviso.
+- [ ] Con `RAMA_ENTRA_CLIENT_ID` definida, el aviso desaparece aunque el campo esté vacío.
+- [ ] Con Client ID válido, el botón abre el navegador del sistema en `login.microsoftonline.com`; al terminar, el estado muestra "Conectado como <nombre>. Cuenta guardada." y "Sesión iniciada como <upn>".
+- [ ] `rama-accounts.json` tiene `"auth": "Entra"` y `userName`, y no contiene ningún token; existe `<datos>/entra/rama-entra.msalcache`.
+- [ ] Cerrar y abrir Rama: Cuentas carga en modo Entra con el UPN; "Probar conexión" responde "Conectado como …" sin abrir el navegador.
+- [ ] Riel > Revisiones y riel > Clonar listan PR y repos de la organización con la sesión de Microsoft (sin PAT guardado).
+- [ ] Clonar un repo de `dev.azure.com` desde la página Clonar funciona sin pedir credenciales; luego Fetch y Push desde el repositorio también. Con `GIT_TRACE=1` en el entorno de Rama no aparece el token en la salida.
+- [ ] Repos de GitHub/Bitbucket siguen autenticándose igual que antes (credential helper).
+- [ ] Cancelar el login en el navegador deja el estado "Inicio de sesión con Microsoft cancelado." sin bloquear la UI.
+- [ ] Sesión caducada (revocar sesiones del usuario en Entra): Revisiones muestra el error "Inicia sesión con Microsoft otra vez" y el botón de la tarjeta vuelve a abrir el navegador.
+- [ ] "Quitar" con la cuenta Entra borra la cuenta y, si era la única con ese usuario, el caché de MSAL deja de tener la cuenta (volver a iniciar sesión pide credenciales).
+- [ ] PAT vencido o inválido en modo PAT: "Probar conexión" muestra "El servicio devolvió una página de inicio de sesión…" (antes fallaba al leer JSON).

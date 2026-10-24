@@ -15,16 +15,26 @@ public sealed record ApiClientOptions
 }
 
 // Base de clientes REST: reintentos acotados en 429/503, 401/403 -> ApiAuthException, sin loguear cabeceras.
+// Con un IAuthProvider renovable (Entra), un 401 o una página de inicio de sesión renueva el token y reintenta una vez.
 public abstract class ApiClientBase
 {
+    // Verificado contra Azure DevOps (2026-10-23): credenciales inválidas devuelven 203 + HTML, no 401.
+    public const string SignInPageReason =
+        "El servicio devolvió una página de inicio de sesión: las credenciales son inválidas o vencieron";
+
     private readonly HttpClient _http;
     private readonly ApiClientOptions _options;
-    private readonly AuthenticationHeaderValue? _auth;
+    private readonly IAuthProvider _auth;
 
     protected ApiClientBase(HttpClient http, AuthenticationHeaderValue? auth = null, ApiClientOptions? options = null)
+        : this(http, new StaticAuthProvider(auth), options)
+    {
+    }
+
+    protected ApiClientBase(HttpClient http, IAuthProvider auth, ApiClientOptions? options = null)
     {
         _http = http ?? throw new ArgumentNullException(nameof(http));
-        _auth = auth;
+        _auth = auth ?? throw new ArgumentNullException(nameof(auth));
         _options = options ?? new ApiClientOptions();
     }
 
@@ -47,24 +57,24 @@ public abstract class ApiClientBase
     // Devuelve respuesta exitosa; el llamador la desecha.
     protected async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> factory, CancellationToken ct)
     {
+        var refreshed = false;
+        var forceRefresh = false;
         for (var attempt = 0; ; attempt++)
         {
-            using var request = factory();
-            if (_auth is not null && request.Headers.Authorization is null) request.Headers.Authorization = _auth;
+            var response = await SendOnceAsync(factory, forceRefresh, ct).ConfigureAwait(false);
+            forceRefresh = false;
 
-            HttpResponseMessage response;
-            try
-            {
-                response = await _http.SendAsync(request, ct).ConfigureAwait(false);
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new ApiException(0, $"Error de red: {ex.Message}");
-            }
-
-            if (response.IsSuccessStatusCode) return response;
+            if (response.IsSuccessStatusCode && !IsSignInPage(response)) return response;
 
             var status = response.StatusCode;
+            if (IsAuthRejected(response) && _auth.CanRefresh && !refreshed)
+            {
+                response.Dispose();
+                refreshed = true;
+                forceRefresh = true;
+                continue;
+            }
+
             var retryable = status is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable;
             if (retryable && attempt < _options.MaxRetries)
             {
@@ -74,11 +84,39 @@ public abstract class ApiClientBase
                 continue;
             }
 
+            var signIn = IsSignInPage(response);
             response.Dispose();
-            throw status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
-                ? new ApiAuthException(status, _options.MissingScopeHint)
+            throw signIn || status is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
+                ? new ApiAuthException(status, _options.MissingScopeHint, signIn ? $"{SignInPageReason} ({(int)status})." : null)
                 : new ApiException(status, $"La API respondió {(int)status} {status}.");
         }
+    }
+
+    private async Task<HttpResponseMessage> SendOnceAsync(Func<HttpRequestMessage> factory, bool forceRefresh, CancellationToken ct)
+    {
+        using var request = factory();
+        if (request.Headers.Authorization is null)
+            request.Headers.Authorization = await _auth.GetHeaderAsync(forceRefresh, ct).ConfigureAwait(false);
+        try
+        {
+            return await _http.SendAsync(request, ct).ConfigureAwait(false);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApiException(0, $"Error de red: {ex.Message}");
+        }
+    }
+
+    // 401 o página de inicio de sesión: candidatos a renovar el token. 403 no (es de permisos).
+    private static bool IsAuthRejected(HttpResponseMessage response) =>
+        response.StatusCode == HttpStatusCode.Unauthorized || IsSignInPage(response);
+
+    private static bool IsSignInPage(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode) return false;
+        if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation) return true;
+        var media = response.Content.Headers.ContentType?.MediaType;
+        return string.Equals(media, "text/html", StringComparison.OrdinalIgnoreCase);
     }
 
     private TimeSpan ComputeDelay(HttpResponseMessage response, int attempt)
