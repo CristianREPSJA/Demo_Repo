@@ -10,6 +10,12 @@ Fork de SourceGit v2026.22 (`base/v2026.22`), rama `main`. Remotos de prueba: Gi
 - Etapas de la ejecución en el detalle de aprobación (timeline del build), validado en vivo, incluido el estado "esperando aprobación".
 - Corregido: credenciales inválidas/vencidas devuelven `203 + HTML` (no `401`); ahora se reportan como `ApiAuthException` en vez de fallar al leer JSON.
 
+## Validado contra Jira Cloud real (2026-10-23, solo lectura)
+- Lecturas de Rama OK: usuario, tableros, configuración, búsqueda JQL, asignables, transiciones (GET). Sin escrituras (`tests/Rama.Core.Tests/Jira/JiraLiveTests.cs`, categoría `Live`).
+- Corregido: los tokens con alcance solo funcionan vía `api.atlassian.com/ex/jira/{cloudId}`; Rama detecta el 401, obtiene el `cloudId` desde `{site}/_edge/tenant_info` y guarda el modo.
+- Corregido: el campo de story points se lee de la configuración del tablero (antes fijo `customfield_10016`).
+- Pendiente: probar mover tarjetas (transición real), cuando el usuario autorice escrituras.
+
 ## Verificado automáticamente
 - Build Debug y Release (`-p:DisableAOT=true -p:DisableUpdateDetection=true`): 0 errores, 0 advertencias.
 - Pruebas (2026-10-23): 499 en verde (Rama.Core 491 + 4 en vivo omitidas sin credenciales, Rama.App 4, Rama.Terminal 4). Build Release 0 advertencias.
@@ -34,7 +40,7 @@ Fork de SourceGit v2026.22 (`base/v2026.22`), rama `main`. Remotos de prueba: Gi
 
 ## Pendiente (requiere a una persona)
 - Todas las verificaciones visuales y de la terminal real: `docs/MANUAL-CHECKS.md` (por regla de antivirus no se abrió la app ni se capturó pantalla).
-- Probar contra servicios reales: Bitbucket (API token) y Jira (API token). Las formas de API marcadas `SUPUESTO` salieron de documentación, sin red. Azure DevOps ya validado.
+- Probar contra servicios reales: Bitbucket (API token) y escrituras de Jira. Azure DevOps y lecturas de Jira ya validados.
 - macOS y Linux: compilan, sin ejecutar (llavero, PTY, notificaciones).
 - Velopack/actualización automática y AppImage.
 - Chip del ticket en la cabecera del repo (`VEN-412 En curso`).
