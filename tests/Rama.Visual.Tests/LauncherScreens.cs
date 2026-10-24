@@ -63,7 +63,8 @@ public class LauncherScreens : IDisposable
         if (!VisualEnvironment.Enabled) return;
         var window = Screens.NewLauncher(null, out var launcher);
         launcher.Rail.ShowCommand.Execute(RailDestination.Terminal);
-        Screens.ShowOnly<SourceGit.Views.TerminalPage>(window);
+        await Shot.Settle();
+        Screens.AssertOnlyVisible<SourceGit.Views.TerminalPage>(window);
         await Shot.Save(window, "12-terminal-empty-1440x900", 1440, 900);
     }
 }
@@ -110,17 +111,17 @@ public static class Screens
         return _shared;
     }
 
-    // Las páginas del riel fijan su propio DataContext, por lo que su binding IsVisible="{Binding Rail.X}" falla
-    // (ver binding-errors.txt) y todas quedan visibles superpuestas. El arnés fija la visibilidad a mano.
-    public static void ShowOnly<TPage>(Window window) where TPage : Control
+    // Prueba del arreglo de visibilidad: solo la página del destino activo es visible (sin forzarla a mano).
+    public static void AssertOnlyVisible<TPage>(Window window) where TPage : Control
     {
-        foreach (var page in new Control[]
-                 {
-                     Shot.Find<SourceGit.Views.PendingReviewsPage>(window), Shot.Find<SourceGit.Views.JiraBoardPage>(window),
-                     Shot.Find<SourceGit.Views.TerminalPage>(window), Shot.Find<SourceGit.Views.AccountsPage>(window),
-                     Shot.Find<SourceGit.Views.ClonePage>(window),
-                 })
-            page.IsVisible = page is TPage;
+        var pages = new Control[]
+        {
+            Shot.Find<SourceGit.Views.PendingReviewsPage>(window), Shot.Find<SourceGit.Views.JiraBoardPage>(window),
+            Shot.Find<SourceGit.Views.TerminalPage>(window), Shot.Find<SourceGit.Views.AccountsPage>(window),
+            Shot.Find<SourceGit.Views.ClonePage>(window),
+        };
+        var visible = pages.Where(p => p.IsEffectivelyVisible).Select(p => p.GetType().Name).ToList();
+        Assert.Equal([typeof(TPage).Name], visible);
     }
 
     public static async Task WaitFor(Func<bool> condition, string what, int timeoutMs = 20000)

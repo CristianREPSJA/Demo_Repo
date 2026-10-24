@@ -158,11 +158,13 @@
 
       <Grid Grid.Column="1" Background="{DynamicResource Brush.Window}"
             IsVisible="{Binding !Rail.IsRepository}">
-        <v:PendingReviewsPage IsVisible="{Binding Rail.IsPendingReviews}"/>
-        <v:JiraBoardPage IsVisible="{Binding Rail.IsJiraBoard}"/>
-        <v:TerminalPage IsVisible="{Binding Rail.IsTerminal}"/>
-        <v:AccountsPage IsVisible="{Binding Rail.IsAccounts}"/>
-        <v:ClonePage IsVisible="{Binding Rail.IsClone}"/> <!-- RAMA: pagina Clonar -->
+        <!-- RAMA: cada pagina fija su propio DataContext, asi que la visibilidad la lleva un Panel contenedor
+             (con el DataContext del Launcher) y no la pagina misma -->
+        <Panel IsVisible="{Binding Rail.IsPendingReviews}"><v:PendingReviewsPage/></Panel>
+        <Panel IsVisible="{Binding Rail.IsJiraBoard}"><v:JiraBoardPage/></Panel>
+        <Panel IsVisible="{Binding Rail.IsTerminal}"><v:TerminalPage/></Panel>
+        <Panel IsVisible="{Binding Rail.IsAccounts}"><v:AccountsPage/></Panel>
+        <Panel IsVisible="{Binding Rail.IsClone}"><v:ClonePage/></Panel> <!-- RAMA: pagina Clonar -->
       </Grid>
     </Grid>
 

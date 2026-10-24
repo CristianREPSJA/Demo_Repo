@@ -24,6 +24,7 @@
       <Setter Property="Width" Value="16"/>
       <Setter Property="Height" Value="16"/>
       <Setter Property="Stretch" Value="None"/>
+      <Setter Property="Fill" Value="Transparent"/>
     </Style>
     <Style Selector="TextBlock.faint">
       <Setter Property="FontSize" Value="12"/>
@@ -80,6 +81,16 @@
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="FontWeight" Value="Medium"/>
       <Setter Property="Margin" Value="-8,0,0,0"/>
+    </Style>
+    <!-- Estilo enlace: sin pastilla gris (ni en reposo ni al pasar el mouse), subrayado y color de acento -->
+    <Style Selector="Button.mini /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.mini:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="Button.mini:disabled TextBlock">
+      <Setter Property="Opacity" Value="0.5"/>
     </Style>
     <Style Selector="Button.mini TextBlock">
       <Setter Property="TextDecorations" Value="Underline"/>

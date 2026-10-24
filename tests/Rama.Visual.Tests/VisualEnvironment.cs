@@ -30,6 +30,11 @@ public static class VisualEnvironment
         Environment.SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "0");
         SourceGit.Native.OS.SetupBasicDirectories();
         SourceGit.Native.OS.GitExecutable = FindGit();
+        // Avatares: solo el directorio de caché (sin iniciar el gestor, que haría peticiones de red).
+        var avatars = Path.Combine(DataDir, "avatars");
+        Directory.CreateDirectory(avatars);
+        typeof(SourceGit.Models.AvatarManager).GetField("_storePath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .SetValue(SourceGit.Models.AvatarManager.Instance, avatars);
     }
 
     public static void AfterSetup()

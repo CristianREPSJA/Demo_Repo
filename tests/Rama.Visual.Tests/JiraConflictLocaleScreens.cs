@@ -21,7 +21,8 @@ public class JiraConflictLocaleScreens : IDisposable
         if (!VisualEnvironment.Enabled) return;
         var window = Screens.NewLauncher(null, out var launcher);
         launcher.Rail.ShowCommand.Execute(RailDestination.JiraBoard);
-        Screens.ShowOnly<JiraBoardPage>(window);
+        await Shot.Settle();
+        Screens.AssertOnlyVisible<JiraBoardPage>(window);
         await Shot.Settle();
 
         var account = new JiraAccount("contoso", "diego@example.com", "DFE", 7);

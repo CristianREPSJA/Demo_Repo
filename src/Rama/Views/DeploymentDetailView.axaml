@@ -7,7 +7,7 @@
              x:Class="SourceGit.Views.DeploymentDetailView"
              x:DataType="vm:DeploymentDetailViewModel">
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Margin="20,16" Spacing="12" MaxWidth="640" HorizontalAlignment="Left">
+    <StackPanel Margin="20,16" Spacing="12" MaxWidth="640" HorizontalAlignment="Stretch">
       <Border Classes="rv-card" Padding="16,12">
         <StackPanel Spacing="4">
           <TextBlock Classes="rv-h3" Text="{DynamicResource Text.Rama.Reviews.Deploy.Title}"/>
@@ -49,8 +49,8 @@
           </StackPanel>
 
           <StackPanel IsVisible="{Binding !HasConfirm}" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-            <Button Height="32" Content="{DynamicResource Text.Rama.Reviews.Deploy.Reject}" Command="{Binding RejectCommand}" IsEnabled="{Binding IsIdle}"/>
-            <Button Classes="rv-ghost-amber" Content="{DynamicResource Text.Rama.Reviews.Deploy.Approve}" Command="{Binding ApproveCommand}" IsEnabled="{Binding IsIdle}"/>
+            <Button Height="32" VerticalContentAlignment="Center" Content="{DynamicResource Text.Rama.Reviews.Deploy.Reject}" Command="{Binding RejectCommand}" IsEnabled="{Binding IsIdle}"/>
+            <Button Classes="flat primary" Height="32" VerticalContentAlignment="Center" Content="{DynamicResource Text.Rama.Reviews.Deploy.Approve}" Command="{Binding ApproveCommand}" IsEnabled="{Binding IsIdle}"/>
           </StackPanel>
 
           <TextBlock Classes="rv-error" Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}"/>

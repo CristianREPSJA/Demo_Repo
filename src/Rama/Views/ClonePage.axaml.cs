@@ -16,12 +16,24 @@ namespace SourceGit.Views
         }
 
         // Al volver a mostrar la pagina se recargan cuentas y repos clonados.
-        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
-            base.OnPropertyChanged(change);
-            if (change.Property == IsVisibleProperty && change.NewValue is true && DataContext is ViewModels.ClonePageViewModel vm)
-                _ = vm.ReloadAsync();
+            base.OnAttachedToVisualTree(e);
+            _watch = PageVisibility.Watch(this, visible =>
+            {
+                if (visible && DataContext is ViewModels.ClonePageViewModel vm)
+                    _ = vm.ReloadAsync();
+            });
         }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromVisualTree(e);
+            _watch?.Dispose();
+            _watch = null;
+        }
+
+        private IDisposable _watch;
 
         private async void OnBrowse(object _, RoutedEventArgs e)
         {

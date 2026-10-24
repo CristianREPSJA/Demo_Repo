@@ -18,7 +18,8 @@ public class RailPageScreens : IDisposable
         if (!VisualEnvironment.Enabled) return;
         var window = Screens.NewLauncher(null, out var launcher);
         launcher.Rail.ShowCommand.Execute(RailDestination.Accounts);
-        Screens.ShowOnly<AccountsPage>(window);
+        await Shot.Settle();
+        Screens.AssertOnlyVisible<AccountsPage>(window);
         await Shot.Settle();
 
         var vm = (AccountsViewModel)Shot.Find<AccountsPage>(window).DataContext;
@@ -53,10 +54,12 @@ public class RailPageScreens : IDisposable
         if (!VisualEnvironment.Enabled) return;
         var window = Screens.NewLauncher(null, out var launcher);
         launcher.Rail.ShowCommand.Execute(RailDestination.Clone);
-        Screens.ShowOnly<ClonePage>(window);
+        await Shot.Settle();
+        Screens.AssertOnlyVisible<ClonePage>(window);
         await Shot.Settle();
 
         var vm = (ClonePageViewModel)Shot.Find<ClonePage>(window).DataContext;
+        vm.Message = string.Empty;
         vm.Accounts.Clear();
         vm.Accounts.Add(new CloneAccountCard("Azure DevOps", "contoso / Ventas", "vence en 12 días", true));
         vm.Accounts.Add(new CloneAccountCard("Bitbucket Cloud", "contoso-ws", string.Empty, true));
@@ -85,7 +88,8 @@ public class RailPageScreens : IDisposable
         if (!VisualEnvironment.Enabled) return;
         var window = Screens.NewLauncher(null, out var launcher);
         launcher.Rail.ShowCommand.Execute(RailDestination.PendingReviews);
-        Screens.ShowOnly<PendingReviewsPage>(window);
+        await Shot.Settle();
+        Screens.AssertOnlyVisible<PendingReviewsPage>(window);
         await Shot.Settle();
 
         var page = Shot.Find<PendingReviewsPage>(window);
