@@ -20,6 +20,18 @@ internal sealed class BoardDto
 internal sealed class BoardConfigDto
 {
     public ColumnConfigDto? ColumnConfig { get; set; }
+    public EstimationDto? Estimation { get; set; }
+}
+
+internal sealed class EstimationDto
+{
+    public string? Type { get; set; }
+    public EstimationFieldDto? Field { get; set; }
+}
+
+internal sealed class EstimationFieldDto
+{
+    public string? FieldId { get; set; }
 }
 
 internal sealed class ColumnConfigDto

@@ -51,12 +51,35 @@ public sealed partial class JiraClient : ApiClientBase, IJiraBoardApi
         return $"https://{site}.atlassian.net";
     }
 
-    // SUPUESTO: tokens con alcance (scoped) usan el gateway api.atlassian.com/ex/jira/{cloudId}.
+    // Verificado 2026-10-23: tokens con alcance (scoped) solo funcionan vía api.atlassian.com/ex/jira/{cloudId}; en el sitio dan 401.
     public static string ScopedBaseUrl(string cloudId)
     {
         if (string.IsNullOrWhiteSpace(cloudId) || !CloudIdPattern().IsMatch(cloudId))
             throw new ArgumentException("cloudId inválido.", nameof(cloudId));
         return $"https://api.atlassian.com/ex/jira/{cloudId}";
+    }
+
+    // cloudId del sitio sin autenticación: GET {site}/_edge/tenant_info (verificado 2026-10-23).
+    public static async Task<string> ResolveCloudIdAsync(HttpClient http, string site, CancellationToken ct = default)
+    {
+        var url = $"{SiteBaseUrl(site)}/_edge/tenant_info";
+        try
+        {
+            using var resp = await http.GetAsync(url, ct).ConfigureAwait(false);
+            if (!resp.IsSuccessStatusCode)
+                throw new ApiException(resp.StatusCode, "No se pudo obtener el identificador del sitio de Jira.");
+            using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync(ct).ConfigureAwait(false));
+            var id = doc.RootElement.ValueKind == JsonValueKind.Object
+                && doc.RootElement.TryGetProperty("cloudId", out var el) && el.ValueKind == JsonValueKind.String
+                ? el.GetString() : null;
+            if (string.IsNullOrEmpty(id) || !CloudIdPattern().IsMatch(id))
+                throw new ApiException(0, "El sitio de Jira devolvió un identificador inválido.");
+            return id;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException)
+        {
+            throw new ApiException(0, "No se pudo conectar con Jira para detectar el sitio.");
+        }
     }
 
     // Prueba de conexión: GET /rest/api/3/myself.
@@ -77,14 +100,22 @@ public sealed partial class JiraClient : ApiClientBase, IJiraBoardApi
             .Select(b => new JiraBoardInfo(b.Id, b.Name ?? $"Board {b.Id}", b.Type)).ToList();
     }
 
-    public async Task<IReadOnlyList<JiraColumn>> GetBoardColumnsAsync(long boardId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<JiraColumn>> GetBoardColumnsAsync(long boardId, CancellationToken ct = default) =>
+        (await GetBoardConfigurationAsync(boardId, ct).ConfigureAwait(false)).Columns;
+
+    public async Task<JiraBoardConfig> GetBoardConfigurationAsync(long boardId, CancellationToken ct = default)
     {
         var url = $"{_baseUrl}/rest/agile/1.0/board/{boardId}/configuration";
         var dto = await GetJsonAsync(url, JiraJsonContext.Default.BoardConfigDto, ct).ConfigureAwait(false);
-        return (dto?.ColumnConfig?.Columns ?? [])
+        var columns = (dto?.ColumnConfig?.Columns ?? [])
             .Select(c => new JiraColumn(c.Name ?? "",
                 (c.Statuses ?? []).Where(s => !string.IsNullOrEmpty(s.Id)).Select(s => s.Id!).ToList()))
             .ToList();
+        // Verificado 2026-10-23: estimation = {"type":"field","field":{"fieldId":"customfield_10024"}}.
+        var est = dto?.Estimation;
+        var field = string.Equals(est?.Type, "field", StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrWhiteSpace(est?.Field?.FieldId) ? est.Field.FieldId : null;
+        return new JiraBoardConfig(columns, field);
     }
 
     public async Task<IReadOnlyList<JiraIssue>> SearchIssuesAsync(string jql, string? storyPointsField = null,

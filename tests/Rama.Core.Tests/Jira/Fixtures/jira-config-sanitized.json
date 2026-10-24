@@ -1,0 +1,98 @@
+﻿{
+    "id":  18,
+    "name":  "Tablero Demo",
+    "type":  "scrum",
+    "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/agile/1.0/board/18/configuration",
+    "location":  null,
+    "filter":  {
+                   "id":  "10017",
+                   "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/filter/10017"
+               },
+    "columnConfig":  {
+                         "columns":  [
+                                         {
+                                             "name":  "Por Desarrollar",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10109",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10109"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Desarrollo",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10110",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10110"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Pausa Desarrollo",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10111",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10111"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Cross Validation",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10006",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10006"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Pausa Coss Validacion",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10000",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10000"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Pruebas Desarrollo",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10102",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10102"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "Rechazado Revisión",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10105",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10105"
+                                                              }
+                                                          ]
+                                         },
+                                         {
+                                             "name":  "En espera QA",
+                                             "statuses":  [
+                                                              {
+                                                                  "id":  "10104",
+                                                                  "self":  "https://api.atlassian.com/ex/jira/00000000-0000-4000-8000-000000000001/rest/api/2/status/10104"
+                                                              }
+                                                          ]
+                                         }
+                                     ],
+                         "constraintType":  "none"
+                     },
+    "estimation":  {
+                       "type":  "field",
+                       "field":  {
+                                     "fieldId":  "customfield_10024",
+                                     "displayName":  "Story Points"
+                                 }
+                   },
+    "ranking":  {
+                    "rankCustomFieldId":  10019
+                }
+}

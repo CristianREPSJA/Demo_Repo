@@ -154,7 +154,7 @@ public sealed partial class AccountsService
         ArgumentException.ThrowIfNullOrWhiteSpace(account.ProjectKey);
         var normalized = account with { Site = NormalizeSite(account.Site) };
         return MutateAsync(AccountPlatform.Jira,
-            d => d with { Jira = Upsert(d.Jira, normalized, a => SameJira(a, normalized)) },
+            d => d with { Jira = Upsert(d.Jira, ResolveJiraMode(d, normalized, token), a => SameJira(a, normalized)) },
             async () =>
             {
                 if (!string.IsNullOrEmpty(token))
@@ -180,9 +180,28 @@ public sealed partial class AccountsService
     public Task<ConnectionTestResult> TestJiraAsync(JiraAccount account, string? token, CancellationToken ct = default) =>
         TestAsync(AccountPlatform.Jira, () => account.Email, token, async secret =>
         {
-            var client = new JiraClient(_http, JiraClient.SiteBaseUrl(account.Site), account.Email, secret);
-            return (await client.GetMyselfAsync(ct).ConfigureAwait(false)).DisplayName;
+            var normalized = account with { Site = NormalizeSite(account.Site) };
+            var conn = await JiraConnector.ConnectAsync(_http, normalized, secret, ct: ct).ConfigureAwait(false);
+            _jiraDetected[JiraKey(conn.Account)] = conn.Account;
+            return conn.User.DisplayName;
         }, ct);
+
+    // Modo detectado en la última prueba (solo en memoria; se persiste al guardar). Sin token no secreto.
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, JiraAccount> _jiraDetected = new();
+
+    private static string JiraKey(JiraAccount a) => (a.Site + "|" + a.Email).ToLowerInvariant();
+
+    // Auto -> usa lo detectado en la prueba; sin token nuevo conserva lo guardado; con token nuevo sin prueba re-detecta.
+    private JiraAccount ResolveJiraMode(AccountsData d, JiraAccount account, string? token)
+    {
+        if (account.Mode != JiraAuthMode.Auto) return account;
+        if (_jiraDetected.TryGetValue(JiraKey(account), out var found))
+            return account with { Mode = found.Mode, CloudId = found.CloudId };
+        var saved = d.Jira.FirstOrDefault(a => SameJira(a, account));
+        return saved is not null && string.IsNullOrEmpty(token)
+            ? account with { Mode = saved.Mode, CloudId = saved.CloudId }
+            : account;
+    }
 
     // ---- Catálogo de repos para clonar (el token se lee del llavero y nunca sale de aquí) ----
     public async Task<IReadOnlyList<CloneRepoItem>> ListAzureReposAsync(AzureAccount account, CancellationToken ct = default)
@@ -210,8 +229,34 @@ public sealed partial class AccountsService
         return items;
     }
     // Cliente Jira con el token guardado en el llavero (falla si no hay token).
-    public Task<JiraClient> CreateJiraClientAsync(JiraAccount account, CancellationToken ct = default) =>
-        JiraClientFactory.CreateAsync(_secrets, _http, account.Site, account.Email, ct: ct);
+    // Si el modo aún no se detectó, lo detecta (sitio -> gateway) y lo persiste sin disparar Changed.
+    public async Task<JiraClient> CreateJiraClientAsync(JiraAccount account, CancellationToken ct = default)
+    {
+        if (account.Mode != JiraAuthMode.Auto)
+            return await JiraClientFactory.CreateAsync(_secrets, _http, account.Site, account.Email,
+                account.ApiBaseUrl, ct: ct).ConfigureAwait(false);
+
+        var token = await _secrets.GetAsync(JiraClientFactory.SecretService, account.Email, ct).ConfigureAwait(false);
+        if (string.IsNullOrEmpty(token))
+            throw new InvalidOperationException("No hay API token de Jira guardado para esta cuenta.");
+        var conn = await JiraConnector.ConnectAsync(_http, account, token, ct: ct).ConfigureAwait(false);
+        await PersistJiraModeAsync(conn.Account, ct).ConfigureAwait(false);
+        return conn.Client;
+    }
+
+    private async Task PersistJiraModeAsync(JiraAccount detected, CancellationToken ct)
+    {
+        await _gate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            if (!_data.Jira.Any(a => SameJira(a, detected))) return;
+            var next = _data with { Jira = _data.Jira.Select(a => SameJira(a, detected)
+                ? a with { Mode = detected.Mode, CloudId = detected.CloudId } : a).ToList() };
+            await _store.SaveAsync(next, ct).ConfigureAwait(false);
+            _data = next;
+        }
+        finally { _gate.Release(); }
+    }
 
     // ---- Vencimiento (Bitbucket y Jira; la cuenta es el email) ----
     public Task<TokenExpiryStatus> GetExpiryStatusAsync(AccountPlatform platform, string email, CancellationToken ct = default) =>

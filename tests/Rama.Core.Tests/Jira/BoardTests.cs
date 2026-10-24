@@ -13,6 +13,8 @@ internal sealed class FakeBoardApi : IJiraBoardApi
     public int SearchCalls { get; private set; }
     public int ColumnCalls { get; private set; }
     public string? LastJql { get; private set; }
+    public string? LastField { get; private set; }
+    public string? EstimationField { get; set; }
     public string BoardType { get; set; } = "kanban";
     public Exception? TransitionError { get; set; }
 
@@ -21,6 +23,9 @@ internal sealed class FakeBoardApi : IJiraBoardApi
 
     public Task<IReadOnlyList<JiraBoardInfo>> GetBoardsAsync(string p, CancellationToken ct = default) =>
         Task.FromResult<IReadOnlyList<JiraBoardInfo>>([new JiraBoardInfo(7, "VEN", BoardType)]);
+
+    public async Task<JiraBoardConfig> GetBoardConfigurationAsync(long id, CancellationToken ct = default) =>
+        new(await GetBoardColumnsAsync(id, ct), EstimationField);
 
     public Task<IReadOnlyList<JiraColumn>> GetBoardColumnsAsync(long id, CancellationToken ct = default)
     {
@@ -33,6 +38,7 @@ internal sealed class FakeBoardApi : IJiraBoardApi
     {
         SearchCalls++;
         LastJql = jql;
+        LastField = sp;
         if (SearchError is not null) throw SearchError;
         return Task.FromResult<IReadOnlyList<JiraIssue>>(Issues.ToList());
     }
@@ -51,6 +57,31 @@ internal sealed class FakeBoardApi : IJiraBoardApi
 
 public class BoardControllerTests
 {
+    [Fact]
+    public async Task Sync_UsesEstimationFieldFromBoardConfig()
+    {
+        var (c, api) = Make(a => a.EstimationField = "customfield_10024");
+        await c.SyncAsync();
+        Assert.Equal("customfield_10024", api.LastField);
+        Assert.Equal("customfield_10024", c.EffectiveStoryPointsField);
+    }
+
+    [Fact]
+    public async Task Sync_FallsBackToDefaultFieldWhenBoardHasNone()
+    {
+        var (c, api) = Make();
+        await c.SyncAsync();
+        Assert.Equal(BoardController.DefaultStoryPointsField, api.LastField);
+    }
+
+    [Fact]
+    public async Task Sync_ExplicitFieldOverridesBoardField()
+    {
+        var api = new FakeBoardApi { EstimationField = "customfield_10024" };
+        var c = new BoardController(api, Acc) { StoryPointsField = "customfield_99" };
+        await c.SyncAsync();
+        Assert.Equal("customfield_99", api.LastField);
+    }
     private static JiraIssue Issue(string key, string status, string? who = "me", string? type = "Historia",
         string? pri = "Alta", double? pts = 5) =>
         new(key, $"Resumen {key}", status, "S" + status, who, who is null ? null : who == "me" ? "Diego Muñoz" : "Camila Rojas",

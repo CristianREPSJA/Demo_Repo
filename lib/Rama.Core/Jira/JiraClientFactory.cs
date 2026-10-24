@@ -14,7 +14,7 @@ public static class JiraClientFactory
     public static Task DeleteTokenAsync(ISecretStore store, string email, CancellationToken ct = default) =>
         store.DeleteAsync(SecretService, email, ct);
 
-    // baseUrlOverride: gateway con alcance (SUPUESTO) en vez de {site}.atlassian.net.
+    // baseUrlOverride: gateway con alcance (verificado 2026-10-23) en vez de {site}.atlassian.net.
     public static async Task<JiraClient> CreateAsync(ISecretStore store, HttpClient http, string site, string email,
         string? baseUrlOverride = null, ApiClientOptions? options = null, CancellationToken ct = default)
     {

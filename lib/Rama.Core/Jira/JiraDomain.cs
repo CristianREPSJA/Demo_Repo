@@ -5,6 +5,9 @@ public sealed record JiraBoardInfo(long Id, string Name, string? Type);
 // Columna del board: nombre + ids de estados (en orden de configuración).
 public sealed record JiraColumn(string Name, IReadOnlyList<string> StatusIds);
 
+// EstimationField: id del campo de estimación del board (null si no es de tipo "field").
+public sealed record JiraBoardConfig(IReadOnlyList<JiraColumn> Columns, string? EstimationField);
+
 public sealed record JiraUser(string AccountId, string DisplayName, bool Active);
 
 public sealed record JiraIssue(

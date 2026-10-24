@@ -158,6 +158,81 @@ public class AccountsTests : IDisposable
         Assert.Equal("https://acme.atlassian.net/rest/api/3/myself", url);
     }
 
+    private const string Cloud = "00000000-0000-4000-8000-000000000001";
+
+    private static HttpResponseMessage ScopedOnly(HttpRequestMessage r)
+    {
+        var u = r.RequestUri!.AbsoluteUri;
+        if (u.EndsWith("/_edge/tenant_info")) return Json($$"""{"cloudId":"{{Cloud}}"}""");
+        return u.StartsWith("https://api.atlassian.com/ex/jira/" + Cloud)
+            ? Json("""{"accountId":"u1","displayName":"Ana","active":true}""")
+            : Json("{}", HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task Jira_ScopedToken_TestThenSavePersistsGatewayMode()
+    {
+        var svc = Make(ScopedOnly);
+        var acc = new JiraAccount("acme", "a@x.cl", "V");
+        Assert.True((await svc.TestJiraAsync(acc, "tok")).Success);
+        await svc.SaveJiraAsync(acc, "tok", null);
+        var saved = Assert.Single(svc.Current.Jira);
+        Assert.Equal(JiraAuthMode.Gateway, saved.Mode);
+        Assert.Equal(Cloud, saved.CloudId);
+
+        var other = Make(ScopedOnly);
+        await other.LoadAsync();
+        Assert.Equal(Cloud, other.Current.Jira[0].CloudId);
+        Assert.DoesNotContain("tok", File.ReadAllText(Path.Combine(_dir, "accounts.json")));
+    }
+
+    [Fact]
+    public async Task Jira_ClassicToken_SavesSiteMode()
+    {
+        var svc = Make(_ => Json("""{"accountId":"u1","displayName":"Ana","active":true}"""));
+        var acc = new JiraAccount("acme", "a@x.cl", "V");
+        await svc.TestJiraAsync(acc, "tok");
+        await svc.SaveJiraAsync(acc, "tok", null);
+        Assert.Equal(JiraAuthMode.Site, svc.Current.Jira[0].Mode);
+        Assert.Null(svc.Current.Jira[0].CloudId);
+    }
+
+    [Fact]
+    public async Task Jira_SaveWithoutToken_KeepsSavedMode()
+    {
+        var svc = Make(ScopedOnly);
+        var acc = new JiraAccount("acme", "a@x.cl", "V");
+        await svc.TestJiraAsync(acc, "tok");
+        await svc.SaveJiraAsync(acc, "tok", null);
+        await svc.SaveJiraAsync(acc with { ProjectKey = "W" }, null, null);
+        Assert.Equal(JiraAuthMode.Gateway, svc.Current.Jira[0].Mode);
+        Assert.Equal("W", svc.Current.Jira[0].ProjectKey);
+    }
+
+    [Fact]
+    public async Task CreateJiraClient_AutoDetectsAndPersistsWithoutChangedEvent()
+    {
+        var svc = Make(ScopedOnly);
+        await svc.SaveJiraAsync(new JiraAccount("acme", "a@x.cl", "V"), "tok", null);
+        Assert.Equal(JiraAuthMode.Auto, svc.Current.Jira[0].Mode);
+        var events = 0;
+        svc.Changed += _ => events++;
+        var client = await svc.CreateJiraClientAsync(svc.Current.Jira[0]);
+        Assert.Equal("Ana", (await client.GetMyselfAsync()).DisplayName);
+        Assert.Equal(JiraAuthMode.Gateway, svc.Current.Jira[0].Mode);
+        Assert.Equal(0, events);
+
+        var again = await svc.CreateJiraClientAsync(svc.Current.Jira[0]);
+        Assert.Equal("Ana", (await again.GetMyselfAsync()).DisplayName);
+    }
+
+    [Fact]
+    public async Task CreateJiraClient_WithoutToken_Throws()
+    {
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            Make().CreateJiraClientAsync(new JiraAccount("acme", "a@x.cl", "V")));
+    }
+
     [Fact]
     public async Task TestBitbucket_UsesStoredTokenWhenNoneTyped()
     {

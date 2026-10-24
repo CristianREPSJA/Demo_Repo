@@ -7,7 +7,7 @@ namespace Rama.Core.Jira;
 // Carga el tablero (config, personas, issues), lo refresca y mueve tarjetas. Sin UI: la VM solo lo observa.
 public sealed class BoardController(IJiraBoardApi api, JiraAccount account, TimeProvider? time = null)
 {
-    // SUPUESTO: campo de story points estándar de Jira Cloud (company-managed).
+    // Verificado 2026-10-23: solo es el respaldo; el campo real (p. ej. customfield_10024) viene de la config del board.
     public const string DefaultStoryPointsField = "customfield_10016";
 
     private readonly TimeProvider _time = time ?? TimeProvider.System;
@@ -16,7 +16,10 @@ public sealed class BoardController(IJiraBoardApi api, JiraAccount account, Time
     private bool _scrum;
     private OptimisticMove? _move;
 
-    public string StoryPointsField { get; init; } = DefaultStoryPointsField;
+    // Fuerza el campo (si no es null); si no, el del board, y si no, el respaldo.
+    public string? StoryPointsField { get; init; }
+    private string? _detectedField;
+    public string EffectiveStoryPointsField => StoryPointsField ?? _detectedField ?? DefaultStoryPointsField;
     public JiraAccount Account { get; } = account;
     public IReadOnlyList<JiraUser> Users { get; private set; } = [];
     public string? MyAccountId { get; private set; }
@@ -34,7 +37,7 @@ public sealed class BoardController(IJiraBoardApi api, JiraAccount account, Time
         {
             await EnsureStaticAsync(ct).ConfigureAwait(false);
             var jql = JqlBuilder.Build(Account.ProjectKey, openSprintsOnly: _scrum);
-            var issues = await api.SearchIssuesAsync(jql, StoryPointsField, ct).ConfigureAwait(false);
+            var issues = await api.SearchIssuesAsync(jql, EffectiveStoryPointsField, ct).ConfigureAwait(false);
             var model = new BoardModel(_columns!, issues);
             if (_move is null)
             {
@@ -66,7 +69,9 @@ public sealed class BoardController(IJiraBoardApi api, JiraAccount account, Time
             boardId = board.Id;
             _scrum = string.Equals(board.Type, "scrum", StringComparison.OrdinalIgnoreCase);
         }
-        var columns = await api.GetBoardColumnsAsync(boardId.Value, ct).ConfigureAwait(false);
+        var config = await api.GetBoardConfigurationAsync(boardId.Value, ct).ConfigureAwait(false);
+        var columns = config.Columns;
+        _detectedField = config.EstimationField;
         var me = await api.GetMyselfAsync(ct).ConfigureAwait(false);
         Users = (await api.GetAssignableUsersAsync(Account.ProjectKey, ct).ConfigureAwait(false))
             .Where(u => u.Active).ToList();

@@ -25,9 +25,22 @@ public sealed record AzureAccount(
 
 public sealed record BitbucketAccount(string Email, string? Workspace = null);
 
-public sealed record JiraAccount(string Site, string Email, string ProjectKey, long? BoardId = null)
+// Modo de API: Auto = aún sin detectar; Site = {site}.atlassian.net (token clásico);
+// Gateway = api.atlassian.com/ex/jira/{CloudId} (token con alcance).
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<JiraAuthMode>))]
+public enum JiraAuthMode { Auto, Site, Gateway }
+
+public sealed record JiraAccount(string Site, string Email, string ProjectKey, long? BoardId = null,
+    JiraAuthMode Mode = JiraAuthMode.Auto, string? CloudId = null)
 {
+    // URL del sitio (enlaces /browse); no cambia con el modo.
     public string BaseUrl => JiraClient.SiteBaseUrl(Site);
+
+    // Base de la API REST según el modo detectado.
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string ApiBaseUrl => Mode == JiraAuthMode.Gateway && !string.IsNullOrEmpty(CloudId)
+        ? JiraClient.ScopedBaseUrl(CloudId)
+        : BaseUrl;
 }
 
 public sealed record AccountsData(
