@@ -1,3 +1,5 @@
+using System;
+
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -16,11 +18,6 @@ namespace SourceGit.Views
         {
             InitializeComponent();
             DataContext = new ViewModels.JiraBoardViewModel();
-            IsVisibleProperty.Changed.AddClassHandler<JiraBoardPage>((page, e) =>
-            {
-                if (e.NewValue is bool visible)
-                    page.Vm.SetVisible(visible);
-            });
         }
 
         private ViewModels.JiraBoardViewModel Vm => (ViewModels.JiraBoardViewModel)DataContext;
@@ -28,12 +25,15 @@ namespace SourceGit.Views
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnAttachedToVisualTree(e);
-            Vm.SetVisible(IsVisible);
+            _watch = PageVisibility.Watch(this, visible => Vm.SetVisible(visible));
+            Vm.SetVisible(PageVisibility.IsShown(this));
         }
 
         protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnDetachedFromVisualTree(e);
+            _watch?.Dispose();
+            _watch = null;
             Vm.SetVisible(false);
         }
 
@@ -108,6 +108,7 @@ namespace SourceGit.Views
             return false;
         }
 
+        private IDisposable _watch;
         private PointerPressedEventArgs _pressed;
         private bool _dragging;
     }

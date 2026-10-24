@@ -26,7 +26,7 @@
             <Button Classes="flat primary" Height="32" Padding="8,0" CornerRadius="0,6,6,0" BorderThickness="1,0,0,0"
                     IsEnabled="{Binding IsIdle}" ToolTip.Tip="{DynamicResource Text.Rama.Reviews.MoreVotes}"
                     AutomationProperties.Name="{DynamicResource Text.Rama.Reviews.MoreVotes}">
-              <Path Width="12" Height="12" Stretch="Uniform" Stroke="{DynamicResource Brush.OnAccent}" StrokeThickness="1.5"
+              <Path Fill="Transparent" Width="12" Height="12" Stretch="Uniform" Stroke="{DynamicResource Brush.OnAccent}" StrokeThickness="1.5"
                     StrokeLineCap="Round" StrokeJoin="Round" Data="M4,6 L8,10 L12,6"/>
               <Button.Flyout>
                 <MenuFlyout Placement="BottomEdgeAlignedRight">
@@ -78,9 +78,9 @@
         </Button>
         <Button Classes="rv-tab" Command="{Binding SelectTabCommand}">
           <Button.CommandParameter><x:Int32>2</x:Int32></Button.CommandParameter>
-          <StackPanel Orientation="Horizontal" Spacing="6">
-            <TextBlock Text="{DynamicResource Text.Rama.Reviews.Tab.Commits}"/>
-            <TextBlock Classes="rv-faint" Text="{Binding CommitsCount}"/>
+          <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+            <TextBlock Text="{DynamicResource Text.Rama.Reviews.Tab.Commits}" VerticalAlignment="Center"/>
+            <TextBlock Classes="rv-faint" Text="{Binding CommitsCount}" VerticalAlignment="Center"/>
           </StackPanel>
         </Button>
         <Button Classes="rv-tab" Command="{Binding SelectTabCommand}" Content="{DynamicResource Text.Rama.Reviews.Tab.Conversation}">

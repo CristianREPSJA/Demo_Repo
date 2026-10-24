@@ -61,3 +61,4 @@ F10: CI y empaquetado
 
 Entra: login con Microsoft para Azure DevOps
 - `src/Commands/Command.cs` — `Rama.GitAuth.PrepareAsync` antes de comandos de red (ExecAsync/ReadToEndAsync) y `Rama.GitAuth.Apply` en `CreateGitStartInfo` (Bearer de Entra por `GIT_CONFIG_*` en el entorno del hijo).
+- `src/Views/Launcher.axaml` — paginas del riel envueltas en `Panel` que lleva `IsVisible` (las paginas fijan su propio DataContext y el binding directo fallaba).

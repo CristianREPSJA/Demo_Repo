@@ -52,7 +52,7 @@
             <Button Grid.Column="1" Command="{Binding RefreshCommand}" IsEnabled="{Binding !IsRefreshing}"
                     ToolTip.Tip="{DynamicResource Text.Rama.Reviews.Refresh}" Padding="6" Background="Transparent" BorderThickness="0"
                     AutomationProperties.Name="{DynamicResource Text.Rama.Reviews.Refresh}">
-              <Path Width="14" Height="14" Stretch="Uniform" Stroke="{DynamicResource Brush.FG2}" StrokeThickness="1.5"
+              <Path Fill="Transparent" Width="14" Height="14" Stretch="Uniform" Stroke="{DynamicResource Brush.FG2}" StrokeThickness="1.5"
                     StrokeLineCap="Round" StrokeJoin="Round"
                     Data="M13,8 A5,5 0 1 1 11.5,4.5 M13,2.5 V5 H10.5"/>
             </Button>

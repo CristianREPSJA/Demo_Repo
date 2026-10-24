@@ -80,15 +80,21 @@ namespace SourceGit.Views
 
             public void Draw(TextView textView, DrawingContext drawingContext)
             {
-                var length = _owner.Document.TextLength;
+                var docText = _owner.Document.Text;
+                var length = docText.Length;
                 foreach (var span in _owner._spans)
                 {
                     if (span.ConflictIndex < 0 || span.Length == 0 || span.Start + span.Length > length)
                         continue;
 
                     var brush = span.IsResolved ? ResolvedBrush : UnresolvedBrush;
-                    var segment = new TextSegment { StartOffset = span.Start, Length = span.Length };
-                    foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment, true))
+                    // Sin el salto de línea final: el resaltado cubre exactamente las líneas de la región.
+                    var visible = global::Rama.Core.Conflicts.SpanMath.LengthWithoutTrailingBreak(docText, span.Start, span.Length);
+                    if (visible == 0)
+                        continue;
+
+                    var segment = new TextSegment { StartOffset = span.Start, Length = visible };
+                    foreach (var rect in BackgroundGeometryBuilder.GetRectsForSegment(textView, segment))
                         drawingContext.FillRectangle(brush, new Rect(0, rect.Y, textView.Bounds.Width, rect.Height));
                 }
             }

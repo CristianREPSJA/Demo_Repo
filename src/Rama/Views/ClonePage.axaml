@@ -43,6 +43,15 @@
       <Setter Property="Padding" Value="0"/>
       <Setter Property="Margin" Value="0"/>
     </Style>
+    <!-- Seleccion: tinte sutil + barra de acento a la izquierda; el texto conserva su contraste -->
+    <Style Selector="ListBox.repos ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter,
+                     ListBox.repos ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     ListBox.repos:focus-within ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#26272B"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource Brush.Accent}"/>
+      <Setter Property="BorderThickness" Value="3,0,0,0"/>
+      <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
+    </Style>
     <Style Selector="TextBlock.faint">
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG3}"/>

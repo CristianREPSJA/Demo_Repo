@@ -37,6 +37,17 @@
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG1}"/>
     </Style>
+    <!-- Campos con altura y relleno cómodos (el estilo global de TextBox es compacto) -->
+    <Style Selector="Border.card TextBox">
+      <Setter Property="MinHeight" Value="34"/>
+      <Setter Property="Padding" Value="10,0"/>
+      <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+    <Style Selector="Border.card CalendarDatePicker">
+      <Setter Property="MinHeight" Value="34"/>
+      <Setter Property="Width" Value="200"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
     <Style Selector="TextBlock.label">
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
@@ -58,7 +69,7 @@
   </UserControl.Styles>
 
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <StackPanel Spacing="16" Margin="32,28" MaxWidth="640" HorizontalAlignment="Center">
+    <StackPanel Spacing="16" Margin="32,28" MaxWidth="640" HorizontalAlignment="Stretch">
       <StackPanel Spacing="4">
         <TextBlock Classes="heading" FontSize="20" Text="{DynamicResource Text.Rama.Accounts.Title}"/>
         <TextBlock Classes="note" Text="{DynamicResource Text.Rama.Accounts.Subtitle}"/>
@@ -136,7 +147,7 @@
           </StackPanel>
           <StackPanel>
             <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Expiry}"/>
-            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}"/>
+            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}" SelectedDateFormat="Custom" CustomDateFormatString="dd-MM-yyyy" Watermark="dd-mm-aaaa"/>
             <TextBlock Classes="warn" Margin="0,6,0,0" IsVisible="{Binding HasExpiryWarning}" Text="{Binding ExpiryWarning}"/>
           </StackPanel>
           <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>
@@ -167,7 +178,7 @@
           </StackPanel>
           <StackPanel>
             <TextBlock Classes="label" Text="{DynamicResource Text.Rama.Accounts.Expiry}"/>
-            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}"/>
+            <CalendarDatePicker SelectedDate="{Binding Expiry, Mode=TwoWay}" SelectedDateFormat="Custom" CustomDateFormatString="dd-MM-yyyy" Watermark="dd-mm-aaaa"/>
             <TextBlock Classes="warn" Margin="0,6,0,0" IsVisible="{Binding HasExpiryWarning}" Text="{Binding ExpiryWarning}"/>
           </StackPanel>
           <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Rama.Accounts.Actions}"/>

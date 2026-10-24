@@ -135,6 +135,7 @@
     <Setter Property="Padding" Value="2,0"/>
     <Setter Property="Margin" Value="0,0,20,0"/>
     <Setter Property="Height" Value="36"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
     <Setter Property="Foreground" Value="{DynamicResource Brush.FG2}"/>
   </Style>
   <Style Selector="Button.rv-tab.sel">
