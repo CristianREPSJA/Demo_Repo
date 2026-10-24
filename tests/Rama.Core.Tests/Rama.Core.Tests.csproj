@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Azure\Fixtures\*.json" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="..\..\lib\Rama.Core\Rama.Core.csproj" />
   </ItemGroup>
 

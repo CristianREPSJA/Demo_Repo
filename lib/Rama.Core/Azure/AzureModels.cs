@@ -52,7 +52,11 @@ public sealed record PolicySummary(IReadOnlyList<PolicyEvaluation> Items)
 }
 
 public sealed record PipelineApproval(string Id, string Status, string PipelineName, string? Instructions,
-    DateTimeOffset? CreatedOn, IReadOnlyList<ApprovalStep> Steps);
+    DateTimeOffset? CreatedOn, IReadOnlyList<ApprovalStep> Steps)
+{
+    // Id de la ejecución (build) dueña de la aprobación; null si la API no lo envía.
+    public int? RunId { get; init; }
+}
 
 public sealed record ApprovalStep(string ApproverId, string ApproverName, string Status, bool IsGroup);
 

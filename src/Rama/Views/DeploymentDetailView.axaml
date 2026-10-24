@@ -17,6 +17,25 @@
         </StackPanel>
       </Border>
 
+      <Border Classes="rv-card" Padding="16,12" IsVisible="{Binding HasStages}">
+        <StackPanel Spacing="8">
+          <TextBlock Classes="rv-h3" Text="{DynamicResource Text.Rama.Reviews.Deploy.Stages}"/>
+          <ItemsControl ItemsSource="{Binding Stages}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="vm:StageRowViewModel">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,3">
+                  <TextBlock Grid.Column="0" Text="{Binding Name}" Foreground="{DynamicResource Brush.FG1}" VerticalAlignment="Center"/>
+                  <Border Grid.Column="1" Classes="rv-pill" Background="{Binding PillBackground}">
+                    <TextBlock Text="{Binding StatusText}" Foreground="{Binding PillInk}"/>
+                  </Border>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+      <TextBlock Classes="rv-muted" Text="{Binding StagesError}" IsVisible="{Binding HasStagesError}"/>
+
       <Border Classes="rv-card" Padding="16,12">
         <StackPanel Spacing="10">
           <TextBox Text="{Binding Comment, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="72"

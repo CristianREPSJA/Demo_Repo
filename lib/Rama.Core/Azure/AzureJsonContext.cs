@@ -54,7 +54,19 @@ internal sealed class PolicyTypeDto { public string? DisplayName { get; set; } }
 internal sealed class PolicyConfigDto { public bool IsBlocking { get; set; } public PolicyTypeDto? Type { get; set; } }
 internal sealed class PolicyEvalDto { public string? Status { get; set; } public PolicyConfigDto? Configuration { get; set; } }
 internal sealed class ApprovalStepDto { public IdentityDto? AssignedApprover { get; set; } public string? Status { get; set; } }
-internal sealed class ApprovalPipelineDto { public string? Id { get; set; } public string? Name { get; set; } }
+internal sealed class ApprovalOwnerDto { public int? Id { get; set; } }
+internal sealed class ApprovalPipelineDto { public string? Id { get; set; } public string? Name { get; set; } public ApprovalOwnerDto? Owner { get; set; } }
+internal sealed class TimelineRecordDto
+{
+    public string? Id { get; set; }
+    public string? ParentId { get; set; }
+    public string? Type { get; set; }
+    public string? Name { get; set; }
+    public string? State { get; set; }
+    public string? Result { get; set; }
+    public int? Order { get; set; }
+}
+internal sealed class TimelineDto { public List<TimelineRecordDto>? Records { get; set; } }
 internal sealed class ApprovalDto
 {
     public string? Id { get; set; }
@@ -75,6 +87,7 @@ internal sealed class ApprovalUpdateDto { public string? ApprovalId { get; set; 
 [JsonSerializable(typeof(ListDto<PolicyEvalDto>))]
 [JsonSerializable(typeof(ListDto<ApprovalDto>))]
 [JsonSerializable(typeof(ListDto<CommitRefDto>))]
+[JsonSerializable(typeof(TimelineDto))]
 [JsonSerializable(typeof(PrDto))]
 [JsonSerializable(typeof(ReviewerDto))]
 [JsonSerializable(typeof(VoteBodyDto))]

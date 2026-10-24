@@ -185,4 +185,13 @@
   <x:String x:Key="Text.Rama.Reviews.Deploy.Comment" xml:space="preserve">Comentario (opcional)</x:String>
   <x:String x:Key="Text.Rama.Reviews.Deploy.Reject" xml:space="preserve">Rechazar</x:String>
   <x:String x:Key="Text.Rama.Reviews.Deploy.Approve" xml:space="preserve">Aprobar despliegue</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stages" xml:space="preserve">Etapas de la ejecución</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stages.Error" xml:space="preserve">No se pudieron cargar las etapas: {0}</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Pending" xml:space="preserve">Pendiente</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Running" xml:space="preserve">En curso</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Succeeded" xml:space="preserve">Exitosa</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Failed" xml:space="preserve">Fallida</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Canceled" xml:space="preserve">Cancelada</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.Skipped" xml:space="preserve">Omitida</x:String>
+  <x:String x:Key="Text.Rama.Reviews.Deploy.Stage.WaitingForApproval" xml:space="preserve">Esperando aprobación</x:String>
 </ResourceDictionary>

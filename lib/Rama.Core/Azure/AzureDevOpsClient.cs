@@ -157,6 +157,15 @@ public sealed class AzureDevOpsClient : ApiClientBase
             return 0;
         });
 
+    // Etapas de la ejecución (pipeline.owner.id de la aprobación = buildId). Verificado 2026-10-23.
+    public Task<IReadOnlyList<RunStage>> GetRunStagesAsync(int buildId, CancellationToken ct = default) =>
+        WithHint(BuildScopeHint, async () =>
+        {
+            var dto = await GetJsonAsync($"{Proj}/_apis/build/builds/{buildId}/timeline?{V}",
+                AzureJsonContext.Default.TimelineDto, ct).ConfigureAwait(false);
+            return RunStages.FromRecords(dto?.Records ?? []);
+        });
+
     private static bool Same(string a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
 
     private PullRequestInfo MapPr(PrDto p)
@@ -174,7 +183,8 @@ public sealed class AzureDevOpsClient : ApiClientBase
     private static PipelineApproval MapApproval(ApprovalDto a) => new(a.Id ?? "", a.Status ?? "",
         a.Pipeline?.Name ?? "", a.Instructions, a.CreatedOn,
         (a.Steps ?? []).Select(s => new ApprovalStep(s.AssignedApprover?.Id ?? "",
-            s.AssignedApprover?.DisplayName ?? "", s.Status ?? "", s.AssignedApprover?.IsContainer ?? false)).ToList());
+            s.AssignedApprover?.DisplayName ?? "", s.Status ?? "", s.AssignedApprover?.IsContainer ?? false)).ToList())
+    { RunId = a.Pipeline?.Owner?.Id };
 
     public static PolicyStatus ParsePolicyStatus(string? s) => s?.ToLowerInvariant() switch
     {
