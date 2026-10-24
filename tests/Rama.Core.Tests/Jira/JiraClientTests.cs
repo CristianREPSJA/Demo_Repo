@@ -163,6 +163,19 @@ public class JiraClientTests
         Assert.Contains("API token", ex.Message);
     }
 
+    // Forma real (2026-10-23): la transición exitosa responde 204 vacío con Content-Type text/html; no es error.
+    [Fact]
+    public async Task Transition_NoContentWithHtmlHeader_IsSuccess()
+    {
+        var (c, _) = Make((_, _) =>
+        {
+            var resp = new HttpResponseMessage(HttpStatusCode.NoContent) { Content = new ByteArrayContent([]) };
+            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/html");
+            return resp;
+        });
+        await c.TransitionAsync("VEN-1", "31");
+    }
+
     // Forma real (2026-10-23): token con alcance de solo lectura al hacer la transición.
     [Fact]
     public async Task Transition_ScopeMismatch_ExplainsMissingWritePermission()

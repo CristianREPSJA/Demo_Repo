@@ -131,6 +131,8 @@ public abstract class ApiClientBase
     {
         if (!response.IsSuccessStatusCode) return false;
         if (response.StatusCode == HttpStatusCode.NonAuthoritativeInformation) return true;
+        // Jira (verificado 2026-10-23) responde 204 vacío con Content-Type text/html tras una transición exitosa.
+        if (response.StatusCode == HttpStatusCode.NoContent || response.Content.Headers.ContentLength == 0) return false;
         var media = response.Content.Headers.ContentType?.MediaType;
         return string.Equals(media, "text/html", StringComparison.OrdinalIgnoreCase);
     }
