@@ -11,12 +11,12 @@ public static class RunStages
     {
         var byId = records.Where(r => r.Id is not null).GroupBy(r => r.Id!).ToDictionary(g => g.Key, g => g.First());
         var waiting = records
-            .Where(r => r.Type == "Checkpoint.Approval" && r.State == "inProgress")
+            .Where(r => Is(r.Type, "Checkpoint.Approval") && Is(r.State, "inProgress"))
             .Select(r => StageIdOf(r, byId))
             .Where(id => id is not null)
             .ToHashSet();
 
-        return records.Where(r => r.Type == "Stage")
+        return records.Where(r => Is(r.Type, "Stage"))
             .Select((r, i) => (r, i))
             .OrderBy(x => x.r.Order is null).ThenBy(x => x.r.Order).ThenBy(x => x.i)
             .Select(x => new RunStage(x.r.Name ?? "", x.r.State ?? "", x.r.Result,
@@ -42,13 +42,15 @@ public static class RunStages
         };
     }
 
+    private static bool Is(string? a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
+
     // Sube por parentId hasta el registro de tipo Stage (con tope para evitar ciclos).
     private static string? StageIdOf(TimelineRecordDto r, Dictionary<string, TimelineRecordDto> byId)
     {
         var cur = r;
         for (var i = 0; i < 16 && cur is not null; i++)
         {
-            if (cur.Type == "Stage") return cur.Id;
+            if (Is(cur.Type, "Stage")) return cur.Id;
             cur = cur.ParentId is not null && byId.TryGetValue(cur.ParentId, out var p) ? p : null;
         }
         return null;

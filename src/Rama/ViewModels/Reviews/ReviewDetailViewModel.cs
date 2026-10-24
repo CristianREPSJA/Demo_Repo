@@ -11,8 +11,19 @@ using Rama.Core.Reviews;
 namespace SourceGit.ViewModels
 {
     // Base del panel de detalle: error propio (con pista de permiso 401/403) y confirmación inline.
-    public abstract partial class ReviewDetailViewModel : ObservableObject
+    public abstract partial class ReviewDetailViewModel : ObservableObject, IDisposable
     {
+        // Se cancela cuando el panel deja de mostrarse (cambio de selección o cierre).
+        private readonly CancellationTokenSource _lifetime = new();
+        protected CancellationToken Lifetime => _lifetime.Token;
+
+        public void Dispose()
+        {
+            _lifetime.Cancel();
+            _lifetime.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
         protected ReviewsService Service { get; }
         protected string MyId { get; }
         protected Func<Task> RefreshList { get; }

@@ -82,6 +82,7 @@ namespace SourceGit.ViewModels
                 return;
 
             _started = false;
+            Detail?.Dispose();
             RamaServices.Accounts.Changed -= OnAccountsChanged;
             _stampTimer.Stop();
             _ = _reconnect.RunAsync(TearDownMonitorAsync);
@@ -108,6 +109,9 @@ namespace SourceGit.ViewModels
         }
 
         partial void OnScopeHintChanged(string value) => OnPropertyChanged(nameof(HasScopeHint));
+
+        // Cancela las cargas pendientes del panel que se reemplaza.
+        partial void OnDetailChanged(ReviewDetailViewModel oldValue, ReviewDetailViewModel newValue) => oldValue?.Dispose();
 
         partial void OnDetailChanged(ReviewDetailViewModel value)
         {

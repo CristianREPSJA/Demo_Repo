@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -29,9 +30,8 @@ namespace SourceGit.ViewModels
             ApproversText = App.Text("Rama.Reviews.Deploy.Approvers",
                 string.Join(", ", steps.Select(s => s.ApproverName).Where(n => n.Length > 0).Distinct()));
             Instructions = item.Approval?.Instructions ?? string.Empty;
-            _runId = item.Approval?.RunId;
-            if (_runId is not null)
-                _ = LoadStagesAsync(_runId.Value);
+            if (item.Approval?.RunId is { } runId)
+                _ = LoadStagesAsync(runId, Lifetime);
         }
 
         public IReadOnlyList<StageRowViewModel> Stages { get; private set; } = [];
@@ -44,11 +44,12 @@ namespace SourceGit.ViewModels
         partial void OnStagesErrorChanged(string value) => OnPropertyChanged(nameof(HasStagesError));
 
         // Error no fatal: solo oculta la fila de etapas y muestra un aviso; aprobar/rechazar sigue disponible.
-        private async Task LoadStagesAsync(int runId)
+        // Continúa en el hilo de UI (sin ConfigureAwait), donde se crea el panel.
+        private async Task LoadStagesAsync(int runId, CancellationToken ct)
         {
             try
             {
-                var stages = await Service.LoadRunStagesAsync(runId);
+                var stages = await Service.LoadRunStagesAsync(runId, ct);
                 Stages = stages.Select(s => new StageRowViewModel(s)).ToList();
                 OnPropertyChanged(nameof(Stages));
                 OnPropertyChanged(nameof(HasStages));
@@ -58,8 +59,6 @@ namespace SourceGit.ViewModels
                 StagesError = App.Text("Rama.Reviews.Deploy.Stages.Error", ex.Message);
             }
         }
-
-        private readonly int? _runId;
 
         [RelayCommand]
         private void Approve() =>
